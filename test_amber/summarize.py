@@ -6,7 +6,7 @@ from collections import defaultdict
 root_dir = './'  # Change this if needed
 
 # GPU directories to process
-gpu_dirs = ['cezanne_radeon_vega', 'intel_iris_xe_graphics', 'rtx_4070', 'result']
+gpu_dirs = ['cezanne_radeon_vega', 'intel_iris_xe_graphics', 'rtx_4070', 'results']
 
 # Output file
 output_csv = 'gpu_test_summary.csv'

@@ -21,8 +21,8 @@ def main():
                        "../all_tests_intel/syn_subgroup_op",
                        "../all_tests_intel/syn_subgroup_op_relax",
                        "../all_tests_intel/syn_subgroup_op_release",
-                       "../all_tests_intel/syn_memory_converge"]
-    directory_names = ["../all_tests_intel/syn_memory_converge_atomic",]
+                       "../all_tests_intel/syn_memory_converge",
+                       "../all_tests_intel/syn_memory_converge_atomic",]
 
     for name in directory_names:
         os.system("python3 amber_test_driver.py " + name + " 1")
