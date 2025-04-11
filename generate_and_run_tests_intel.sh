@@ -8,4 +8,4 @@ docker buildx build --target generate-final-intel --output type=local,dest=. .
 (
     cd ./test_amber 
     sh ./to_run_intel.sh
-    python3 summarize.py)
+)
