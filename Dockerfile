@@ -68,7 +68,7 @@ COPY --from=generate /output all_tests
 
 
 FROM scratch AS generate-final-intel
-COPY --from=generate /output all_tests_intel
+COPY --from=generate-intel /output all_tests_intel
 
 FROM builder AS reduce
 WORKDIR /opt
