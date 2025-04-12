@@ -4,24 +4,6 @@ SET ENGINE_DATA fence_timeout_ms 10000
 
 SHADER compute test GLSL
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -48,20 +30,11 @@ void main()
  if(subgroup_local_id + 1 < subgroup_size)
   {
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
-   for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
-    {
-     subgroupAll(false);
-    }
+   subgroupAll(false);
   }
  else
   {
-   if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
-    {
-     atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
-    }
-   else
-    {
-    }
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
    subgroupAll(true);
   }
 }
