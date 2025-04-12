@@ -1,0 +1,1 @@
+docker buildx build --target generate-final-intel --output type=local,dest=. .

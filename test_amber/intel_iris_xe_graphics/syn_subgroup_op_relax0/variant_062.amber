@@ -22,7 +22,7 @@ SHADER compute test GLSL
 #endif
 
 
-layout(set = 0, binding = 0) uniform buf0 {
+layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
 #extension GL_KHR_shader_subgroup_basic : enable
@@ -36,46 +36,26 @@ layout(set = 0, binding = 0) buffer Buf {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec4 GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id;
- uvec2 GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size;
- uvec2 GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size;
- uvec4 GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = 16;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- if(_GLF_DEAD(false))
-  return;
- GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.z = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
- GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.y = num_workgroup;
- GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.y = GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.y;
  uint workgroup_size = gl_WorkGroupSize.x;
- GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y = workgroup_size;
- GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size.y = GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y;
  uint workgroup_id = gl_WorkGroupID.x;
- GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.w = workgroup_id;
- GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.x = GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.w;
- uint workgroup_base = GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size.y * GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.x;
- GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.z = workgroup_base;
- GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size.x = GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.z;
- uint virtual_gid = GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size.x + subgroup_id * subgroup_size + GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.z;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
- GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.w = virtual_gid;
- uint next_virtual_gid = GLF_merged2_0_1_14_1_1_14workgroup_baseworkgroup_size.x + subgroup_id * subgroup_size + ((GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.z + 1) % subgroup_size);
- GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.x = next_virtual_gid;
- GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.x = GLF_merged4_0_1_16_1_1_13_2_1_14_3_1_12next_virtual_gidnum_workgroupworkgroup_baseworkgroup_id.x;
- buf[GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.w] = 1;
- if(GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.z + 1 < subgroup_size)
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ buf[virtual_gid] = 1;
+ if(subgroup_local_id + 1 < subgroup_size)
   {
-   atomicStore(buf[GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.x], uint(2), 4, 64, 0);
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
    subgroupAll(false);
   }
  else
   {
-   atomicStore(buf[GLF_merged4_0_1_16_1_1_13_2_1_17_3_1_11next_virtual_gidnum_workgroupsubgroup_local_idvirtual_gid.x], uint(2), 4, 64, 0);
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
    subgroupAll(true);
   }
 }

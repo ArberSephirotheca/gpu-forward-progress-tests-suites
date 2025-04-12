@@ -17,7 +17,7 @@
 #endif
 
 
-layout(set = 0, binding = 0) uniform buf0 {
+layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
 #extension GL_KHR_shader_subgroup_basic : enable
@@ -35,21 +35,17 @@ void main()
  uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- if(_GLF_DEAD(false))
-  barrier();
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_WRAPPED_IF_FALSE(false))
+ uint virtual_gid = workgroup_base + _GLF_IDENTITY(_GLF_IDENTITY(subgroup_id * subgroup_size, clamp(subgroup_id * subgroup_size, subgroup_id * subgroup_size, subgroup_id * subgroup_size)), (false ? _GLF_FUZZED(workgroup_base) : subgroup_id * subgroup_size)) + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_id * subgroup_size, (subgroup_id * subgroup_size) | uint(_GLF_ZERO(0.0, injectionSwitch.x))) + ((subgroup_local_id + 1) % subgroup_size);
+ if(_GLF_WRAPPED_IF_TRUE(true))
   {
+   buf[virtual_gid] = 1;
   }
  else
   {
-   if(_GLF_DEAD(false))
-    barrier();
   }
- buf[virtual_gid] = 1;
- atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
+ atomicStore(buf[_GLF_IDENTITY(next_virtual_gid, 0u ^ (_GLF_IDENTITY(next_virtual_gid, min(next_virtual_gid, next_virtual_gid))))], uint(2), 4, 64, 0);
 }

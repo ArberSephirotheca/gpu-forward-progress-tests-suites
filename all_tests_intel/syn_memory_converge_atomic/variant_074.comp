@@ -1,14 +1,5 @@
 #version 460
-struct _GLF_struct_0 {
- mat2x4 _f0;
-} ;
-
-struct _GLF_struct_1 {
- uint subgroup_size;
- _GLF_struct_0 _f0;
-} ;
-
-layout(set = 0, binding = 1) uniform buf1 {
+layout(set = 0, binding = 0) uniform buf0 {
  vec2 injectionSwitch;
 };
 #extension GL_KHR_shader_subgroup_ballot : enable
@@ -24,15 +15,25 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec2 GLF_merged2_0_1_13_1_1_8num_workgroupread_val;
+ uvec2 GLF_merged2_0_1_17_1_1_13subgroup_local_idsubgroup_size;
+ uvec3 GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id;
  uint subgroup_id = gl_SubgroupID;
- _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(16, _GLF_struct_0(mat2x4(1.0)));
+ GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.y = subgroup_id;
+ uint subgroup_size = 16;
+ GLF_merged2_0_1_17_1_1_13subgroup_local_idsubgroup_size.y = subgroup_size;
  uint subgroup_local_id = gl_SubgroupInvocationID;
+ GLF_merged2_0_1_17_1_1_13subgroup_local_idsubgroup_size.x = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
+ GLF_merged2_0_1_13_1_1_8num_workgroupread_val.x = num_workgroup;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * _GLF_struct_replacement_1.subgroup_size + subgroup_local_id;
+ GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.z = workgroup_id;
+ uint workgroup_base = workgroup_size * GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.z;
+ uint virtual_gid = workgroup_base + GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.y * GLF_merged2_0_1_17_1_1_13subgroup_local_idsubgroup_size.y + GLF_merged2_0_1_17_1_1_13subgroup_local_idsubgroup_size.x;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ GLF_merged2_0_1_13_1_1_8num_workgroupread_val.y = read_val;
+ GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.x = GLF_merged2_0_1_13_1_1_8num_workgroupread_val.y;
+ buf[virtual_gid] = uint(subgroupAllEqual(GLF_merged3_0_1_8_1_1_11_2_1_12read_valsubgroup_idworkgroup_id.x));
 }
