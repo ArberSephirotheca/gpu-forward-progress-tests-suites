@@ -81,5 +81,5 @@ RUN python3 run_glsl_reduce.py
 # RUN glsl-reduce /opt/reduce/reduce.json interestingness_test --output reduction_results
 
 FROM scratch AS reduce-final
-COPY --from=reduce /opt/reduction_results test_suite/all_tests
+COPY --from=reduce /opt/reduction_results reduction_results
 
