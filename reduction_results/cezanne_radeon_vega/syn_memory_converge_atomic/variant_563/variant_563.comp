@@ -1,0 +1,31 @@
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer WriteVal {
+ uint write_val;
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = ((~ (((true ? ~ ((gl_NumWorkGroups.x) << 0u) : (82442u))))));
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = ((((workgroup_size) << 0u) * workgroup_id) | (workgroup_size * workgroup_id));
+ uint virtual_gid = ((min(((clamp((0u | (uint((injectionSwitch.x)))) | ((min(((0u | (((workgroup_base) >> 0u)))), ((0u | (workgroup_base))))) >> (clamp(0u, 0u, 0u))), (clamp((0u | (uint(((0.0 + (injectionSwitch.x)))))) | (((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u))), (0u | (uint((injectionSwitch.x)))) | (((0u | (workgroup_base))) >> (clamp(((0u) >> 0u), 0u, 0u))), (0u | (uint((injectionSwitch.x)))) | (((((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u)))) >> 0u))), (0u | (uint((injectionSwitch.x)))) | (((0u | (max((workgroup_base), (((workgroup_base)) | ((workgroup_base))))))) >> (clamp(0u, 0u, 0u)))))), ((clamp((0u | ((clamp((0u | (uint((injectionSwitch.x)))), uint((injectionSwitch.x)), uint((injectionSwitch.x)))))) | (((((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u)))) ^ 0u), (clamp((0u | (uint((injectionSwitch.x)))) | (((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u))), (0u | ((max((max(uint((injectionSwitch.x)), uint(((clamp(injectionSwitch, injectionSwitch, injectionSwitch)).x)))), ((true ? uint((injectionSwitch.x)) : ((uint(uvec3(workgroup_id, 1u, 1u)))))))))) | (((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u))), (0u | (uint((injectionSwitch.x)))) | (((((0u | (workgroup_base))) >> (clamp(0u, 0u, 0u)))) >> 0u))), (0u | (uint((injectionSwitch.x)))) | ((max(((0u | (max((workgroup_base), (workgroup_base))))), (0u ^ (((true ? ((0u | (max((workgroup_base), (workgroup_base))))) : (subgroup_local_id))))))) >> (clamp(0u, 0u, 0u))))))))) + subgroup_id * subgroup_size + subgroup_local_id;
+ atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
+ uint read_val = atomicLoad(write_val, (~ (~ (4))), ((((((64) << 0)) / 1) | 0)), 0);
+ buf[virtual_gid] = ((uint((min(((1.0 * (injectionSwitch.x))), (mix(float((float((mix(vec4((((mix(vec4((max((7.3), (7.3))), (- 531.134), ((vec4((injectionSwitch.x), exp(((0.0) + 0.0)), 0.0, 0.0)))[2], ((vec4((injectionSwitch.x), exp(((0.0) + 0.0)), 0.0, 0.0)))[3]), vec4(((((vec4((injectionSwitch.x), exp(((0.0) + 0.0)), 0.0, 0.0)))) * mat4(1.0))[0], ((vec4((injectionSwitch.x), exp((((min(((0.0) + 0.0), ((0.0) + 0.0)))) / 1.0)), 0.0, 0.0)))[1], (9.2), (745.325)), bvec4(true, true, (! (((! (false)) && true))), false)))) - vec4(0.0, 0.0, 0.0, 0.0))[0], (- 4982.3667), (vec4((injectionSwitch.x), exp((min((mix(float((4.0)), float((float((mat3(mat3x4(mat3(((false ? (- 781.907) : 0.0)), 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0))))))), bool(true))), 0.0))), 0.0, 0.0))[2], (vec4((((injectionSwitch.x)) - sqrt(0.0)), exp(0.0), 0.0, 0.0))[3]), vec4((9998.2013), (vec4((injectionSwitch.x), exp(0.0), 0.0, 0.0))[1], (- 1.2), (9.7)), bvec4(false, true, false, false)))))), float((((4.0) - 0.0))), bool(false)))))) + ((true ? ((((~ (~ (~ (~ (((((false ? (((uint(- 2.0)) >> 0u)) : ((false ? ((workgroup_base + subgroup_local_id)) : uint(subgroupAllEqual(read_val))))))) | 0u)))))))) | 0u) : ((((0u ^ (((((~ (~ (((clamp(172848u, 172848u, 172848u))) * 1u))) | ((~ (~ (~ (~ ((172848u) * 1u))))))) << 0u)))))))))));
+}

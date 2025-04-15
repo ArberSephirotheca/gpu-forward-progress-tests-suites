@@ -23,6 +23,7 @@ def main():
     with open(CSV_PATH, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
+            gpu_name = row['GPU']
             suite_dirname = row['Output Directory']
             failed_variants = row['Failed Tests']
 
@@ -30,7 +31,7 @@ def main():
                 continue
 
             suite_path = Path(TEST_SUITE_ROOT) / suite_dirname
-            target_dir = Path(OUTPUT_DIR) / suite_dirname
+            target_dir = Path(OUTPUT_DIR) / gpu_name/ suite_dirname
             target_dir.mkdir(parents=True, exist_ok=True)
 
             for variant in failed_variants.split(";"):

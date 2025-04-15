@@ -25,7 +25,7 @@ def main():
         return
 
     for shader_file in FAILED_DIR.rglob("*.comp"):
-        suite_name = shader_file.parent.name
+        suite_name = shader_file.parent.relative_to(FAILED_DIR)
         variant_name = shader_file.stem
         config_path = FAILED_DIR / Path(suite_name) / f"{variant_name}.json"
         if not config_path.exists():

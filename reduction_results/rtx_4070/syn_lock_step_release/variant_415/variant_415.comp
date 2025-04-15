@@ -1,0 +1,28 @@
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = (clamp(gl_WorkGroupID.x, gl_WorkGroupID.x, gl_WorkGroupID.x));
+ uint workgroup_base = ((workgroup_size * workgroup_id) >> 0u);
+ uint virtual_gid = (uint(uvec2(workgroup_base, 1u))) + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = (((true ? (((((workgroup_base + subgroup_id * subgroup_size + (0u ^ (((((((bool((bvec3(bvec4(bvec3(false, false, false), true))))) ? (subgroup_id) : ((((max((min((min((((((min(((subgroup_local_id + 1) / 1u), subgroup_local_id + 1))) | ((min(((subgroup_local_id + 1) / 1u), subgroup_local_id + 1))))) | ((min(((subgroup_local_id + 1) / 1u), subgroup_local_id + 1)))), (min(((subgroup_local_id + 1) / 1u), subgroup_local_id + 1)))), (min(((subgroup_local_id + 1) >> 0u), subgroup_local_id + 1)))), (min(subgroup_local_id + 1, subgroup_local_id + 1))))) / 1u)) % subgroup_size)))) | 0u))))) | ((workgroup_base + subgroup_id * subgroup_size + ((((uint(uvec4(((false ? (workgroup_size) : (false || ((bool(bvec2(false, true))))) ? ((((true ? (subgroup_id) : (atomicExchange(num_workgroup, subgroup_id))))) >> 0u) : ((((min(subgroup_local_id + 1, subgroup_local_id + 1))) / 1u)) % subgroup_size)), ((1u) >> (0u >> (uint(3u)))), 0u, 0u))))))))) - 0u)) : (atomicMin(workgroup_id, subgroup_id)))) | ((~ (((~ ((1u * (workgroup_base)))) - 0u))) + ((max((~ (~ (1u))) * (subgroup_id), 1u * (max((subgroup_id), (subgroup_id)))))) * subgroup_size + ((subgroup_local_id + 1) % ((((subgroup_size) / 1u)) ^ 0u))));
+ buf[virtual_gid] = 1;
+ atomicStore(buf[next_virtual_gid], (min((0u ^ (uint((~ (~ (2)))))), uint((~ (~ (2)))))), 4, 64, ((0 + ((((max((((max(int(ivec3(((4) << 0), ((1 << ((false ? (- 26272) : (int(5))))) >> (int(5))), 1)), (max((min(int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)), int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)))), ((int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1))) * 1))))))) << 0, (((((max(int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)), int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)))) | (max(int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)), int(ivec3(((4) << 0), ((1 << (int(5))) >> (int(5))), 1)))))))) << 0))) | 0)))));
+}

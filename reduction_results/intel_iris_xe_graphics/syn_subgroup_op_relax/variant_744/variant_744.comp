@@ -1,0 +1,37 @@
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = (((min((min(gl_NumWorkGroups, (uvec3(gl_NumWorkGroups[0], gl_NumWorkGroups[1], ((gl_NumWorkGroups[2]) | 0u))))), ((gl_NumWorkGroups) - uvec3(0u, 0u, 0u)))) | (min((min(gl_NumWorkGroups, (uvec3(gl_NumWorkGroups[0], gl_NumWorkGroups[1], ((gl_NumWorkGroups[2]) | 0u))))), ((gl_NumWorkGroups) - uvec3(0u, 0u, 0u)))))).x;
+ uint workgroup_size = (((~ (~ (gl_WorkGroupSize)))) | (gl_WorkGroupSize)).x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = (clamp(workgroup_size * (uint(((((uvec4(workgroup_id, 0u, 1u, (1u & 1u))) + uvec4(0u, 0u, 0u, 0u)) | ((uvec4(workgroup_id, 0u, 1u, (1u & 1u))) + (uvec4(0u, 0u, 0u, 0u) | (uvec4(0u, 0u, 0u, 0u)))))))), ((true ? workgroup_size * (uint(((uvec4(workgroup_id, 0u, 1u, (1u & 1u))) + uvec4(0u, 0u, 0u, 0u)))) : (subgroup_id))), workgroup_size * (uint(((uvec4(workgroup_id, 0u, 1u, (1u & 1u))) + uvec4(0u, 0u, ((((0u) | 0u)) * 1u), 0u))))));
+ uint virtual_gid = (0u ^ ((((clamp(uint(uint((max((workgroup_base + (((clamp(subgroup_id * ((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (1u ^ 1u))))), subgroup_id * ((subgroup_size) | (subgroup_size)), subgroup_id * subgroup_size))) + (0u | 0u))) - 0u, (workgroup_base + (((max((clamp(subgroup_id * ((((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (((((1u ^ 1u) - 0u)) | (1u ^ 1u))))))) << 0u)), subgroup_id * (((min(((84653u & 0u) ^ (subgroup_size)), subgroup_size))) | (subgroup_size)), subgroup_id * subgroup_size)), (clamp(subgroup_id * ((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (((((1u ^ 1u) - 0u)) | (1u ^ 1u))))))), subgroup_id * (((min(((84653u & 0u) ^ (subgroup_size)), subgroup_size))) | (subgroup_size)), subgroup_id * subgroup_size))))) + (0u | 0u))) - 0u)))), uint(uint((((max((workgroup_base + (((true ? ((clamp(subgroup_id * ((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (1u ^ 1u))))), subgroup_id * ((subgroup_size) | (subgroup_size)), ((false ? (subgroup_id) : subgroup_id * subgroup_size))))) + (0u | 0u) : (subgroup_size))))) - 0u, (workgroup_base + (((clamp(subgroup_id * ((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (1u ^ 1u))))), (1u * (subgroup_id)) * ((subgroup_size) | (subgroup_size)), subgroup_id * subgroup_size))) + (((((((0u | 0u) / 1u)) | 0u)) | (0u << (uint(2u))))))) - 0u)) << 0u)))), uint(uint((max((workgroup_base + (((clamp((max(subgroup_id, subgroup_id)) * ((uint(uvec2((((((true ? subgroup_size : (subgroup_id)))) + 0u) | 0u), (1u ^ ((true ? 1u : (uint(abs(4829.7116)))))))))), subgroup_id * ((subgroup_size) | (subgroup_size)), (clamp(subgroup_id * subgroup_size, subgroup_id * subgroup_size, subgroup_id * subgroup_size))))) + (0u | 0u))) - 0u, (workgroup_base + (((clamp((0u | (((((subgroup_id) * 1u) | (0u | 0u))))) * ((uint(uvec2((((true ? subgroup_size : (subgroup_id)))) + 0u, (~ (~ ((1u ^ 1u)))))))), subgroup_id * ((subgroup_size) | (subgroup_size)), subgroup_id * subgroup_size))) + (0u | 0u))) - 0u)))))))))) + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + (~ (~ ((((max((clamp(subgroup_local_id + 1, subgroup_local_id + 1, subgroup_local_id + 1)), subgroup_local_id + 1))) % subgroup_size))));
+ buf[virtual_gid] = 1;
+ if(((subgroup_local_id) / 1u) + ((1) - 0) < subgroup_size)
+  {
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, (0 + ((((clamp(int(ivec3((0), 0, 0)), int(ivec3((0), 0, 0)), int(ivec3((0), 0, 0))))) << 0))));
+   subgroupAll(false);
+  }
+ else
+  {
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 0);
+   subgroupAll(((true) && true));
+  }
+}

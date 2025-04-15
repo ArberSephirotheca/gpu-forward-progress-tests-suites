@@ -1,0 +1,30 @@
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer WriteVal {
+ uint write_val;
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = (((((uint(((uvec2((clamp(gl_NumWorkGroups.x, (max(gl_NumWorkGroups.x, gl_NumWorkGroups.x)), (~ (~ (((gl_NumWorkGroups.x) | (((gl_NumWorkGroups.x) | (gl_NumWorkGroups.x))))))))), 1u)) | (uvec2((clamp(((((((float(((mat4x3((clamp(((injectionSwitch.x) * 1.0), injectionSwitch.x, injectionSwitch.x)), 1.0, 0.0, 0.0, 0.0, 0.0, (injectionSwitch.y), determinant(mat4(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, log(1.0))), 1.0, 0.0, 0.0, 1.0)) - mat4x3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)))) < injectionSwitch.y)) ? ((false ? (123539u) : ((1u * (((clamp(((((uint(uint(((gl_NumWorkGroups) | uvec3(0u, (uint((uvec2(uvec2((uvec2(0u, 0u) | (uvec2(0u, 0u)))))))), 0u)).x)))) - 0u)), ((((uint(uint(((((~ (~ ((gl_NumWorkGroups) + uvec3(0u, 0u, 0u)))))) | uvec3(0u, 0u, 0u)).x)))) - 0u)), (((uint((uint(uint(uint(((uint((clamp(uint(((gl_NumWorkGroups) | uvec3(0u, 0u, 0u)).x), (uint(uvec3(uint(((gl_NumWorkGroups) | uvec3(0u, 0u, 0u)).x), 1u, 1u))), (0u | ((1u * (uint(((uvec3((~ (~ (uvec3((gl_NumWorkGroups))))))) | uvec3(0u, 0u, 0u)).x)))))))))) - 0u)))))))))) + 0u)))))) : (write_val))) | ((((((((uint(uint(((gl_NumWorkGroups) | uvec3(0u, 0u, 0u)).x)))) / 1u)) - 0u)) + 0u))), (~ (~ (((((true ? gl_NumWorkGroups : (uvec3(49014u, 140738u, 30526u)))).x) | (gl_NumWorkGroups.x))))), gl_NumWorkGroups.x)), 1u)))))) >> uint((injectionSwitch.x))) << 0u));
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + (~ ((~ (~ (~ (subgroup_id)))))) * (clamp(subgroup_size, subgroup_size, subgroup_size)) + (max(subgroup_local_id, subgroup_local_id));
+ atomicStore(write_val, uint(virtual_gid), ((4) | (4)), 64, 0);
+ buf[virtual_gid] = uint(subgroupAllEqual(write_val));
+}
