@@ -72,11 +72,13 @@ COPY --from=generate-intel /output all_tests_intel
 
 FROM builder AS reduce
 WORKDIR /opt
-COPY test_suite/all_tests/syn_branch_syn_release/variant_034.comp /opt/reduce/reduce.comp
-COPY test_suite/all_tests/syn_branch_syn_release/variant_034.json /opt/reduce/reduce.json
-COPY graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough /opt/reduce/examples
+COPY failed_variants/ /opt/reduce/
+COPY failed_variants/ /opt/reduce/
+COPY test_amber/run_glsl_reduce.py /opt/run_glsl_reduce.py
+RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough /opt/reduce/examples
 ENV PATH="/opt/reduce:${PATH}"
-RUN glsl-reduce /opt/reduce/reduce.json interestingness_test --output reduction_results
+RUN python3 run_glsl_reduce.py
+# RUN glsl-reduce /opt/reduce/reduce.json interestingness_test --output reduction_results
 
 FROM scratch AS reduce-final
 COPY --from=reduce /opt/reduction_results test_suite/all_tests

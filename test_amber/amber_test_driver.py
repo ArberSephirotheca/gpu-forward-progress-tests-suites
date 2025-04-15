@@ -338,7 +338,7 @@ def get_new_dir_name(original_dir):
     base_name = "results/" + original_dir
     label = 0
     while 1:
-        check_name = base_name + str(label)
+        check_name = base_name
         if not os.path.exists(check_name):
             print("writing results to:")
             print(check_name)
