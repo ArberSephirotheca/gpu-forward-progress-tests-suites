@@ -77,7 +77,7 @@ WORKDIR /opt
 COPY failed_variants/ /opt/reduce/
 COPY failed_variants/ /opt/reduce/
 COPY test_amber/run_glsl_reduce.py /opt/run_glsl_reduce.py
-RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough.py  /opt/reduce/examples
+RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough  /opt/reduce/examples
 ENV PATH="/opt/reduce:${PATH}"
 RUN python3 run_glsl_reduce.py
 # RUN glsl-reduce /opt/reduce/reduce.json interestingness_test --output reduction_results
