@@ -1,0 +1,53 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = (((true ? uvec3((((uvec3(0u, 0u, 0u) ^ ((uvec3(((uvec3(uvec3(((gl_NumWorkGroups) >> uvec3(0u, 0u, 0u))))) - uvec3(0u, 0u, 0u))))))) << uvec3(0u, 0u, ((0u) << 0u)))) : (uvec3(199905u, 37002u, 83168u))))).x;
+ uint workgroup_size = ((gl_WorkGroupSize.x) - 0u);
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = (~ (((((injectionSwitch.x > injectionSwitch.y)) ? (num_workgroup) : ~ ((min(((~ ((true ? (~ (uint(uint(((true ? (uint(uvec4(workgroup_size * workgroup_id, 1u, 0u, 0u))) : (((workgroup_size) >> (0u | 0u))))))))) : (subgroup_local_id))))), workgroup_size * workgroup_id)))))));
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = (uint((injectionSwitch.y)) * ((((min(uint(uint((((workgroup_base) - (uint((injectionSwitch.x)) | 0u)) + ((uint(uint(max(((((subgroup_id) * 1u) * (uint((injectionSwitch.x)) + (((subgroup_size)) << 0u))) | (((((subgroup_id * (((false ? (subgroup_size) : ((((uint((((true ? (mix(vec2((injectionSwitch)[0], (mat2((injectionSwitch.y)) * ((injectionSwitch)))[1]), vec2(((- 0.0 / - 5.1)), (- 143.452)), bvec2(false, false))) : (injectionSwitch))).x)) + (subgroup_size))) | ((uint((injectionSwitch.x)) + (subgroup_size))))))) * 1u)) << 0u)) | 0u))), ((((((injectionSwitch.x > injectionSwitch.y)) ? (48867u) : subgroup_id)) * (uint(((abs(1.0) * (injectionSwitch.x)))) + (subgroup_size))) | (((subgroup_id * (uint((injectionSwitch.x)) + (((uint(uvec4((subgroup_size), 0u, 0u, 0u)))) | ((subgroup_size))))) << 0u)))))))) + ((min((subgroup_local_id + 1) % ((subgroup_size) >> 0u), (subgroup_local_id + 1) % ((subgroup_size) >> 0u))))))), (~ (~ ((0u + (uint(uint((((workgroup_base) - (uint((injectionSwitch.x)) | 0u)) + ((uint(uint(max(((((subgroup_id) * 1u) * (uint((injectionSwitch.x)) + (((subgroup_size)) << 0u))) | (((((subgroup_id * (((false ? (subgroup_size) : ((((uint((((true ? (mix(vec2((injectionSwitch)[0], (mat2((injectionSwitch.y)) * ((injectionSwitch)))[1]), vec2(((- 0.0 / - 5.1)), (- 143.452)), bvec2(false, false))) : (injectionSwitch))).x)) + (subgroup_size))) | ((uint((injectionSwitch.x)) + (subgroup_size))))))) * 1u)) << 0u)) | 0u))), ((((((injectionSwitch.x > injectionSwitch.y)) ? (48867u) : subgroup_id)) * (uint(((abs(1.0) * (injectionSwitch.x)))) + (subgroup_size))) | (((subgroup_id * (uint((injectionSwitch.x)) + (((uint(uvec4((subgroup_size), 0u, 0u, 0u)))) | ((subgroup_size))))) << 0u)))))))) + ((min((subgroup_local_id + 1) % ((subgroup_size) >> 0u), (subgroup_local_id + 1) % ((subgroup_size) >> 0u))))))))))))))) * ((uint((injectionSwitch.y)) << ((0u | (uint(1u))))) >> ((max((~ (~ (uint(1u)))), ((((max(~ (~ (uint(1u))), ~ (~ (uint(1u)))))) + 0u)))))))));
+ if((false))
+  return;
+ buf[virtual_gid] = 1;
+ atomicStore(buf[next_virtual_gid], (uint(uvec4(uint(2), ((1u) >> uint((injectionSwitch.x))), 1u, 0u))), 4, 64, 4);
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected

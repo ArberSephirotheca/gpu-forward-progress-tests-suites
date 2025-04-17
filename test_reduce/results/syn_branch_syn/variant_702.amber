@@ -1,0 +1,60 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = (uvec3(0u, 0u, 0u) | ((true ? (~ ((uvec3(((min((0u), (0u))) - ((((true ? 0u : (min(subgroup_size, uaddCarry(subgroup_id, subgroup_size, subgroup_size)))))) / 1u)), 0u, 0u) | ((clamp(((uvec3(0u, 0u, 0u) ^ ((uvec3(uvec3((~ ((gl_NumWorkGroups)))))) ^ (uvec3(0u, 0u, 0u) ^ (uvec3(0u, 0u, 0u)))))), (((((true ? (max((~ ((gl_NumWorkGroups))), (~ ((((gl_NumWorkGroups)) | ((gl_NumWorkGroups))))))) : (uvec3(19149u, 73146u, 155456u)))) ^ uvec3(0u, 0u, 0u))) ^ uvec3(0u, 0u, 0u)), ((((min((~ ((gl_NumWorkGroups))) << uvec3(((clamp(injectionSwitch, injectionSwitch, (clamp(injectionSwitch, injectionSwitch, injectionSwitch)))).x), (injectionSwitch.x), (injectionSwitch.x)), (~ ((gl_NumWorkGroups))) << uvec3(((((clamp(injectionSwitch, injectionSwitch, (clamp(injectionSwitch, injectionSwitch, injectionSwitch))))) * mat2(1.0)).x), (injectionSwitch.x), (injectionSwitch.x)))))) ^ (((min(uvec3((0u | (0u)), 0u, 0u), uvec3((0u | (0u)), 0u, 0u)))) | (uvec3((0u | (0u)), 0u, 0u)))))))))) : (uvec3(60134u, 126914u, 125810u))))).x;
+ uint workgroup_size = (((clamp((uvec3((max((clamp(0u, 0u, 0u)), 0u)), (~ ((uint((min(uvec2(((~ (0u)) | (~ (0u))), ((uint(uvec3(max(0u, ((0u) << 0u)), uint((injectionSwitch.y)), 0u))))), uvec2((((clamp(~ (~ (((min((uint(uvec3(~ (0u), 0u, 1u))), ((false ? (2717u) : ~ (0u)))))))), ~ (~ ((~ (0u)))), (~ (~ (~ (~ ((~ (0u)))))))))) | (~ (0u))), 0u))))))), 0u) ^ (((((((false ? (uvec3(114236u, 70083u, 159577u)) : ((gl_WorkGroupSize) * uvec3(1u, 1u, 1u))) | (false ? (uvec3(114236u, 70083u, 159577u)) : gl_WorkGroupSize)))))) >> uvec3(0u, 0u, 0u))).x, ((((uvec3(0u, 0u, 0u) + (uvec3((max((clamp(0u, 0u, 0u)), 0u)), (~ ((uint((min(uvec2(((~ (0u)) | (~ (0u))), (max(0u, ((0u) << 0u)))), uvec2((((clamp(~ (~ ((~ (0u)))), ~ (~ ((~ (0u)))), (~ (~ (~ (~ ((~ (0u)))))))))) | (~ (0u))), 0u))))))), 0u))) ^ (((((false ? (uvec3(114236u, 70083u, 159577u)) : gl_WorkGroupSize) | (false ? (uvec3(114236u, 70083u, 159577u)) : gl_WorkGroupSize)))))).x) / 1u), (uvec3((((max((clamp(0u, 0u, 0u)), 0u))) ^ 0u), (~ ((uint((min(uvec2(((~ (0u)) | (~ (0u))), (max(0u, ((0u) << 0u)))), uvec2((((clamp(~ (~ ((~ (((((((0u ^ ((0u)))) / 1u)) - 0u) | (0u)))))), ((((false ? (subgroup_id) : ((~ (~ ((~ (0u))))) - 0u)))) << 0u), (~ ((min(~ (~ (~ ((~ (0u))))), ((~ (~ (~ ((~ (0u)))))) + 0u)))))))) | (~ (0u))), 0u))))))), 0u) ^ (((((((false ? (uvec3(114236u, 70083u, 159577u)) : gl_WorkGroupSize) | (false ? (uvec3(114236u, 70083u, 159577u)) : gl_WorkGroupSize))) >> uvec3(0u, 0u, 0u)))))).x))) ^ 0u);
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = (min((0u + (workgroup_size * (0u ^ (workgroup_id)))), (clamp((uint(uvec2(workgroup_size * (0u ^ (workgroup_id)), 0u))), ((((injectionSwitch.x < injectionSwitch.y)) ? (uint(uvec2(workgroup_size * (0u ^ (workgroup_id)), 0u))) : (subgroup_local_id))), (uint(uvec2(workgroup_size * (0u ^ (workgroup_id)), 0u)))))));
+ uint virtual_gid = (((min(workgroup_base, workgroup_base))) | (((workgroup_base) >> ((((0u) / 1u)) * 1u)))) + (min(subgroup_id, subgroup_id)) * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = (~ (~ ((clamp(((((((uint((injectionSwitch.x)) | (((true ? (workgroup_base) : (63466u))))) >> 0u)))) << 0u), ((((uint((injectionSwitch.x)) | (((true ? (workgroup_base) : (63466u))))) >> 0u))), ((((uint((injectionSwitch.x)) | (((true ? (workgroup_base) : (63466u))))) >> 0u))))) - 0u))) + (((~ (~ ((((((((injectionSwitch.x < injectionSwitch.y)) ? ((0u) << 0u) | (subgroup_id) : (subgroup_local_id)))) ^ 0u)))))) | (((subgroup_id)) << 0u)) * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ buf[virtual_gid] = ((((1)) + 0) + 0);
+ if(((((true ? (0u ^ ((((uint(uvec3((((0u | (((0u >> (uint((uint(uvec4(1u, 0u, 1u, (0u >> (uint(2u))))))))) ^ (subgroup_local_id + 1))))) | (subgroup_local_id + 1)), 0u, 1u))) / 1u)))) : (subgroup_id))) + 0u)) < subgroup_size)
+  {
+   int i = 0;
+   buf[next_virtual_gid] = 2;
+  }
+ else
+  {
+   buf[next_virtual_gid] = 2;
+  }
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected

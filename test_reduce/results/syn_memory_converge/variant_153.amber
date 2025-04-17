@@ -1,0 +1,62 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer WriteVal {
+ uint write_val;
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uvec2 GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size;
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ ((true ? ((((GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y = workgroup_size) | 0u)) >> 0u) : (subgroup_size)));
+ uint workgroup_id = (((uvec3(uvec4(((gl_WorkGroupID) / uvec3(1u, 1u, 1u)), 0u))) | uvec3(0u, 0u, 0u))).x;
+ GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.x = workgroup_id;
+ uint workgroup_base = (min(((((uint(uvec3((clamp(((1u * ((false ? (subgroup_local_id) : 0u | (GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y))))), (((max(1u * ((false ? (((subgroup_local_id) << 0u)) : 0u | (GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y))), 1u * ((false ? (subgroup_local_id) : 0u | (min((((GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y) >> 0u)), (((GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y) >> 0u)))))))))), ((1u * ((false ? ((uint(uvec4(subgroup_local_id, 0u, (0u << (uint(7u))), 1u)))) : 0u | (GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y))))))), 1u, 1u))))) / 1u), ((168273u & 0u) + (GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y)))) * ((uvec2(0u, 0u) >> ((clamp(uvec2(0u), uvec2(0u), uvec2(0u))))) | (GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size)).x;
+ uint virtual_gid = workgroup_base + ((((((subgroup_id) | uint((injectionSwitch.x))))) - 0u) >> 0u) * subgroup_size + subgroup_local_id;
+ if((bool((bvec3(bvec3(bvec3(false, true, false)))))))
+  {
+  }
+ else
+  {
+   atomicStore(write_val, uint(virtual_gid), 4, (clamp((((((false ? (ivec4(- 18031, 10038, 84321, 92051).t) : (((clamp((int(ivec4(min((((((((false ? (3377) : (false ? (- 519) : 64))) | 0)))) << 0), (((true ? (((64)) | 0) : (int(false)))) * 1)), ((0 + ((1))) | ((max(1, 1)))), 1, 0))), (int(ivec4(((0 | (~ (~ (min((((((~ (~ ((false ? (3377) : (false ? (- 519) : ((true ? (max(64, 64)) : (- 57247))))))))) >> 0))), ((64) * 1))))))), 1, 1, 0))), (int(ivec2((max(min((clamp((((((false ? (3377) : (false ? (- 519) : 64))))) / 1), (((false ? (3377) : (false ? (- 519) : 64)))), (((false ? (3377) : (false ? (- 519) : 64)))))), ((64) * 1)), min((((false ? (3377) : ((min(false ? ((true ? ((min(- 519, ((true ? - 519 : (- 77332)))))) : (86365))) : 64, false ? ((true ? (- 519) : (86365))) : 64)))))), ((64) * 1)))), 1)))))) | 0))) | 0))), (((((false ? (ivec4(- 18031, 10038, 84321, 92051).t) : (((clamp((int(ivec4(min((((((((false ? (3377) : (false ? (- 519) : 64))) | 0)))) << 0), (((true ? (((64)) | 0) : (int(false)))) * 1)), ((0 + ((1))) | ((max(1, 1)))), 1, 0))), (int(ivec4(((0 | (~ (~ (min((((((~ (~ ((false ? (3377) : (false ? (- 519) : ((true ? (max(64, 64)) : (- 57247))))))))) >> 0))), ((64) * 1))))))), 1, 1, 0))), (int(ivec2((max(min((clamp((((((false ? (3377) : (false ? (- 519) : 64))))) / 1), (((false ? (3377) : (false ? (- 519) : 64)))), (((false ? (3377) : (false ? (- 519) : 64)))))), ((64) * 1)), min((((false ? (3377) : ((min(false ? ((true ? ((min(- 519, ((true ? - 519 : (- 77332)))))) : (86365))) : 64, false ? ((true ? (- 519) : (86365))) : 64)))))), ((64) * 1)))), 1)))))) | 0))) | 0))), (((((false ? (ivec4(- 18031, 10038, 84321, 92051).t) : (((clamp((int(ivec4(min((((((((false ? (3377) : (false ? (- 519) : 64))) | 0)))) << 0), (((true ? (((64)) | 0) : (int(false)))) * 1)), ((0 + ((1))) | ((max(1, 1)))), 1, 0))), (int(ivec4(((0 | (~ (~ (min((((((~ (~ ((false ? (3377) : (false ? (- 519) : ((true ? (max(64, 64)) : (- 57247))))))))) >> 0))), ((64) * 1))))))), 1, 1, 0))), (int(ivec2((max(min((clamp((((((false ? (3377) : (false ? (- 519) : 64))))) / 1), (((false ? (3377) : (false ? (- 519) : 64)))), (((false ? (3377) : (false ? (- 519) : 64)))))), ((64) * 1)), min((((false ? (3377) : ((min(false ? ((true ? ((min(- 519, ((true ? - 519 : (- 77332)))))) : (86365))) : 64, false ? ((true ? (- 519) : (86365))) : 64)))))), ((64) * 1)))), 1)))))) | 0))) | 0))))), 0);
+  }
+ (~ ((((((((false ? (108309u) : (~ (buf[virtual_gid] = uint(subgroupAllEqual(write_val))))))) >> 0u)) ^ 0u)) | 0u));
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected
