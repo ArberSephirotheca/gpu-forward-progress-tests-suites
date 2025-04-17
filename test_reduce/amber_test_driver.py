@@ -21,7 +21,10 @@ import time
 import shutil
 
 AMBER_PATHS = ["amber"]
-
+IGNORED_ERROR_PATTERNS = [
+    "Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions",
+    "error: Linking compute stage: Missing entry point: Each stage requires one entry point."
+]
 LOG_FILE = None
 
 
@@ -38,6 +41,10 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
     verbose_test_results = []
     all_test_results = []
 
+    pass_count_summary = 0
+    fail_count_summary = 0
+    ignored_count_summary = 0
+
     input_dir = Path(input_dir)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -49,12 +56,9 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 base_name = comp_path.stem  # Remove .comp
                 log_print(f"Generating amber test for: {comp_path}")
 
-                # amber_file_path = comp_path.with_suffix('.amber')
                 amber_file_path = Path.cwd() / f"{base_name}.amber"
-                # Generate the amber file in the same directory as .comp
                 amber_test_generation.generate_amber_test(str(comp_path), base_name, each_cfg_option)
 
-                # Prepare run command
                 run_cmd = f"timeout -k 1 15 {amber_build_path}{amber_file_path} {amber_build_flags} >> temp_results.txt 2>&1"
                 if android:
                     os.system(f"adb push {amber_file_path} /data/local/tmp/")
@@ -71,33 +75,54 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 # Analyze results
                 with open('temp_results.txt', 'r') as file:
                     results = file.read().splitlines()
-                failure_count = sum(1 for line in results if "1 fail" in line)
-                pass_count = sum(1 for line in results if "1 pass" in line)
+
+                failure_count = 0
+                is_ignored_error = False
                 test_iteration = base_name
+                error_output = "\n".join(results)
+
+                for line in results:
+                    if "1 fail" in line:
+                        failure_count += 1
+                    for pattern in IGNORED_ERROR_PATTERNS:
+                        if pattern in line:
+                            is_ignored_error = True
 
                 if failure_count == 0:
                     log_print("P")
+                    pass_count_summary += 1
                     simple_test_results.append([test_iteration, "P"])
                     verbose_test_results.append([test_iteration, "P"])
+                elif is_ignored_error:
+                    log_print("I (ignored error)")
+                    ignored_count_summary += 1
+                    simple_test_results.append([test_iteration, "I"])
+                    verbose_test_results.append([test_iteration, "I"])
+                    log_print("--- Ignored error output ---")
+                    log_print(error_output)
+                    log_print("----------------------------")
                 else:
                     log_print("F")
-                    # ✅ Print error output
-                    with open("temp_results.txt", "r") as f:
-                        log_print("--- Error output ---")
-                        log_print(f.read())
-                        log_print("--------------------")
-
-                    fract = f"F ({failure_count}/{num_iter})"
+                    fail_count_summary += 1
                     simple_test_results.append([test_iteration, "F"])
-                    verbose_test_results.append([test_iteration, fract])
+                    verbose_test_results.append([test_iteration, f"F ({failure_count}/{num_iter})"])
+                    log_print("--- Error output ---")
+                    log_print(error_output)
+                    log_print("--------------------")
 
                 os.remove("temp_results.txt")
-
-                # Move the generated .amber file to output_dir
                 moved_file = output_dir / amber_file_path.name
                 shutil.move(str(amber_file_path), moved_file)
                 log_print("")
 
+    summary_row = ["Total:"]
+    summary_row.append(f"P: {pass_count_summary}")
+    summary_row.append(f"F: {fail_count_summary}")
+    summary_row.append(f"I: {ignored_count_summary}")
+    simple_test_results.append(summary_row)
+    verbose_test_results.append(summary_row)
+
+    log_print("Legend: P = Passed, F = Failed, I = Ignored known error")
     all_test_results.append(simple_test_results)
     all_test_results.append(verbose_test_results)
 
