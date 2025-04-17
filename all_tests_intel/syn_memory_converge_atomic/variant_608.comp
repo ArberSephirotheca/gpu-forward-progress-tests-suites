@@ -1,22 +1,4 @@
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -33,53 +15,15 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec4 GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup;
- uvec3 GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_size;
- if(_GLF_WRAPPED_IF_FALSE(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  {
-  }
- else
-  {
-   GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz = GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_size;
-  }
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.x = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
- GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.w = num_workgroup;
  uint workgroup_size = gl_WorkGroupSize.x;
- GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.z = workgroup_size;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.z * workgroup_id;
- GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.y = workgroup_base;
- uint virtual_gid = GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.y + subgroup_id * subgroup_size + GLF_merged2_0_3_77_3_1_13GLF_merged3_0_1_17_1_1_14_2_1_14subgroup_local_idworkgroup_baseworkgroup_sizenum_workgroup.xyz.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);
- for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
-  {
-   if(_GLF_WRAPPED_IF_TRUE(true))
-    {
-     for(int _injected_loop_counter = int(_GLF_ONE(1.0, injectionSwitch.y)); _GLF_WRAPPED_LOOP(_injected_loop_counter > 0); _injected_loop_counter --)
-      {
-       if(_GLF_WRAPPED_IF_TRUE(true))
-        {
-         do
-          {
-           for(int _injected_loop_counter = (0 << _GLF_IDENTITY(int(4), _GLF_IDENTITY(int(4), (int(4)) - 0))); _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
-            {
-             buf[virtual_gid] = uint(subgroupAllEqual(read_val));
-            }
-          }
-         while(_GLF_WRAPPED_LOOP(false));
-        }
-       else
-        {
-        }
-      }
-    }
-   else
-    {
-    }
-  }
+ buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }

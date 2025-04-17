@@ -1,16 +1,5 @@
 #version 460
-struct _GLF_struct_0 {
- ivec2 _f0;
- uint workgroup_size;
-} ;
-
-struct _GLF_struct_1 {
- bvec3 _f0;
- ivec2 _f1;
- _GLF_struct_0 _f2;
-} ;
-
-layout(set = 0, binding = 0) uniform buf0 {
+layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
 #extension GL_KHR_shader_subgroup_ballot : enable
@@ -27,12 +16,12 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(bvec3(true), ivec2(1), _GLF_struct_0(ivec2(1), gl_WorkGroupSize.x));
+ uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = _GLF_struct_replacement_1._f2.workgroup_size * workgroup_id;
+ uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);

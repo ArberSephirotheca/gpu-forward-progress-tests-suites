@@ -34,15 +34,15 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize.x, clamp(_GLF_IDENTITY(gl_WorkGroupSize.x, 0u ^ (gl_WorkGroupSize.x)), gl_WorkGroupSize.x, _GLF_IDENTITY(gl_WorkGroupSize.x, (false ? _GLF_FUZZED(num_workgroup) : gl_WorkGroupSize.x))));
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- if(_GLF_DEAD(false))
-  return;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));

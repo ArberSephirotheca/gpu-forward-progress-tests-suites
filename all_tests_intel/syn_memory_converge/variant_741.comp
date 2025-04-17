@@ -17,6 +17,33 @@
 #endif
 
 
+struct _GLF_struct_1 {
+ uvec3 _f0;
+} ;
+
+struct _GLF_struct_0 {
+ uint virtual_gid;
+ mat4x3 _f0;
+} ;
+
+struct _GLF_struct_2 {
+ mat2x3 _f0;
+ mat2 _f1;
+ _GLF_struct_0 _f2;
+ _GLF_struct_1 _f3;
+ uvec2 _f4;
+ uvec4 _f5;
+} ;
+
+struct _GLF_struct_3 {
+ _GLF_struct_2 _f0;
+ vec4 _f1;
+ uint _f2;
+ uvec2 _f3;
+ uvec2 _f4;
+ mat3 _f5;
+} ;
+
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -34,13 +61,15 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- uint num_workgroup = _GLF_IDENTITY(gl_NumWorkGroups.x, (gl_NumWorkGroups.x) ^ 0u);
+ uint num_workgroup = gl_NumWorkGroups.x;
+ if(_GLF_DEAD(false))
+  barrier();
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * _GLF_IDENTITY(workgroup_id, (workgroup_id) + 0u);
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- buf[virtual_gid] = uint(subgroupAllEqual(write_val));
+ uint workgroup_base = workgroup_size * workgroup_id;
+ _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(_GLF_struct_2(mat2x3(1.0), mat2(1.0), _GLF_struct_0(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, mat4x3(1.0)), _GLF_struct_1(uvec3(1u)), uvec2(1u), uvec4(1u)), vec4(1.0), 1u, uvec2(1u), uvec2(1u), mat3(1.0));
+ atomicStore(write_val, uint(_GLF_struct_replacement_3._f0._f2.virtual_gid), 4, 64, 0);
+ buf[_GLF_struct_replacement_3._f0._f2.virtual_gid] = uint(subgroupAllEqual(write_val));
 }
