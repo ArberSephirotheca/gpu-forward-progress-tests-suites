@@ -20,16 +20,23 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec2 GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid;
+ uvec3 GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id;
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+ GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.x = subgroup_id;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
+ GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid.x = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- buf[virtual_gid] = uint(subgroupAllEqual(write_val));
+ GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.z = workgroup_id;
+ uint workgroup_base = workgroup_size * GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.z;
+ GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.y = workgroup_base;
+ uint virtual_gid = GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.y + GLF_merged3_0_1_11_1_1_14_2_1_12subgroup_idworkgroup_baseworkgroup_id.x * subgroup_size + GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid.x;
+ GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid.y = virtual_gid;
+ atomicStore(write_val, uint(GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid.y), 4, 64, 0);
+ buf[GLF_merged2_0_1_17_1_1_11subgroup_local_idvirtual_gid.y] = uint(subgroupAllEqual(write_val));
 }
 
 END

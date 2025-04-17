@@ -5,8 +5,11 @@ SET ENGINE_DATA fence_timeout_ms 10000
 SHADER compute test GLSL
 #version 460
 struct _GLF_struct_0 {
- bool _f0;
- uint read_val;
+ uint workgroup_size;
+ mat4x3 _f0;
+ bvec4 _f1;
+ bvec3 _f2;
+ mat4 _f3;
 } ;
 
 layout(set = 0, binding = 1) uniform buf1 {
@@ -26,16 +29,16 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = gl_WorkGroupSize.x;
+ _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_WorkGroupSize.x, mat4x3(1.0), bvec4(true), bvec3(true), mat4(1.0));
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
+ uint workgroup_base = _GLF_struct_replacement_0.workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(true, atomicLoad(write_val, 4, 64, 0));
- buf[virtual_gid] = uint(subgroupAllEqual(_GLF_struct_replacement_0.read_val));
+ uint read_val = atomicLoad(write_val, 4, 64, 0);
+ buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }
 
 END

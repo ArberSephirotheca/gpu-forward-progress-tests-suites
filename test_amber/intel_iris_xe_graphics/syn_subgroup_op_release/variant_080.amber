@@ -22,59 +22,9 @@ SHADER compute test GLSL
 #endif
 
 
-struct _GLF_struct_4 {
- mat3x2 _f0;
- mat4x2 _f1;
-} ;
-
-struct _GLF_struct_3 {
- mat4 _f0;
- mat3x2 _f1;
-} ;
-
-struct _GLF_struct_5 {
- bvec3 _f0;
- uvec2 _f1;
- mat2 _f2;
- _GLF_struct_3 _f3;
- _GLF_struct_4 _f4;
-} ;
-
-struct _GLF_struct_1 {
- mat4x3 _f0;
- ivec3 _f1;
- mat2x4 _f2;
- ivec4 _f3;
- bvec2 _f4;
-} ;
-
-struct _GLF_struct_0 {
- mat2 _f0;
- mat2 _f1;
- uvec3 _f2;
-} ;
-
-struct _GLF_struct_2 {
- mat4 _f0;
- _GLF_struct_0 _f1;
- ivec2 _f2;
- mat2x3 _f3;
- _GLF_struct_1 _f4;
-} ;
-
-struct _GLF_struct_6 {
- uint workgroup_id;
- vec3 _f0;
- mat4x3 _f1;
- _GLF_struct_2 _f2;
- uint _f3;
- _GLF_struct_5 _f4;
-} ;
-
-layout(set = 0, binding = 0) uniform buf0 {
+layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
@@ -85,50 +35,18 @@ layout(set = 0, binding = 0) buffer Buf {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
- if(_GLF_DEAD(_GLF_IDENTITY(false, _GLF_IDENTITY(bool(bvec4(false, true, false, true)), (bool(bvec4(false, true, false, true))) && true))))
-  barrier();
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
- if(_GLF_DEAD(false))
-  barrier();
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- if(_GLF_DEAD(false))
-  {
-   if(_GLF_DEAD(false))
-    barrier();
-   if(_GLF_DEAD(_GLF_IDENTITY(false, bool(bool(false)))))
-    barrier();
-   barrier();
-  }
  uint workgroup_size = gl_WorkGroupSize.x;
- if(_GLF_DEAD(false))
-  barrier();
- _GLF_struct_6 _GLF_struct_replacement_6 = _GLF_struct_6(gl_WorkGroupID.x, vec3(1.0), mat4x3(1.0), _GLF_struct_2(mat4(1.0), _GLF_struct_0(mat2(1.0), mat2(1.0), uvec3(1u)), ivec2(1), mat2x3(1.0), _GLF_struct_1(mat4x3(1.0), ivec3(1), mat2x4(1.0), ivec4(1), bvec2(true))), 1u, _GLF_struct_5(bvec3(true), uvec2(1u), mat2(1.0), _GLF_struct_3(mat4(1.0), mat3x2(1.0)), _GLF_struct_4(mat3x2(1.0), mat4x2(1.0))));
- uint workgroup_base = workgroup_size * _GLF_struct_replacement_6.workgroup_id;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  if(_GLF_DEAD(false))
   barrier();
- if(_GLF_DEAD(false))
-  barrier();
- if(_GLF_DEAD(_GLF_IDENTITY(false, (false) || false)))
-  barrier();
  buf[virtual_gid] = 1;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
- if(_GLF_DEAD(false))
-  barrier();
- if(_GLF_DEAD(false))
-  barrier();
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
  if(subgroup_local_id + 1 < subgroup_size)
   {
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
@@ -138,8 +56,6 @@ void main()
   {
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
    subgroupAll(true);
-   if(_GLF_DEAD(false))
-    barrier();
   }
 }
 

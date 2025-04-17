@@ -22,7 +22,7 @@ SHADER compute test GLSL
 #endif
 
 
-layout(set = 0, binding = 0) uniform buf0 {
+layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
 #extension GL_KHR_shader_subgroup_basic : enable
@@ -37,29 +37,42 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
- uint subgroup_size = 16;
+uint subgroup_size = 16;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- uint num_workgroup = _GLF_IDENTITY(gl_NumWorkGroups, clamp(gl_NumWorkGroups, gl_NumWorkGroups, gl_NumWorkGroups)).x;
- uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize, max(gl_WorkGroupSize, gl_WorkGroupSize)).x;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_id, (subgroup_id) | (_GLF_IDENTITY(subgroup_id, clamp(subgroup_id, subgroup_id, subgroup_id)))) * subgroup_size + subgroup_local_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_WRAPPED_IF_FALSE(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+ for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
   {
+   do
+    {
+     buf[virtual_gid] = 1;
+    }
+   while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
+  }
+ if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+  {
+   if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+    {
+     if(subgroup_local_id + 1 < subgroup_size)
+      {
+       int i = 0;
+       buf[next_virtual_gid] = 2;
+      }
+     else
+      {
+       buf[next_virtual_gid] = 2;
+      }
+    }
+   else
+    {
+    }
   }
  else
   {
-   buf[virtual_gid] = 1;
-  }
- if(subgroup_local_id + 1 < subgroup_size)
-  {
-   int i = 0;
-   buf[next_virtual_gid] = 2;
-  }
- else
-  {
-   buf[next_virtual_gid] = 2;
   }
 }
 
