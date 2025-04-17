@@ -33,7 +33,7 @@ def main():
             return
         output_dir = OUTPUT_ROOT / suite_name / variant_name
         output_dir.mkdir(parents=True, exist_ok=True)
-
+        log_file = output_dir / "reduction.log"
         cmd = [
             "glsl-reduce",
             config_path,
@@ -44,12 +44,13 @@ def main():
 
         print(f"🛠️  Reducing {shader_file} → {output_dir}")
         if not DRY_RUN:
-            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            with open(log_file, "w") as log:
+                result = subprocess.run(cmd, stdout=log, stderr=log, text=True)
             if result.returncode != 0:
                 print(f"❌ Failed to reduce {shader_file}")
                 print(result.stderr)
             else:
-                print("✅ Done.")
+                print("✅ Done. Log saved to {log_file}")
 
 if __name__ == "__main__":
     main()

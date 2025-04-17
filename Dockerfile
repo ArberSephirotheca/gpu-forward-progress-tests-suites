@@ -63,6 +63,8 @@ COPY references_intel_fix_subgroup /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
 RUN glsl-generate --seed 42 --vulkan ./references ./donors 1000 syn /output
 
+
+
 FROM scratch AS generate-final
 COPY --from=generate /output all_tests
 
@@ -75,11 +77,23 @@ WORKDIR /opt
 COPY failed_variants/ /opt/reduce/
 COPY failed_variants/ /opt/reduce/
 COPY test_amber/run_glsl_reduce.py /opt/run_glsl_reduce.py
-RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough /opt/reduce/examples
+RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough.py  /opt/reduce/examples
 ENV PATH="/opt/reduce:${PATH}"
 RUN python3 run_glsl_reduce.py
 # RUN glsl-reduce /opt/reduce/reduce.json interestingness_test --output reduction_results
 
+
+FROM builder AS reduce-single
+WORKDIR /opt
+COPY all_tests/syn_lock_step_release/variant_005.comp /opt/reduce/reduce.comp
+COPY all_tests/syn_lock_step_release/variant_005.json /opt/reduce/reduce.json
+ENV PATH="/opt/reduce:${PATH}"
+RUN mkdir -p /opt/reduction_results
+RUN cp -r /opt/graphicsfuzz/graphicsfuzz/src/main/scripts/examples/glsl-reduce-walkthrough  /opt/reduce/examples
+RUN glsl-reduce /opt/reduce/reduce.json /opt/reduce/examples/interestingness_test.py --preserve-semantics --output reduction_results > /opt/reduction_results/redreduction.log 2>&1
+
 FROM scratch AS reduce-final
 COPY --from=reduce /opt/reduction_results reduction_results
 
+FROM scratch AS reduce-final-single
+COPY --from=reduce-single /opt/reduction_results reduction_results_single
