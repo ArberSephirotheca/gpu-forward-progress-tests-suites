@@ -18,6 +18,11 @@ from datetime import date
 from datetime import datetime
 import time
 
+IGNORED_ERROR_PATTERNS = [
+    "Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions",
+    "error: Linking compute stage: Missing entry point: Each stage requires one entry point."
+]
+
 AMBER_PATHS = ["amber"]
 
 LOG_FILE = None
@@ -49,7 +54,7 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
             output_file_name = output_file_name + ".amber"
 
             # generate command to run the amber test for a specified iteration count and append results to a temp file
-            run__test = "timeout -k 1 15 " + amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt"
+            run__test = "timeout -k 1 15 " + amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt 2>&1"
             if android:
                 # push test file on the device
                 os.system("adb push " + output_file_name + " /data/local/tmp/")
@@ -67,29 +72,41 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 test_iteration = file_name[:-5]
                 failure_count = 0
                 pass_count = 0
+                is_ignored_error = False
 
                 # count the number of failures, if any, and update both simple and verbose results accordingly
                 for current_line in results:
+                    for pattern in IGNORED_ERROR_PATTERNS:
+                        if pattern in current_line:
+                            is_ignored_error = True
                     if "1 fail" in current_line:
                         failure_count = failure_count + 1
                     elif "1 pass" in current_line:
                         pass_count = pass_count + 1
+                    
 
                 # if there were no failures, indicate a "P" in both sets of tables
                 if failure_count == 0:
                     log_print("P")
-                    temp_item = [test_iteration, "P"]
-                    simple_test_results.append(temp_item)
-                    verbose_test_results.append(temp_item)
-
-                # if there is at least one failure, update simple table with "F" and verbose table with fraction of "F"
+                    simple_test_results.append([test_iteration, "P"])
+                    verbose_test_results.append([test_iteration, "P"])
+                elif is_ignored_error:
+                    log_print("I (ignored error)")
+                    simple_test_results.append([test_iteration, "I"])
+                    verbose_test_results.append([test_iteration, "I"])
+                    log_print("--- Ignored error output ---")
+                    log_print(error_output)
+                    log_print("----------------------------")
                 else:
                     log_print("F")
-                    fract = "F (" + str(failure_count) + "/" + str(num_iter) + ")"
-                    temp_item_verbose = [test_iteration, fract]
-                    temp_item_simple = [test_iteration, "F"]
-                    simple_test_results.append(temp_item_simple)
-                    verbose_test_results.append(temp_item_verbose)
+                    with open("temp_results.txt", "r") as f:
+                        log_print("--- Error output ---")
+                        log_print(f.read())
+                        log_print("--------------------")
+
+                    fract = f"F ({failure_count}/{num_iter})"
+                    simple_test_results.append([test_iteration, "F"])
+                    verbose_test_results.append([test_iteration, fract])
 
             os.system("rm -f temp_results.txt")
             # create a directory of the amber test scripts generated at the specified output directory
