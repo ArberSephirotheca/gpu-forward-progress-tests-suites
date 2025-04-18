@@ -55,13 +55,13 @@ FROM builder AS generate
 WORKDIR /opt/graphicsfuzz/temp
 COPY references /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
-RUN glsl-generate --seed 42 --vulkan ./references ./donors 1000 syn /output
+RUN glsl-generate --seed 42 --vulkan ./references ./donors 10000 syn /output
 
 FROM builder AS generate-intel
 WORKDIR /opt/graphicsfuzz/temp
 COPY references_intel_fix_subgroup /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
-RUN glsl-generate --seed 42 --vulkan ./references ./donors 1000 syn /output
+RUN glsl-generate --seed 42 --vulkan ./references ./donors 10000 syn /output
 
 
 
