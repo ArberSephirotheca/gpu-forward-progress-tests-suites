@@ -73,6 +73,7 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 failure_count = 0
                 pass_count = 0
                 is_ignored_error = False
+                error_output = "\n".join(results)
 
                 # count the number of failures, if any, and update both simple and verbose results accordingly
                 for current_line in results:
