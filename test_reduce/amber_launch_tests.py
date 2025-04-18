@@ -12,17 +12,17 @@ def main():
         print("ERROR: No command line arguments required to run this higher level script")
         exit(1)
 
-    directory_names = ["../reduction_results/rtx_4070/syn_branch_syn",
-                       "../reduction_results/rtx_4070/syn_branch_syn_relax",
-                       "../reduction_results/rtx_4070/syn_branch_syn_release",
-                       "../reduction_results/rtx_4070/syn_lock_step",
-                       "../reduction_results/rtx_4070/syn_lock_step_relax",
-                       "../reduction_results/rtx_4070/syn_lock_step_release",
-                       "../reduction_results/rtx_4070/syn_subgroup_op",
-                       "../reduction_results/rtx_4070/syn_subgroup_op_relax",
-                       "../reduction_results/rtx_4070/syn_subgroup_op_release",
-                       "../reduction_results/rtx_4070/syn_memory_converge",
-                       "../reduction_results/rtx_4070/syn_memory_converge_atomic"]
+    directory_names = ["../reduction_results/cezanne_radeon_vega/syn_branch_syn",
+                       "../reduction_results/cezanne_radeon_vega/syn_branch_syn_relax",
+                       "../reduction_results/cezanne_radeon_vega/syn_branch_syn_release",
+                       "../reduction_results/cezanne_radeon_vega/syn_lock_step",
+                       "../reduction_results/cezanne_radeon_vega/syn_lock_step_relax",
+                       "../reduction_results/cezanne_radeon_vega/syn_lock_step_release",
+                       "../reduction_results/cezanne_radeon_vega/syn_subgroup_op",
+                       "../reduction_results/cezanne_radeon_vega/syn_subgroup_op_relax",
+                       "../reduction_results/cezanne_radeon_vega/syn_subgroup_op_release",
+                       "../reduction_results/cezanne_radeon_vega/syn_memory_converge",
+                       "../reduction_results/cezanne_radeon_vega/syn_memory_converge_atomic"]
 
     for name in directory_names:
         os.system("python3 amber_test_driver.py " + name + " 1")

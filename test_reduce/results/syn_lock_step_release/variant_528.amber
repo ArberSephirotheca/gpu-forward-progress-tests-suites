@@ -1,0 +1,51 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+// Contents of injectionSwitch: [0.0, 1.0]
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = (~ (((((~ ((((uvec3(uvec4(gl_NumWorkGroups, 1u)))) << uvec3(0u, 0u, 0u)).x))) >> 0u)) >> 0u));
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = ((gl_WorkGroupID.x) - (0u << (uint(6u))));
+ uint workgroup_base = (clamp(workgroup_size * ((workgroup_id) / 1u), ((workgroup_size * ((workgroup_id) / 1u)) >> 0u), workgroup_size * ((workgroup_id) / 1u)));
+ uint virtual_gid = (((min((1u * (((((uint(uvec3((((((max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, (((max(workgroup_base, workgroup_base)) + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u))))) >> 0u))), 0u, (1u & 1u)))) << 0u))) ^ (0u >> (uint(1u))))), (1u * (((((uint(uvec3((((((max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, (((max(workgroup_base, workgroup_base)) + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u))))) >> 0u))), 0u, (1u & 1u)))) << 0u))) ^ (0u >> (uint(1u)))))))) | ((((clamp((min((1u * (((((((max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((((((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id)) + 0u)) | 0u) ^ 0u)), (max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u))))))) >> 0u))) << 0u))), (1u * (((0u | ((((((max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((uint(uvec2((0u | (((((min((min(workgroup_base + subgroup_id * subgroup_size, workgroup_base + subgroup_id * subgroup_size)), (((max(workgroup_base + subgroup_id * subgroup_size, workgroup_base + subgroup_id * subgroup_size))) | (workgroup_base + subgroup_id * subgroup_size)))) + subgroup_local_id)) ^ 0u))), 0u))) ^ 0u))))) >> 0u))))) << 0u))))), (1u * ((((((uint(uvec4(((true ? ((max(min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * subgroup_size + (uint(uvec4(((subgroup_local_id) >> 0u), 1u, 1u, 1u)))) ^ 0u))))) >> 0u : ((num_workgroup * subgroup_id)))), 0u, 1u, 0u)))))) << 0u))), (1u * (((((((max(min((max(workgroup_base + (clamp((uint(uint(subgroup_id))), subgroup_id, subgroup_id)) * subgroup_size + subgroup_local_id, workgroup_base + subgroup_id * subgroup_size + subgroup_local_id)), ((workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) ^ 0u)), min(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, ((workgroup_base + subgroup_id * (clamp(subgroup_size, subgroup_size, subgroup_size)) + subgroup_local_id) ^ 0u))))) >> 0u))) << 0u)))))) >> uint(((vec2(mat4(injectionSwitch, 1.0, round(length(normalize(1.0))), (dot(vec4(0.0, 0.0, 1.0, 0.0), vec4(1.0, 1.0, 0.0, 1.0))), 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, sqrt(0.0), 1.0, 1.0, 1.0))).x)))));
+ uint next_virtual_gid = (0u + ((((~ (((~ (false ? (((atomicAdd(num_workgroup, workgroup_size)) | 0u)) : (clamp(workgroup_base + subgroup_id * subgroup_size + ((max(~ ((((clamp(~ (((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))), ~ (((max((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)), (subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))))), ~ (((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))))))) - 0u), ~ ((((clamp(~ (((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))), ~ (((max((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)), (subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))))), ~ (((subgroup_local_id + 1) % (clamp(subgroup_size, subgroup_size, subgroup_size)))))))) - 0u)))), workgroup_base + ((((subgroup_id)) * uint((injectionSwitch.y))) ^ 0u) * subgroup_size + ((subgroup_local_id + 1) % subgroup_size), workgroup_base + subgroup_id * subgroup_size + (((0u | ((((((true ? (~ (~ (((max(subgroup_local_id + 1, (min((0u | (subgroup_local_id + 1)), (clamp((0u + (subgroup_local_id + 1)), subgroup_local_id + 1, (0u ^ (subgroup_local_id + 1)))))))))))) : (packSnorm4x8(vec4(8.9, - 1.2, - 6.7, 27.70)))))) | ((~ (((~ (((max(subgroup_local_id + 1, subgroup_local_id + 1))))) + 0u))))) % subgroup_size)))) | (((~ (~ (((max(subgroup_local_id + 1, subgroup_local_id + (int((injectionSwitch.x)) | (((1) ^ (0 << (int(1)))))))))))) % subgroup_size)))))))) ^ 0u))))));
+ buf[virtual_gid] = 1;
+ atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected
