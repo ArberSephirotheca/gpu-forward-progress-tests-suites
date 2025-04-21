@@ -1,20 +1,21 @@
 #version 460
-struct _GLF_struct_0 {
- vec4 _f0;
- bvec2 _f1;
- ivec3 _f2;
-} ;
 
-struct _GLF_struct_1 {
- ivec3 _f0;
- uvec3 _f1;
- uint virtual_gid;
- _GLF_struct_0 _f2;
-} ;
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
 
-struct _GLF_struct_2 {
- _GLF_struct_1 _f0;
-} ;
 
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
@@ -32,12 +33,18 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- _GLF_struct_2 _GLF_struct_replacement_2 = _GLF_struct_2(_GLF_struct_1(ivec3(1), uvec3(1u), workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, _GLF_struct_0(vec4(1.0), bvec2(true), ivec3(1))));
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- buf[_GLF_struct_replacement_2._f0.virtual_gid] = 1;
+ if(_GLF_DEAD(_GLF_IDENTITY(false, (false) && true)))
+  barrier();
+ buf[virtual_gid] = 1;
+ if(_GLF_DEAD(false))
+  barrier();
  atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
 }

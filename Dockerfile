@@ -51,26 +51,35 @@ RUN git clone https://github.com/ArberSephirotheca/graphicsfuzz.git && \
 ENV PATH="/opt/graphicsfuzz/graphicsfuzz/target/graphicsfuzz/bin/Linux:${PATH}"
 ENV PATH="/opt/graphicsfuzz/graphicsfuzz/target/graphicsfuzz/python/drivers:${PATH}"
 
+ARG HOST_UID
+ARG HOST_GID
 FROM builder AS generate
 WORKDIR /opt/graphicsfuzz/temp
 COPY references /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
-RUN glsl-generate --seed 42 --vulkan ./references ./donors 10000 syn /output
+RUN groupadd -g ${HOST_GID} hostgroup \
+  && useradd -u ${HOST_UID} -g hostgroup host \
+  && chown -R host:hostgroup /opt/graphicsfuzz/temp
 
-FROM builder AS generate-intel
+USER host
+
+ENTRYPOINT ["glsl-generate"]
+CMD ["--seed","42","--vulkan","./references","./donors","10000","syn","/opt/graphicsfuzz/temp/output"]
+
+ARG HOST_UID
+ARG HOST_GID
+FROM builder AS generate-core
 WORKDIR /opt/graphicsfuzz/temp
-COPY references_intel_fix_subgroup /opt/graphicsfuzz/temp/references
+COPY references /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
-RUN glsl-generate --seed 42 --vulkan ./references ./donors 10000 syn /output
+RUN groupadd -g ${HOST_GID} hostgroup \
+  && useradd -u ${HOST_UID} -g hostgroup host \
+  && chown -R host:hostgroup /opt/graphicsfuzz/temp
 
+USER host
 
-
-FROM scratch AS generate-final
-COPY --from=generate /output all_tests
-
-
-FROM scratch AS generate-final-intel
-COPY --from=generate-intel /output all_tests_intel
+ENTRYPOINT ["glsl-generate"]
+CMD ["--seed","42","--vulkan","./references","./donors","10000","syn","/opt/graphicsfuzz/temp/output"]
 
 FROM builder AS reduce
 WORKDIR /opt

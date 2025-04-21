@@ -37,10 +37,8 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint virtual_gid = workgroup_base + subgroup_id * _GLF_IDENTITY(subgroup_size, (_GLF_IDENTITY(subgroup_size, ~ (~ (subgroup_size)))) - 0u) + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_DEAD(false))
-  barrier();
- buf[virtual_gid] = 1;
- atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+ _GLF_IDENTITY(buf[virtual_gid] = 1, (buf[virtual_gid] = 1) << 0u);
+ atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(2), clamp(uint(2), uint(2), uint(2))), 4, 64, 4);
 }

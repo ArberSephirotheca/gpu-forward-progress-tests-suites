@@ -39,20 +39,20 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- buf[virtual_gid] = 1;
+ do
+  {
+   buf[virtual_gid] = 1;
+  }
+ while(_GLF_WRAPPED_LOOP(false));
  if(subgroup_local_id + 1 < subgroup_size)
   {
    int i = 0;
-   if(_GLF_WRAPPED_IF_FALSE(false))
-    {
-    }
-   else
-    {
-     atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-    }
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
   }
  else
   {
+   if(_GLF_DEAD(false))
+    return;
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
   }
 }

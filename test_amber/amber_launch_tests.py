@@ -8,22 +8,60 @@ import os
 
 # run the amber_test_driver.py script with all input directories available in Input_Files
 def main():
-    if len(sys.argv) != 1:
+    if len(sys.argv) != 2:
         print("ERROR: No command line arguments required to run this higher level script")
         exit(1)
 
-    directory_names = ["../all_tests/syn_branch_syn"]
-                    #    "../all_tests/syn_branch_syn_relax",
-                    #    "../all_tests/syn_branch_syn_release",
-                    #    "../all_tests/syn_lock_step",
-                    #    "../all_tests/syn_lock_step_relax",
-                    #    "../all_tests/syn_lock_step_release",
-                    #    "../all_tests/syn_subgroup_op",
-                    #    "../all_tests/syn_subgroup_op_relax",
-                    #    "../all_tests/syn_subgroup_op_release",
-                    #    "../all_tests/syn_memory_converge",
-                    #    "../all_tests/syn_memory_converge_atomic"]
+    directory_names = [
+                    "../all_tests/syn_branch_syn",
+                       "../all_tests/syn_branch_syn_relax",
+                       "../all_tests/syn_branch_syn_release",
+                       "../all_tests/syn_lock_step",
+                       "../all_tests/syn_lock_step_relax",
+                       "../all_tests/syn_lock_step_release",
+                       "../all_tests/syn_subgroup_op",
+                       "../all_tests/syn_subgroup_op_relax",
+                       "../all_tests/syn_subgroup_op_release",
+                       "../all_tests/syn_memory_converge",
+                       "../all_tests/syn_memory_converge_atomic",
+                       "../all_tests/syn_rr",
+                       "../all_tests/syn_rr_rwr",
+                       "../all_tests/syn_rr_wrw",
+                       ]
+    
+    directory_names_core = [
+                               "../all_tests/syn_branch_syn_release",
+                                "../all_tests/syn_lock_step_release",
+                                "../all_tests/syn_subgroup_op_release",
+                        ]
 
+    directory_names_intel = [
+                                "../all_tests_fixed_subgroup/syn_branch_syn",
+                                "../all_tests_fixed_subgroup/syn_branch_syn_relax",
+                                "../all_tests_intel/syn_branch_syn_release",
+                                "../all_tests_fixed_subgroup/syn_lock_step",
+                                "../all_tests_fixed_subgroup/syn_lock_step_relax",
+                                "../all_tests_fixed_subgroup/syn_lock_step_release",
+                                "../all_tests_fixed_subgroup/syn_subgroup_op",
+                                "../all_tests_fixed_subgroup/syn_subgroup_op_relax",
+                                "../all_tests_fixed_subgroup/syn_subgroup_op_release",
+                                "../all_tests_fixed_subgroup/syn_memory_converge",
+                                "../all_tests_fixed_subgroup/syn_memory_converge_atomic"
+                            ]
+    directory_names_intel_core = [
+                                "../all_tests_fixed_subgroup/syn_branch_syn_release",
+                                "../all_tests_fixed_subgroup/syn_lock_step_release",
+                                "../all_tests_fixed_subgroup/syn_subgroup_op_release",
+                            ]
+    
+    if sys.argv[1] == "core":
+        directory_names = directory_names_core
+    elif sys.argv[1] == "intel":
+        directory_names = directory_names_intel
+    elif sys.argv[1] == "intel_core":
+        directory_names = directory_names_intel_core
+    elif sys.argv[1] == "all":
+        directory_names = directory_names
     for name in directory_names:
         os.system("python3 amber_test_driver.py " + name + " 1")
 
