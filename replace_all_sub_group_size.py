@@ -1,5 +1,7 @@
-import re
+#!/usr/bin/env python3
+import sys
 from pathlib import Path
+import re
 
 def replace_and_copy(src_file, src_root, dst_root):
     relative_path = src_file.relative_to(src_root)
@@ -26,8 +28,18 @@ def replace_and_copy(src_file, src_root, dst_root):
     print(f"📄 Written: {dst_file}")
 
 def main():
-    src_root = Path('./all_tests')
-    dst_root = Path('./all_tests_fixed_subgroup')
+    # Check for a single positional argument
+    mode = sys.argv[1] if len(sys.argv) > 1 else None
+
+    if mode == 'core':
+        src_root = Path('./all_tests_core')
+        dst_root = Path('./all_tests_fixed_subgroup_core')
+    else:
+        src_root = Path('./all_tests')
+        dst_root = Path('./all_tests_fixed_subgroup')
+
+    # Make sure destination exists
+    dst_root.mkdir(parents=True, exist_ok=True)
 
     for comp_file in src_root.rglob('*.comp'):
         replace_and_copy(comp_file, src_root, dst_root)

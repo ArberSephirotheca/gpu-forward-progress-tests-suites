@@ -70,7 +70,7 @@ ARG HOST_UID
 ARG HOST_GID
 FROM builder AS generate-core
 WORKDIR /opt/graphicsfuzz/temp
-COPY references /opt/graphicsfuzz/temp/references
+COPY references_core /opt/graphicsfuzz/temp/references
 COPY fake_donors /opt/graphicsfuzz/temp/donors
 RUN groupadd -g ${HOST_GID} hostgroup \
   && useradd -u ${HOST_UID} -g hostgroup host \

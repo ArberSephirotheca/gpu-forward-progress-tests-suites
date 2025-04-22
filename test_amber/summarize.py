@@ -1,6 +1,5 @@
 import os
 import csv
-from collections import defaultdict
 
 # Root directory containing GPU folders
 root_dir = './'  # Change this if needed
@@ -23,7 +22,15 @@ for gpu in gpu_dirs:
         output_dir = os.path.join(gpu_path, sub)
         if not os.path.isdir(output_dir):
             continue
-        # Look for the CSV file in the output directory
+
+        # find reference.amber (if it exists)
+        ref_amber_path = os.path.join(output_dir, 'reference.amber')
+        if os.path.isfile(ref_amber_path):
+            ref_amber = ref_amber_path
+        else:
+            ref_amber = ''
+
+        # Look for the result CSV in the output directory
         for file in os.listdir(output_dir):
             if file.startswith('simple_final_results-') and file.endswith('.csv'):
                 passes = 0
@@ -42,13 +49,29 @@ for gpu in gpu_dirs:
                             else:
                                 fails += 1
                                 failed_tests.append(row[0])
-                data.append([gpu, sub, passes, fails, ';'.join(failed_tests)])
+
+                # Append a row with the new Reference Amber column
+                data.append([
+                    gpu,
+                    sub,
+                    passes,
+                    fails,
+                    ';'.join(failed_tests),
+                    ref_amber
+                ])
                 break  # Only one result CSV per output directory
 
 # Write summary to CSV
 with open(output_csv, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['GPU', 'Output Directory', 'Passes', 'Fails', 'Failed Tests'])
+    writer.writerow([
+        'GPU',
+        'Output Directory',
+        'Passes',
+        'Fails',
+        'Failed Tests',
+        'Reference Amber'
+    ])
     writer.writerows(data)
 
 print(f"Summary written to: {output_csv}")

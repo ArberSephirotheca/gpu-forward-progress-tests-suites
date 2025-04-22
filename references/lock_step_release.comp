@@ -23,6 +23,7 @@ void main() {
     uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
     // scope: invocation, storage: buffer, memory semantics: release
 	// for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
- 	buf[virtual_gid] = 1;
+    atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
+
  	atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
 }
