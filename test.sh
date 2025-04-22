@@ -10,7 +10,7 @@ set -e  # Exit on any error
 _prepare_ref_mount() {
   local pipeline=$1 test=$2
   local base
-n  # Choose between references_core and references
+  # Choose between references_core and references
   if [[ $pipeline == core || $pipeline == intel-core ]]; then
     base="references_core"
   else
