@@ -1,0 +1,911 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+struct _GLF_struct_5 {
+ float _f0;
+} ;
+
+struct _GLF_struct_6 {
+ _GLF_struct_5 _f0;
+ uint read_2;
+} ;
+
+struct _GLF_struct_2 {
+ uvec2 _f0;
+ uvec3 _f1;
+ float _f2;
+ bvec3 _f3;
+ uvec2 _f4;
+} ;
+
+struct _GLF_struct_1 {
+ mat2 _f0;
+ bvec4 _f1;
+} ;
+
+struct _GLF_struct_0 {
+ mat4x3 _f0;
+ uvec3 _f1;
+ bvec4 _f2;
+ ivec4 _f3;
+} ;
+
+struct _GLF_struct_3 {
+ _GLF_struct_0 _f0;
+ int _f1;
+ mat2 _f2;
+ _GLF_struct_1 _f3;
+ _GLF_struct_2 _f4;
+ mat4 _f5;
+} ;
+
+struct _GLF_struct_4 {
+ uint subgroup_size;
+ mat2 _f0;
+ _GLF_struct_3 _f1;
+ ivec4 _f2;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ _GLF_struct_4 _GLF_struct_replacement_4 = _GLF_struct_4(gl_SubgroupSize, mat2(1.0), _GLF_struct_3(_GLF_struct_0(mat4x3(1.0), uvec3(1u), bvec4(true), ivec4(1)), 1, mat2(1.0), _GLF_struct_1(mat2(1.0), bvec4(true)), _GLF_struct_2(uvec2(1u), uvec3(1u), 1.0, bvec3(true), uvec2(1u)), mat4(1.0)), ivec4(1));
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * _GLF_struct_replacement_4.subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * _GLF_struct_replacement_4.subgroup_size + ((subgroup_local_id + 1) % _GLF_struct_replacement_4.subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read_1 = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ _GLF_struct_6 _GLF_struct_replacement_6 = _GLF_struct_6(_GLF_struct_5(1.0), atomicLoad(buf[virtual_gid], 4, 64, 0));
+ if(subgroup_local_id + 1 < _GLF_struct_replacement_4.subgroup_size)
+  {
+   switch(_GLF_SWITCH((0 & 17034)))
+    {
+     case 88:
+     mat2x3 _GLF_SWITCH_4_0v, _GLF_SWITCH_4_1v;
+     case 0:
+     case 8:
+     case 28:
+     case 94:
+     switch(_GLF_SWITCH(0))
+      {
+       case 62:
+       {
+        switch(_GLF_SWITCH(0))
+         {
+          case 56:
+          virtual_gid;
+          case 29:
+          greaterThanEqual(uvec3(183286u, 129865u, 34039u), uvec3(140602u, 4895u, 146437u));
+          case 0:
+          case 3:
+          {
+           bvec2 _GLF_SWITCH_0_0v, _GLF_SWITCH_0_1v, _GLF_SWITCH_0_2v;
+           bvec4 _GLF_SWITCH_0_3v;
+          }
+          case 97:
+          while(false)
+           {
+            switch(_GLF_SWITCH(0))
+             {
+              case 11:
+              mat4x2 _GLF_SWITCH_7_0v, _GLF_SWITCH_7_1v;
+              case 83:
+              mat3x2 _GLF_SWITCH_7_2v, _GLF_SWITCH_7_3v, _GLF_SWITCH_7_4v;
+              case 0:
+              case 27:
+              case 25:
+              case 34:
+              case 87:
+              case 42:
+              switch(_GLF_SWITCH((0 << _GLF_IDENTITY(int(3), int(3)))))
+               {
+                case 39:
+                uvec2(86100u, 41711u);
+                case 0:
+                case 25:
+                case 64:
+                case 99:
+                switch(_GLF_SWITCH(0))
+                 {
+                  case 34:
+                  (true ? mat3(-6.4, -4.7, -84.32, 6.1, 6852.4791, 3.2, -289.914, -6.4, -6733.7548) : mat3(-3741.8048, 4666.4744, -4.5, -716.687, 648.160, 2540.4204, -5200.7537, -4.0, -3.1));
+                  case 0:
+                  case 16:
+                  case 94:
+                  for(                  ((mat2x3(-26.84, 6063.1086, -9.2, 223.150, 8337.9099, -1.2) != mat2x3(-54.80, 9201.3884, -542.346, 0.7, -7350.1235, 3.1)) ? mat2x3(-3.1, 3.4, -3.5, 252.272, 6.3, -6846.3706) : mat2x3(47.65, 3.4, -28.92, 7.4, 456.000, 4497.5619));
+ any(bvec3(false, true, true)); vec4(0.6, -4.0, 934.177, -3.5))
+                   {
+                   }
+                  case 86:
+                  case 95:
+                  case 33:
+                  mat4x3(6170.5642, -1.3, 3.1, -8.3, 0.1, -1.7, 7.7, -8.4, -9.0, -633.302, -6.9, -8.6);
+                  ivec4(10534, 42074, 21631, 35291);
+                  mat3(mat4(-541.509, -8.2, 1.6, 648.263, 7.4, 580.358, -1153.2141, -7886.4139, -10.48, 0.8, 7.9, 6656.0484, -9337.3175, 15.54, 606.002, 9.9));
+                  case 47:
+                  bvec3 _GLF_SWITCH_0_4v, _GLF_SWITCH_0_5v;
+                  for(                  uvec3(150300u, 68983u, 30467u);
+ false; _GLF_SWITCH_0_4v)
+                   {
+                    ;
+                   }
+                  case 58:
+                  case 26:
+                  {
+                   switch(_GLF_SWITCH(0))
+                    {
+                     case 92:
+                     bvec4 _GLF_SWITCH_8_0v, _GLF_SWITCH_8_1v;
+                     case 90:
+                     mat3x4 _GLF_SWITCH_8_2v, _GLF_SWITCH_8_3v;
+                     case 0:
+                     case 11:
+                     (mat2x3(2.6, -5.7, -1.9, 5.5, -930.539, -46.34) * mat3x2(173.900, 3.0, -6856.6590, -5.4, 7.9, -6646.1784));
+                     ivec4(-19752, 55143, 49345, 30390);
+                     case 75:
+                     case 76:
+                     case 37:
+                     vec4(5.2, 2.4, -99.49, 80.31);
+                     case 27:
+                     case 35:
+                     (mat2(4.6, ldexp(-7520.0539, 54733), -9.5, 6.6) * vec2(-52.88, 3.2));
+                     case 70:
+                     uvec2 _GLF_SWITCH_0_6v, _GLF_SWITCH_0_7v[92], _GLF_SWITCH_0_8v;
+                     mat3x2(279.323, -1.4, -2135.8563, -3055.8875, 9.6, 487.519);
+                     break;
+                     default:
+                     1;
+                    }
+                  }
+                  break;
+                  case 79:
+                  max(uvec3(103652u, 135248u, 192537u), workgroup_base);
+                  default:
+                  1;
+                 }
+                break;
+                case 80:
+                mat4x3(-2690.4622, 8.6, 0.6, 81.83, -4030.3279, -8.0, 4.3, 7386.5804, 6.2, 9.8, 7254.4320, -4.0);
+                default:
+                1;
+               }
+              break;
+              case 92:
+              uvec4 _GLF_SWITCH_7_5v;
+              default:
+              1;
+             }
+           }
+          case 45:
+          if((mat4x3(3.6, -3.9, 0.3, -1745.0204, 7841.5629, 2984.6193, 47.27, 4167.6183, -234.585, -33.15, 3.4, -7559.0897) == mat4x3(mat2x4(-1.4, 82.37, -24.22, -9.1, 778.735, -3.3, 7.8, 9.2))))
+           {
+            while(false)
+             {
+              ;
+              mat3x4 _GLF_SWITCH_0_9v, _GLF_SWITCH_0_10v[75];
+              mat2x3 _GLF_SWITCH_0_11v[9], _GLF_SWITCH_0_12v[36], _GLF_SWITCH_0_13v;
+             }
+            uvec3 _GLF_SWITCH_0_14v[93], _GLF_SWITCH_0_15v, _GLF_SWITCH_0_16v;
+            do
+             {
+              true;
+              ivec2(-52208, -74589);
+              bool _GLF_SWITCH_0_17v, _GLF_SWITCH_0_18v[4];
+              ;
+              -20015;
+              bool _GLF_SWITCH_0_19v;
+              3260.1927;
+              (ivec2(-19806, -18172) | ivec2(-7992, 31606));
+              workgroup_size;
+             }
+            while(true);
+            vec2 _GLF_SWITCH_0_20v, _GLF_SWITCH_0_21v, _GLF_SWITCH_0_22v;
+           }
+          else
+           {
+            (mat2x4(-7154.8426, 72.35, 0.9, 6.8, -5.0, -7201.9299, -210.034, -58.86) + -112.156);
+            (mat3x4(61.25, -99.76, 76.37, 0.9, 27.82, -16.39, -7.1, 4258.6277, -0.7, -65.96, -4168.0679, -7.2) * mat2x3(41.15, -40.44, -1.8, -37.11, 968.356, -5794.1481));
+            greaterThan(ivec2(-26985, 93517), ivec2(21770, 70467));
+            for(            mat3x4(-879.973, -3388.7337, -9.4, 29.56, -548.063, 577.545, 7125.9537, 1129.4250, 112.144, 665.544, -588.277, -7.5);
+ (bvec4(true, true, false, true) != bvec4(true, true, false, true)); ivec2(-37288, -1861))
+             {
+              uint _GLF_SWITCH_0_23v, _GLF_SWITCH_0_24v;
+              mat2(8.1, -7761.6355, 7852.2299, 435.773);
+              findLSB(-77502);
+              uvec2(84667u, 196499u);
+              bvec3(false, true, false);
+              ;
+              uvec4 _GLF_SWITCH_0_25v;
+              mat2 _GLF_SWITCH_0_26v, _GLF_SWITCH_0_27v;
+              ;
+             }
+            (mat4(-1364.7842, 4.3, 5165.6792, -53.85, 4587.8164, 42.06, -63.70, 4380.1902, -70.65, 0.7, 67.61, -1.8, 987.672, -9.6, -6.9, 749.303) + mat4(4.3, -1438.5849, -0.7, -81.90, 2.7, -68.50, -833.691, -3261.8969, 852.224, 947.969, 867.868, 77.43, -1506.0720, -1.0, 3807.3100, -1.7));
+            for(            ivec3(-39513, -70803, -12232);
+ true; next_virtual_gid)
+             {
+              greaterThanEqual(uvec2(188004u, 155558u), uvec2(117956u, 9506u)).ttts;
+              bvec4(true, true, false, true);
+             }
+            vec4(-3.3, 20.87, 1.6, 60.17);
+            if((mat2x4(-9.0, -1235.4550, 2912.7164, -4.3, 55.19, -749.363, 786.369, 654.236) != mat2x4(2.7, -5.2, -3263.1582, -8.7, 29.59, 5.5, -1570.0466, -8281.4120)))
+             {
+              mat2x4(-190.320, -9.3, -5.9, 7.8, 531.772, 5.5, 8499.7749, -33.09);
+              mat2x3 _GLF_SWITCH_0_28v[24];
+              bool _GLF_SWITCH_0_29v, _GLF_SWITCH_0_30v;
+             }
+            else
+             {
+              ;
+              mat3x4 _GLF_SWITCH_0_31v, _GLF_SWITCH_0_32v, _GLF_SWITCH_0_33v[77];
+              bool _GLF_SWITCH_0_34v, _GLF_SWITCH_0_35v, _GLF_SWITCH_0_36v[81];
+              6.8;
+             }
+            (-24355 ^ ivec2(-18927, -54166));
+           }
+          case 52:
+          ;
+          if((ivec4(94389, -47577, 95961, 11278) == ivec4(-79599, -23811, -65485, -76135)))
+           {
+            switch(_GLF_SWITCH((0 << _GLF_IDENTITY(int(2), int(2)))))
+             {
+              case 0:
+              mat4x3(mat3x2(-4416.8529, -8.8, -90.40, -4.5, -8229.4401, -1.9));
+              if(true)
+               {
+                switch(_GLF_SWITCH((1 ^ ((1 << _GLF_IDENTITY(int(3), int(3))) >> _GLF_IDENTITY(int(3), int(3))))))
+                 {
+                  case 8:
+                  bool _GLF_SWITCH_4_0v[58], _GLF_SWITCH_4_1v;
+                  case 21:
+                  mat2x4 _GLF_SWITCH_4_2v, _GLF_SWITCH_4_3v[43];
+                  case 0:
+                  ivec4(-7128, 88451, -26521, -79772);
+                  case 40:
+                  bvec2 _GLF_SWITCH_0_37v[18];
+                  case 72:
+                  (mat3(mat2x3(-110.599, 97.15, 2.3, 22.75, 1553.7862, 5.2)) + mat3(6.5, -88.14, -6969.2746, -93.17, -0.4, -377.128, 2.7, -862.309, 6.7));
+                  case 51:
+                  ;
+                  case 33:
+                  case 81:
+                  case 26:
+                  mat3x2 _GLF_SWITCH_0_38v[57], _GLF_SWITCH_0_39v;
+                  case 75:
+                  uvec4(131853u, 35345u, 153206u, 43969u);
+                  break;
+                  default:
+                  1;
+                 }
+               }
+              else
+               {
+                switch(_GLF_SWITCH(0))
+                 {
+                  case 37:
+                  vec4 _GLF_SWITCH_5_0v, _GLF_SWITCH_5_1v[49], _GLF_SWITCH_5_2v;
+                  case 0:
+                  (mat2x4(-297.366, 7016.1128, -5.1, -2651.0823, -33.48, -5052.6047, 81.51, 5097.5441) * mat3x2(52.26, 7639.5610, 1.8, 9330.2720, -3691.6123, 233.834));
+                  -8020.2904;
+                  transpose(mat4(-733.849, 4014.6619, -1.0, -8958.4285, -8.2, -8471.3874, 5.2, -30.56, -5246.3990, -9.5, 1.8, -70.64, -6.5, 1878.1619, 0.2, -4.8));
+                  ((ivec3(-36363, 46362, -58122) - 8884) - -68935);
+                  mat4 _GLF_SWITCH_0_40v[47], _GLF_SWITCH_0_41v, _GLF_SWITCH_0_42v;
+                  ivec2 _GLF_SWITCH_0_43v, _GLF_SWITCH_0_44v, _GLF_SWITCH_0_45v;
+                  break;
+                  default:
+                  1;
+                 }
+               }
+              mat2x4(-597.008, -797.820, 5.0, -838.583, 1.8, -554.708, 0.2, -5.3);
+              bvec2(true, true);
+              true;
+              (mat2(-38.54, -2.4, 23.41, 7.9));
+              while(false)
+               {
+                (mat4(9906.2821, 6673.2083, -0.6, -20.97, -50.18, -786.980, -5662.9741, 1.4, 5.4, -311.136, -82.74, -8694.0203, -62.69, 8558.4213, -6.5, 25.57) * (true ? mat2x4(2.0, -0.9, 50.47, -139.350, -19.71, 73.98, 1.5, 5192.2077) : mat2x4(431.404, 2195.2097, -144.325, 8.0, -7919.1447, 1.1, -8438.0856, -7595.5940)));
+                bvec4(false, true, true, true).xxy;
+                uvec2 _GLF_SWITCH_0_46v, _GLF_SWITCH_0_47v[30];
+                ivec2(-9657, 48224);
+                ;
+                (mat3x4(2487.7171, 399.205, -9.9, 62.08, -6.3, -68.46, 3033.9171, 20.00, 63.06, -3524.1542, 7.2, 7.4) - length(-12.29));
+                (workgroup_size & uvec4(10149u, 89146u, 157595u, 8079u));
+                mat2x4(-3.3, 3927.4364, 4.6, 2308.8482, 974.614, -2131.6418, -1602.7384, -7.0);
+                mat3x2 _GLF_SWITCH_0_48v[56], _GLF_SWITCH_0_49v[24], _GLF_SWITCH_0_50v[14];
+               }
+              {
+               int _GLF_SWITCH_0_51v[12];
+               uvec2 _GLF_SWITCH_0_52v;
+               mat3(mat3x4(9555.6657, 3.0, 4453.3423, -89.79, -8.7, -7.2, 6.0, -1.6, -4.9, 4683.3369, -108.215, 0.3));
+               _GLF_SWITCH_0_52v;
+               ;
+              }
+              break;
+              case 22:
+              ;
+              case 10:
+              uvec3 _GLF_SWITCH_3_0v, _GLF_SWITCH_3_1v;
+              default:
+              1;
+             }
+           }
+          vec3 _GLF_SWITCH_0_53v[80], _GLF_SWITCH_0_54v, _GLF_SWITCH_0_55v;
+          bvec3 _GLF_SWITCH_0_56v;
+          ((67452 + ivec2(3668, 67123)) + 29426);
+          while(((findLSB(10352) < 98522) && true))
+           {
+            mat4x3(mat2x3(4925.7790, 0.5, 1.6, 60.72, -4538.0529, -27.02));
+            {
+             ;
+             bvec2 _GLF_SWITCH_0_57v, _GLF_SWITCH_0_58v;
+             bool _GLF_SWITCH_0_59v[30];
+             (read_1 - (uvec2(39256u, 143443u) & num_workgroup));
+            }
+            while((bvec4(false, true, bvec2(true, true)) == bvec4(false, false, true, true)))
+             {
+              ;
+              mat4x3 _GLF_SWITCH_0_60v, _GLF_SWITCH_0_61v[74], _GLF_SWITCH_0_62v[95];
+              ivec2(-9454, -80363);
+              ivec2 _GLF_SWITCH_0_63v, _GLF_SWITCH_0_64v;
+             }
+            if(true)
+             {
+              mat2(mat2x4(-4.4, 4.6, 647.302, -7.7, 7.9, 7094.7443, -7933.0983, 4.5));
+              mat3(-458.050, -796.252, -9.8, 4.7, 0.1, 6.4, 1.6, -558.020, -375.060);
+              vec2(796.145, 84.06);
+              (mat4x2(-1.0, 2507.6082, 6.4, 1.6, -8181.5210, -5.1, 52.80, 1.4) / -60.44);
+              (uvec3(172444u, 181503u, 109996u) >> uvec3(180589u, 77169u, 111213u));
+              _GLF_SWITCH_0_55v;
+              bvec4(true, true, false, true);
+              bvec4(false, false, false, false);
+              ivec3(53435, -48857, -19480);
+             }
+            else
+             {
+              mat2x4 _GLF_SWITCH_0_65v[99], _GLF_SWITCH_0_66v[63], _GLF_SWITCH_0_67v;
+              mat2x3(-20.69, -54.58, 120.368, -78.21, -713.529, -8.2);
+              (~ 46043);
+              -83574;
+             }
+            ivec2 _GLF_SWITCH_0_68v;
+           }
+          break;
+          case 30:
+          mat2(7.0, -4.3, -96.29, 0.8);
+          case 9:
+          (mat3x4(-91.23, -923.081, 6413.5840, 5803.8022, 7.9, -63.33, -2893.6587, -5.3, -3.7, 0.1, 4.1, 6474.6185) - mat3x4(-6576.5762, 0.0, -1429.7647, 8.4, -7093.9917, -60.13, -3805.4807, -4155.7865, 9581.3007, 20.78, -1.0, 3398.0535));
+          default:
+          1;
+         }
+       }
+       case 49:
+       ;
+       case 0:
+       case 82:
+       case 93:
+       case 11:
+       case 48:
+       case 37:
+       case 75:
+       case 10:
+       case 7:
+       case 65:
+       switch(_GLF_SWITCH(0))
+        {
+         case 0:
+         case 33:
+         case 20:
+         case 96:
+         case 52:
+         case 65:
+         int i = 0;
+         case 98:
+         case 70:
+         atomicStore(buf[next_virtual_gid], uint(read_1 == _GLF_struct_replacement_6.read_2) + 1, 4, 64, 4);
+         break;
+         default:
+         1;
+        }
+       break;
+       case 81:
+       uvec4(163324u, 54817u, 152284u, 9990u);
+       case 41:
+       for(       false;
+ true; mat3x2(871.473, -88.51, 877.217, 21.49, 4.8, 3.1))
+        {
+         switch(_GLF_SWITCH(0))
+          {
+           case 76:
+           ;
+           case 43:
+           bool _GLF_SWITCH_9_0v, _GLF_SWITCH_9_1v;
+           case 0:
+           case 4:
+           case 48:
+           case 21:
+           case 77:
+           case 42:
+           case 2:
+           case 9:
+           case 70:
+           case 26:
+           switch(_GLF_SWITCH((0 << _GLF_IDENTITY(int(1), int(1)))))
+            {
+             case 0:
+             while((mat2(mat4(5690.9575, -9.4, -4.1, 9.9, -5.9, 9867.3805, 90.34, 1476.7112, 36.23, 8.5, 7.7, 27.99, 7.2, 3.8, 7276.1651, -3328.1363)) == mat2(36.89, 2.5, 7547.4161, -6.4)))
+              {
+               switch(_GLF_SWITCH(0))
+                {
+                 case 93:
+                 (- mat2x4(-3.4, -466.698, -98.61, -7.4, -31.92, 6905.0298, 14.34, -63.93));
+                 case 46:
+                 uvec2 _GLF_SWITCH_7_0v, _GLF_SWITCH_7_1v, _GLF_SWITCH_7_2v[96];
+                 case 0:
+                 bvec3 _GLF_SWITCH_0_69v;
+                 case 40:
+                 bvec4(bvec2(true, true), false, false);
+                 (mat3(396.248, -6.2, -968.550, -0.7, -324.690, 45.15, -1750.8654, 2700.6672, -7.6) != mat3(-621.678, -81.31, -5151.9270, 109.120, 1.6, -6.2, 2.1, -573.065, -9153.9460));
+                 (uvec2(193178u, 3261u) % uvec2(18862u, 152675u));
+                 case 37:
+                 {
+                 }
+                 transpose(mat4(-5.8, 8112.3518, -2.0, 6374.6872, -2.3, -0.4, 7.8, -434.953, 621.055, 5.0, 0.8, -4595.5257, -8.7, 46.56, -2.7, 6.5));
+                 for(bvec3 _GLF_SWITCH_0_70v, _GLF_SWITCH_0_71v, _GLF_SWITCH_0_72v[82]; true; uvec2(101971u, 149120u))
+                  {
+                   switch(_GLF_SWITCH(0))
+                    {
+                     case 0:
+                     uint _GLF_SWITCH_0_73v;
+                     ;
+                     case 70:
+                     false;
+                     case 26:
+                     bvec2(true, true);
+                     bool _GLF_SWITCH_0_74v, _GLF_SWITCH_0_75v;
+                     mat3x2 _GLF_SWITCH_0_76v[7], _GLF_SWITCH_0_77v;
+                     case 22:
+                     mat4x2 _GLF_SWITCH_0_78v;
+                     break;
+                     case 57:
+                     vec3(-133.139, -6.9, 42.13);
+                     default:
+                     1;
+                    }
+                  }
+                 (uvec3(170720u, 82276u, 112114u) == ((uvec3(162987u, 170906u, 27295u) + next_virtual_gid) * (read_1 * uvec3(197398u, 23399u, 25512u))));
+                 case 18:
+                 uvec2 _GLF_SWITCH_0_79v[46];
+                 break;
+                 default:
+                 1;
+                }
+              }
+             for(             (next_virtual_gid / (true ? uvec3(40896u, 71457u, 143420u) : uvec3(85328u, uvec2(113658u, 190935u))));
+ false; greaterThan(uvec2(42495u, 11248u), uvec2(78237u, 89091u)))
+              {
+               tanh(vec3(67.46, -1238.9202, -68.04));
+               do
+                {
+                 mat4x3 _GLF_SWITCH_0_80v, _GLF_SWITCH_0_81v[15];
+                 mat3x2 _GLF_SWITCH_0_82v, _GLF_SWITCH_0_83v[77], _GLF_SWITCH_0_84v[40];
+                 bvec4 _GLF_SWITCH_0_85v[85], _GLF_SWITCH_0_86v[45];
+                 (+ mat2(180.319, -37.45, 0.0, -1.4));
+                 vec3 _GLF_SWITCH_0_87v, _GLF_SWITCH_0_88v, _GLF_SWITCH_0_89v;
+                }
+               while(false);
+              }
+             case 5:
+             bvec2(false, true);
+             case 7:
+             bvec3(false, false, true);
+             while(((mat3x4(7.6, -9.8, -30.92, 6907.5661, 50.95, 6.7, -5948.7233, 3798.7393, 7.3, -75.33, -7.5, -51.64) - mat3x4(1680.9500, 3715.5950, -7.9, -7217.0390, 4.3, -7978.0496, 627.389, 615.445, 1.0, 709.302, -442.448, 940.641)) == mat3x4(-2.9, -4.4, 5.5, 424.227, 8.5, -475.805, 838.061, 91.94, -439.732, 97.24, 1.7, 5.8)))
+              {
+               cosh(vec4(5.1, 1380.0487, 514.188, 447.564));
+               bvec3(true, false, true).ttt;
+               while(true)
+                {
+                 ;
+                 vec2 _GLF_SWITCH_0_90v, _GLF_SWITCH_0_91v;
+                 uvec4(92984u, 161843u, 139425u, 171567u);
+                 mat2(4.3, -23.98, 60.55, 7779.5429);
+                 mat3x4(88.10, -3054.8096, 5.0, -4.1, -9537.8352, -0.8, -51.02, -6.6, 534.327, 14.54, -887.744, -7.7);
+                 uvec3(152312u, 96835u, 46717u);
+                }
+               while(true)
+                {
+                 switch(_GLF_SWITCH(0))
+                  {
+                   case 63:
+                   ivec3(13169, 16261, -52585);
+                   case 98:
+                   mat4x3(mat2(-9780.2431, 257.639, 4.8, 60.26));
+                   case 0:
+                   mat4 _GLF_SWITCH_0_92v;
+                   case 8:
+                   case 35:
+                   case 22:
+                   case 73:
+                   case 7:
+                   mat2x3 _GLF_SWITCH_0_93v, _GLF_SWITCH_0_94v, _GLF_SWITCH_0_95v[85];
+                   (- mat4x2(-0.6, 81.27, -9.5, 4.3, -3337.0095, 8.8, 2.9, 1.8));
+                   break;
+                   case 86:
+                   uvec2(54955u, 9721u);
+                   case 32:
+                   (mat4(mat3x2(1548.9289, 7.5, -7.2, 0.7, -57.46, -6426.1335)) * _GLF_SWITCH_0_92v);
+                   default:
+                   1;
+                  }
+                }
+               bvec3(false, true, false);
+               mat2 _GLF_SWITCH_0_96v, _GLF_SWITCH_0_97v, _GLF_SWITCH_0_98v;
+               (mat2x3(mat4x3(-226.985, 7.0, 997.372, -4991.8175, -6.6, 5.8, -70.38, -5254.3059, 18.75, -2.8, 1.3, -1331.6528)) / mat2x3(94.00, 59.19, -3.5, 4509.9462, -9.1, -713.605));
+               vec2(-966.126, 547.366);
+              }
+             while((true != true))
+              {
+               switch(_GLF_SWITCH(0))
+                {
+                 case 0:
+                 case 16:
+                 case 42:
+                 ;
+                 case 65:
+                 case 75:
+                 case 73:
+                 {
+                  switch(_GLF_SWITCH((0 << _GLF_IDENTITY(int(7), int(7)))))
+                   {
+                    case 69:
+                    uvec3(132858u, 28756u, 170589u);
+                    case 50:
+                    uvec2 _GLF_SWITCH_6_0v[17], _GLF_SWITCH_6_1v;
+                    case 0:
+                    case 14:
+                    case 60:
+                    ivec4(19890, 69513, -47672, 46686);
+                    case 76:
+                    ;
+                    case 27:
+                    case 6:
+                    case 49:
+                    uvec2 _GLF_SWITCH_0_99v, _GLF_SWITCH_0_100v;
+                    break;
+                    default:
+                    1;
+                   }
+                 }
+                 case 72:
+                 bvec2(false, false);
+                 break;
+                 default:
+                 1;
+                }
+              }
+             break;
+             default:
+             1;
+            }
+           break;
+           case 83:
+           mat2 _GLF_SWITCH_9_2v, _GLF_SWITCH_9_3v;
+           case 81:
+           ;
+           default:
+           1;
+          }
+        }
+       default:
+       1;
+      }
+     break;
+     case 62:
+     vec2 _GLF_SWITCH_4_2v;
+     default:
+     1;
+    }
+  }
+ else
+  {
+   switch(_GLF_SWITCH(int(_GLF_ZERO(0.0, injectionSwitch.x))))
+    {
+     case 46:
+     mat2x4(4.6, -6452.0172, -251.633, -65.52, -2.5, -1415.6199, 1.6, -15.72);
+     case 13:
+     for(     (-66.24 / mat3(-5.3, 555.917, -546.989, 0.9, 3693.4795, -51.31, 2665.7890, 3717.6102, 546.704));
+ false; (mat3x4(-3490.0430, -59.62, 874.607, 2895.0777, 6.0, 4.6, -558.730, -6.1, 9892.7528, 7.4, -3.2, -4.1) * mat2x3(-3.9, -70.57, -0.5, -4.8, 3.5, -614.826)))
+      {
+       if((19282 >= -95476))
+        {
+         switch(_GLF_SWITCH((int(_GLF_ZERO(0.0, injectionSwitch.x)) | 0)))
+          {
+           case 57:
+           mat4x2(1012.5810, 823.197, -0.4, 2.8, -2272.2176, -98.11, 9.4, 5207.4736);
+           case 69:
+           mat3x2 _GLF_SWITCH_9_0v, _GLF_SWITCH_9_1v, _GLF_SWITCH_9_2v;
+           case 0:
+           mat2(2.1, -89.09, -7.8, 4944.4673);
+           while(false)
+            {
+             ivec3(-24866, -5413, 6712);
+             ivec2(-68919, 27746);
+            }
+           case 26:
+           bvec3(true, false, false);
+           case 63:
+           {
+           }
+           case 76:
+           if(true)
+            {
+             equal(bvec2(true, false), bvec2(false, true));
+             virtual_gid;
+             ;
+             vec2(-5.5, -8.7);
+             bool _GLF_SWITCH_1_0v[67];
+            }
+           uint _GLF_SWITCH_1_1v;
+           case 92:
+           ivec4 _GLF_SWITCH_1_2v[58], _GLF_SWITCH_1_3v;
+           break;
+           case 25:
+           mat3x2(mat2(8631.5028, 7.6, -90.15, 543.467));
+           case 91:
+           uint _GLF_SWITCH_9_3v[50], _GLF_SWITCH_9_4v, _GLF_SWITCH_9_5v;
+           default:
+           1;
+          }
+        }
+       vec3(652.250, -5.3, -3.2);
+       (float(workgroup_size) - mat3x4(490.142, -74.57, 705.222, 4.1, 80.80, -38.85, -6.7, 805.133, 2.7, -8.5, 705.749, -4417.4186));
+       mat3x4(-5122.6012, -5340.6797, 9.7, 2577.8146, 91.12, -67.62, 310.736, -3342.3979, -1.4, -502.897, -5.4, 6987.6513);
+       if(true)
+        {
+         switch(_GLF_SWITCH(0))
+          {
+           case 56:
+           bvec3(true, false, false);
+           case 0:
+           case 31:
+           case 67:
+           case 96:
+           switch(_GLF_SWITCH(int(_GLF_ZERO(0.0, injectionSwitch.x))))
+            {
+             case 77:
+             -531.759;
+             case 44:
+             uvec4(181185u, 56005u, 140522u, 130874u);
+             case 0:
+             case 15:
+             case 82:
+             case 17:
+             case 47:
+             switch(_GLF_SWITCH((0 >> _GLF_IDENTITY(int(3), int(3)))))
+              {
+               case 47:
+               ((184928u + uvec4(18131u, 60635u, 111215u, 107583u)) , uvec4(70500u, 144982u, 102194u, 156391u));
+               case 0:
+               case 24:
+               case 12:
+               mat2x3 _GLF_SWITCH_1_4v[71], _GLF_SWITCH_1_5v[76], _GLF_SWITCH_1_6v[30];
+               case 43:
+               case 22:
+               case 4:
+               case 31:
+               (mat3(mat2x3(2.7, -0.2, -1522.5299, -4.8, -9.7, 5.6)) / mat3(-79.89, -0.1, -6.5, 2.9, -70.22, -7404.8618, 505.781, -461.014, -464.067));
+               case 95:
+               case 40:
+               do
+                {
+                 atomicAnd(read_1, workgroup_id);
+                 mat4(8.9, 2945.7240, 2357.3172, -629.407, -541.563, 3007.4836, -8.7, 9.5, -3079.8481, 796.790, 3978.5967, -7226.6588, 90.19, 9.0, 8.5, -71.26);
+                 mat3x2 _GLF_SWITCH_1_7v, _GLF_SWITCH_1_8v[28];
+                 uvec3 _GLF_SWITCH_1_9v, _GLF_SWITCH_1_10v, _GLF_SWITCH_1_11v;
+                 injectionSwitch;
+                 mat3x2 _GLF_SWITCH_1_12v;
+                 mat2 _GLF_SWITCH_1_13v, _GLF_SWITCH_1_14v, _GLF_SWITCH_1_15v[43];
+                }
+               while((true ? (true , false) : true));
+               if((-48932 >= -97152))
+                {
+                 switch(_GLF_SWITCH(0))
+                  {
+                   case 87:
+                   5970;
+                   case 84:
+                   ;
+                   case 0:
+                   case 92:
+                   case 44:
+                   case 50:
+                   case 10:
+                   case 33:
+                   case 86:
+                   switch(_GLF_SWITCH(0))
+                    {
+                     case 0:
+                     mat3x4(5.1, -9353.4774, 155.943, -18.81, -3.0, 15.09, -6.1, -8.6, 3.7, 633.397, -8.3, -3.9);
+                     case 73:
+                     (mat2x4(1.3, -35.66, 2.0, 7275.6329, -964.632, -75.05, 1376.8066, 9.6) , ivec3(89178, 89076, -57178));
+                     bool _GLF_SWITCH_1_16v, _GLF_SWITCH_1_17v;
+                     case 96:
+                     case 6:
+                     ivec2 _GLF_SWITCH_1_18v, _GLF_SWITCH_1_19v, _GLF_SWITCH_1_20v;
+                     bvec3 _GLF_SWITCH_1_21v, _GLF_SWITCH_1_22v[39];
+                     fract(trunc(vec3(-6.0, 8.3, 8194.4316)));
+                     bvec2 _GLF_SWITCH_1_23v[53], _GLF_SWITCH_1_24v[59], _GLF_SWITCH_1_25v;
+                     break;
+                     default:
+                     1;
+                    }
+                   break;
+                   case 93:
+                   vec3(vec4(8.0, 4.6, -8.7, 2.6));
+                   default:
+                   1;
+                  }
+                }
+               else
+                {
+                 switch(_GLF_SWITCH((0 | 0)))
+                  {
+                   case 71:
+                   (mat3x4(-0.1, 7790.2912, -306.514, 26.72, 772.405, 4.8, 29.34, 2.8, (- -310.724), -6.8, -69.65, 4.1) , mat2x3(-3.3, 707.973, -770.015, -7914.6483, 8.5, 1.9));
+                   case 99:
+                   uvec3 _GLF_SWITCH_2_0v, _GLF_SWITCH_2_1v, _GLF_SWITCH_2_2v;
+                   case 0:
+                   case 78:
+                   case 33:
+                   case 43:
+                   case 4:
+                   case 49:
+                   mat3x2(35.48, 93.18, 1.0, 7855.8060, 50.38, -257.045);
+                   break;
+                   case 90:
+                   mat4(5.5, -63.52, 6.8, -6.4, 3.5, 4.7, 729.154, 7.1, 33.94, 3.2, -6.2, -9348.6336, -7.0, -4063.9995, 7298.5536, 47.18);
+                   default:
+                   1;
+                  }
+                }
+               break;
+               default:
+               1;
+              }
+             break;
+             case 75:
+             mat4x3 _GLF_SWITCH_8_0v, _GLF_SWITCH_8_1v[71], _GLF_SWITCH_8_2v[52];
+             case 64:
+             uvec4(65178u, 6599u, 163655u, 152426u);
+             default:
+             1;
+            }
+           break;
+           case 19:
+           bvec4 _GLF_SWITCH_9_0v;
+           default:
+           1;
+          }
+        }
+       if((-57.44 == vec3(-9.1, 6.9, -20.84).g))
+        {
+        }
+      }
+     case 0:
+     case 21:
+     case 86:
+     case 26:
+     case 29:
+     case 62:
+     case 87:
+     case 67:
+     case 17:
+     atomicStore(buf[next_virtual_gid], uint(read_1 == _GLF_struct_replacement_6.read_2) + 1, 4, 64, 4);
+     break;
+     case 27:
+     if(true)
+      {
+       ((mat4(-7.1, -2621.7165, 3.0, 203.387, -82.45, -589.843, -3935.0102, -52.16, -7.0, 454.338, -441.559, -40.45, -13.08, -817.676, 9.7, -6059.0606) * mat2x4(-9.2, 1805.1235, -9367.3766, -32.80, 2.2, 6670.7510, -2.0, 4.4)) - mat2x4(-52.55, -1.5, -3674.2140, -3228.6247, -41.43, -7974.0148, 11.12, 1.7));
+       if(bool(_GLF_struct_replacement_6.read_2))
+        {
+         switch(_GLF_SWITCH((0 >> _GLF_IDENTITY(int(1), int(1)))))
+          {
+           case 83:
+           mat4(mat3x2(mat3x4(1632.5469, 273.970, -46.54, 454.667, 3.6, 7.7, 508.992, 0.7, 46.21, -30.33, 5.6, 9.0)));
+           case 0:
+           bool _GLF_SWITCH_1_26v, _GLF_SWITCH_1_27v;
+           case 11:
+           while(true)
+            {
+             switch(_GLF_SWITCH(0))
+              {
+               case 22:
+               vec4 _GLF_SWITCH_0_0v[52], _GLF_SWITCH_0_1v, _GLF_SWITCH_0_2v;
+               case 0:
+               (ivec2(74959, 5307) & (65123 | -64971));
+               uvec3 _GLF_SWITCH_1_28v;
+               mat4x3(2.2, -4905.6286, 1822.1404, -5258.9169, -77.47, -308.343, 75.60, -8.2, -886.635, 631.156, -8.8, -6081.5155);
+               mat2x3 _GLF_SWITCH_1_29v, _GLF_SWITCH_1_30v, _GLF_SWITCH_1_31v[61];
+               break;
+               default:
+               1;
+              }
+            }
+           mat3x2(mat2x3(170.992, -72.23, 787.213, -0.7, 3.5, -11.41));
+           case 24:
+           case 28:
+           mat3x4 _GLF_SWITCH_1_32v, _GLF_SWITCH_1_33v, _GLF_SWITCH_1_34v;
+           uvec3 _GLF_SWITCH_1_35v, _GLF_SWITCH_1_36v;
+           case 91:
+           if((ivec3(9923, -86321, -10122) == ivec3(-2808, 5628, -17295)))
+            {
+             switch(_GLF_SWITCH(0))
+              {
+               case 68:
+               ;
+               case 0:
+               case 82:
+               case 33:
+               uint _GLF_SWITCH_1_37v;
+               case 66:
+               case 79:
+               ivec4 _GLF_SWITCH_1_38v[64], _GLF_SWITCH_1_39v;
+               mat4(-694.469, -300.028, -6368.3460, -286.379, 13.54, 48.24, 49.92, -8.6, 4.6, 32.35, 727.939, 608.183, -840.984, -8.6, -8.7, -6.9);
+               case 25:
+               case 62:
+               ivec3(-11604, 3133, -99018);
+               case 24:
+               uvec4 _GLF_SWITCH_1_40v[78], _GLF_SWITCH_1_41v, _GLF_SWITCH_1_42v[81];
+               break;
+               case 30:
+               vec3(-929.915, 6284.3390, 9948.3386);
+               case 40:
+               bvec3 _GLF_SWITCH_9_0v, _GLF_SWITCH_9_1v;
+               default:
+               1;
+              }
+            }
+           mat2x3(-280.432, tanh(8.3), (5216.4803 - roundEven(152.999)), -49.22, 8.2, 70.60);
+           break;
+           case 2:
+           -7103.6155;
+           case 41:
+           ivec2(-43261, 48926);
+           default:
+           1;
+          }
+        }
+      }
+     default:
+     1;
+    }
+  }
+}

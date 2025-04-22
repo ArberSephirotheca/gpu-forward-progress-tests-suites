@@ -1,0 +1,83 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+uint subgroup_size = 16;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read_1 = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ uint read_2 = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(subgroup_local_id + 1 < subgroup_size)
+  {
+   switch(_GLF_SWITCH((0 | 0)))
+    {
+     case 78:
+     ivec4(-52782, -91231, 44853, -23489);
+     case 0:
+     case 10:
+     case 30:
+     case 85:
+     case 81:
+     int i = 0;
+     case 79:
+     case 56:
+     atomicStore(buf[next_virtual_gid], uint(read_1 == read_2) + 1, 4, 64, 4);
+     break;
+     case 66:
+     vec4 _GLF_SWITCH_0_0v, _GLF_SWITCH_0_1v[23], _GLF_SWITCH_0_2v[97];
+     default:
+     1;
+    }
+  }
+ else
+  {
+   switch(_GLF_SWITCH(0))
+    {
+     case 0:
+     case 68:
+     atomicStore(buf[next_virtual_gid], uint(read_1 == read_2) + 1, 4, 64, 4);
+     break;
+     case 92:
+     uvec4 _GLF_SWITCH_1_0v, _GLF_SWITCH_1_1v;
+     case 83:
+     bvec2 _GLF_SWITCH_1_2v, _GLF_SWITCH_1_3v;
+     default:
+     1;
+    }
+  }
+}

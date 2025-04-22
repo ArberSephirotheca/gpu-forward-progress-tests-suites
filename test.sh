@@ -53,7 +53,7 @@ gen_core() {
     -v "$(pwd)/all_tests_core:/opt/graphicsfuzz/temp/output" \
     glsl-generator-core:local
 
-  python3 replace_all_sub_group_size.py
+  python3 replace_all_sub_group_size.py core
 }
 
 gen_intel_core() {

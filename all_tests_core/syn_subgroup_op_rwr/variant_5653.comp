@@ -1,0 +1,59 @@
+#version 460
+struct _GLF_struct_2 {
+ int _f0;
+ ivec2 _f1;
+ uvec4 _f2;
+} ;
+
+struct _GLF_struct_3 {
+ uint next_virtual_gid;
+ _GLF_struct_2 _f0;
+} ;
+
+struct _GLF_struct_1 {
+ uint subgroup_id;
+ mat4x2 _f0;
+} ;
+
+struct _GLF_struct_0 {
+ uvec2 _f0;
+ bvec3 _f1;
+ uint num_workgroup;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(gl_SubgroupID, mat4x2(1.0));
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(uvec2(1u), bvec3(true), gl_NumWorkGroups.x);
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + _GLF_struct_replacement_1.subgroup_id * subgroup_size + subgroup_local_id;
+ _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(workgroup_base + _GLF_struct_replacement_1.subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size), _GLF_struct_2(1, ivec2(1), uvec4(1u)));
+ uint read_1 = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ atomicStore(buf[_GLF_struct_replacement_3.next_virtual_gid], uint(read_1 + 1), 4, 64, 4);
+ uint read_2 = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(subgroup_local_id + 1 < subgroup_size)
+  {
+   atomicStore(buf[_GLF_struct_replacement_3.next_virtual_gid], uint(read_1 + 1 == read_2) + 1, 4, 64, 4);
+   subgroupAll(false);
+  }
+ else
+  {
+   atomicStore(buf[_GLF_struct_replacement_3.next_virtual_gid], uint(read_1 + 1 == read_2) + 1, 4, 64, 4);
+   subgroupAll(true);
+  }
+}

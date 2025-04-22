@@ -1,0 +1,92 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+uint subgroup_size = 16;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
+ if(subgroup_local_id + 1 < subgroup_size)
+  {
+   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+   subgroupAll(false);
+  }
+ else
+  {
+   switch(_GLF_SWITCH(int(_GLF_ZERO(0.0, injectionSwitch.x))))
+    {
+     case 89:
+     mat3x2(6.9, 8867.8320, -36.62, -2526.5206, -7532.1861, -3437.2855);
+     case 64:
+     mat4(-79.66, 3539.9027, 429.205, -8.9, 4673.7222, -5.3, 3298.5630, -54.04, 17.87, -53.94, 10.12, -3.5, 17.13, -60.89, -3.4, -585.278);
+     case 0:
+     case 11:
+     case 56:
+     case 65:
+     case 24:
+     case 7:
+     atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+     case 26:
+     case 18:
+     case 41:
+     case 51:
+     subgroupAll(true);
+     break;
+     case 90:
+     {
+      for(int _GLF_SWITCH_0_0v, _GLF_SWITCH_0_1v[14], _GLF_SWITCH_0_2v[91]; false; (bvec4(true, false, false, true)))
+       {
+        ivec4 GLF_merged2_0_1_16_1_3_16_GLF_SWITCH_0_0v_GLF_SWITCH_0_6v;
+        mat4x3 _GLF_SWITCH_0_3v[90], _GLF_SWITCH_0_4v;
+        mat4x3(347.779, 1.0, 4.1, -518.539, -605.783, -495.387, -268.775, 822.290, 0.0, -3733.0707, -145.534, -2130.8088);
+        ivec3 _GLF_SWITCH_0_5v, _GLF_SWITCH_0_6v;
+        GLF_merged2_0_1_16_1_3_16_GLF_SWITCH_0_0v_GLF_SWITCH_0_6v.yzw = _GLF_SWITCH_0_6v;
+        (4.5 * -995.289);
+        mat4x3 _GLF_SWITCH_0_7v, _GLF_SWITCH_0_8v[27];
+        greaterThanEqual(GLF_merged2_0_1_16_1_3_16_GLF_SWITCH_0_0v_GLF_SWITCH_0_6v.yzw, GLF_merged2_0_1_16_1_3_16_GLF_SWITCH_0_0v_GLF_SWITCH_0_6v.yzw);
+        mat3(-6.1, 13.13, -599.458, 3.3, 5027.1968, 83.06, 72.08, -174.649, -8476.2713);
+        uvec2(78728u, 182485u);
+        uvec2 _GLF_SWITCH_0_9v;
+       }
+     }
+     case 70:
+     mat2(-8140.8711, -4.6, 596.363, 8.8);
+     default:
+     1;
+    }
+  }
+}

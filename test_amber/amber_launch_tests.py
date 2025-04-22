@@ -30,9 +30,18 @@ def main():
                        ]
     
     directory_names_core = [
-                               "../all_tests/syn_branch_syn_release",
-                                "../all_tests/syn_lock_step_release",
-                                "../all_tests/syn_subgroup_op_release",
+                               "../all_tests_core/syn_branch_syn_release",
+                                "../all_tests_core/syn_lock_step_release",
+                                "../all_tests_core/syn_subgroup_op_release",
+                                "../all_tests_core/syn_branch_syn_rwr",
+                                "../all_tests_core/syn_branch_syn_wrw",
+                                "../all_tests_core/syn_branch_syn_rr",
+                                "../all_tests_core/syn_lock_step_rwr",
+                                "../all_tests_core/syn_lock_step_wrw",
+                                "../all_tests_core/syn_lock_step_rr",
+                                "../all_tests_core/syn_subgroup_op_rwr",
+                                "../all_tests_core/syn_subgroup_op_wrw",
+                                "../all_tests_core/syn_subgroup_op_rr",
                         ]
 
     directory_names_intel = [
@@ -49,9 +58,18 @@ def main():
                                 "../all_tests_fixed_subgroup/syn_memory_converge_atomic"
                             ]
     directory_names_intel_core = [
-                                "../all_tests_fixed_subgroup/syn_branch_syn_release",
-                                "../all_tests_fixed_subgroup/syn_lock_step_release",
-                                "../all_tests_fixed_subgroup/syn_subgroup_op_release",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_release",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_release",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_release",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rwr",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_wrw",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rr",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_rwr",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_wrw",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_rr",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rwr",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_wrw",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rr",
                             ]
     
     if sys.argv[1] == "core":
