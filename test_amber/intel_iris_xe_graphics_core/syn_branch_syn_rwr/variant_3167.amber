@@ -1,0 +1,86 @@
+#!amber
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+struct _GLF_struct_0 {
+ uvec4 _f0;
+ uint subgroup_local_id;
+} ;
+
+struct _GLF_struct_1 {
+ mat3x4 _f0;
+ vec4 _f1;
+ _GLF_struct_0 _f2;
+} ;
+
+struct _GLF_struct_2 {
+ _GLF_struct_1 _f0;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uvec4 GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2;
+ uvec3 GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_size;
+ GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz = GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_size;
+ uvec4 GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id;
+ uint subgroup_id = gl_SubgroupID;
+ GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.y = subgroup_id;
+uint subgroup_size = 16;
+ _GLF_struct_2 _GLF_struct_replacement_2 = _GLF_struct_2(_GLF_struct_1(mat3x4(1.0), vec4(1.0), _GLF_struct_0(uvec4(1u), gl_SubgroupInvocationID)));
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.z = workgroup_size;
+ uint workgroup_id = gl_WorkGroupID.x;
+ GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.y = workgroup_id;
+ GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.w = GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.y;
+ uint workgroup_base = GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.z * GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.w;
+ uint virtual_gid = workgroup_base + GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.y * subgroup_size + _GLF_struct_replacement_2._f0._f2.subgroup_local_id;
+ GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.x = virtual_gid;
+ GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.z = GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.xyz.x;
+ uint next_virtual_gid = workgroup_base + GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.y * subgroup_size + ((_GLF_struct_replacement_2._f0._f2.subgroup_local_id + 1) % subgroup_size);
+ uint read_1 = atomicLoad(buf[GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.z], 4, 64, 0);
+ atomicStore(buf[next_virtual_gid], uint(read_1 + 1), 4, 64, 4);
+ uint read_2 = atomicLoad(buf[GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.z], 4, 64, 0);
+ GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.w = read_2;
+ GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.x = GLF_merged2_0_3_69_3_1_6GLF_merged3_0_1_11_1_1_12_2_1_14virtual_gidworkgroup_idworkgroup_sizeread_2.w;
+ if(_GLF_struct_replacement_2._f0._f2.subgroup_local_id + 1 < subgroup_size)
+  {
+   int i = 0;
+   atomicStore(buf[next_virtual_gid], uint(read_1 + 1 == GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.x) + 1, 4, 64, 4);
+  }
+ else
+  {
+   atomicStore(buf[next_virtual_gid], uint(read_1 + 1 == GLF_merged4_0_1_6_1_1_11_2_1_11_3_1_12read_2subgroup_idvirtual_gidworkgroup_id.x) + 1, 4, 64, 4);
+  }
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected
