@@ -5,18 +5,9 @@
 import sys
 import os
 import argparse
+import subprocess
 
-
-# run the amber_test_driver.py script with all input directories available in Input_Files
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--android', action='store_true', help='Android tests')
-    parser.add_argument('--serial', help='serial number of device (if more than one attached with adb)')
-    parser.add_argument('--device', help='vulkan device id (if more than 1 vulkan device available)')
-
-    args = parser.parse_args()
-
-    directory_names = [
+DIR_GENERIC = [
                     "../all_tests/syn_branch_syn",
                        "../all_tests/syn_branch_syn_relax",
                        "../all_tests/syn_branch_syn_release",
@@ -30,7 +21,7 @@ def main():
                        "../all_tests/syn_memory_converge_atomic",
                        ]
     
-    directory_names_core = [
+DIR_CORE  = [
                                 "../all_tests_core/syn_branch_syn_rw",
                                 "../all_tests_core/syn_branch_syn_wr",
                                 "../all_tests_core/syn_branch_syn_ww",
@@ -43,10 +34,10 @@ def main():
                                 "../all_tests_core/syn_memory_converge_atomic",
                         ]
 
-    directory_names_intel = [
+DIR_INTEL  = [
                                 "../all_tests_fixed_subgroup/syn_branch_syn",
                                 "../all_tests_fixed_subgroup/syn_branch_syn_relax",
-                                "../all_tests_intel/syn_branch_syn_release",
+                                "../all_tests_fixed_subgroup/syn_branch_syn_release",
                                 "../all_tests_fixed_subgroup/syn_lock_step",
                                 "../all_tests_fixed_subgroup/syn_lock_step_relax",
                                 "../all_tests_fixed_subgroup/syn_lock_step_release",
@@ -56,7 +47,7 @@ def main():
                                 "../all_tests_fixed_subgroup/syn_memory_converge",
                                 "../all_tests_fixed_subgroup/syn_memory_converge_atomic"
                             ]
-    directory_names_intel_core = [
+DIR_INTEL_CORE  = [
                                 "../all_tests_fixed_subgroup_core/syn_branch_syn_rw",
                                 "../all_tests_fixed_subgroup_core/syn_branch_syn_wr",
                                 "../all_tests_fixed_subgroup_core/syn_branch_syn_ww",
@@ -69,23 +60,34 @@ def main():
                                 "../all_tests_fixed_subgroup_core/syn_memory_converge_atomic",
                             ]
 
-    if sys.argv[1] == "core":
-        directory_names = directory_names_core
-    elif sys.argv[1] == "intel":
-        directory_names = directory_names_intel
-    elif sys.argv[1] == "intel_core":
-        directory_names = directory_names_intel_core
-    elif sys.argv[1] == "all":
-        directory_names = directory_names
-    for name in directory_names:
-        command = "python3 amber_test_driver.py " + name + " 1"
+
+
+SELECTION = {
+    "core": DIR_CORE,
+    "intel": DIR_INTEL,
+    "intel-core": DIR_INTEL_CORE,
+    "generic": DIR_GENERIC,
+}
+# run the amber_test_driver.py script with all input directories available in Input_Files
+def main():
+    p = argparse.ArgumentParser(description="Run Amber test suites")
+    p.add_argument("suite", choices=SELECTION, help="which directory list to run")
+    p.add_argument("--android", action="store_true", help="Android tests")
+    p.add_argument("--serial", help="serial number of device (if more than one attached with adb)")
+    p.add_argument("--device", help="vulkan device id (if more than 1 vulkan device available)")
+    args = p.parse_args()
+
+
+    for name in SELECTION[args.suite]:
+        cmd = ["python3", "amber_test_driver.py", name, "1"]
         if args.android:
-            command += " --android"
+            cmd.append("--android")
         if args.serial:
-            command += f" --serial {args.serial}"
+            cmd += ["--serial", args.serial]
         if args.device:
-            command += f" --device {args.device}"
-        os.system(command)
+            cmd += ["--device", args.device]
+        print("Running:", " ".join(cmd))
+        subprocess.run(cmd, check=True)
 
 
 if __name__ == "__main__":
