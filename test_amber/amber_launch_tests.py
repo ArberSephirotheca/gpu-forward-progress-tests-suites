@@ -40,6 +40,7 @@ def main():
                                 "../all_tests_core/syn_subgroup_op_rw",
                                 "../all_tests_core/syn_subgroup_op_wr",
                                 "../all_tests_core/syn_subgroup_op_ww",
+                                "../all_tests_core/syn_memory_converge_atomic",
                         ]
 
     directory_names_intel = [
@@ -65,6 +66,7 @@ def main():
                                 "../all_tests_fixed_subgroup_core/syn_subgroup_op_rw",
                                 "../all_tests_fixed_subgroup_core/syn_subgroup_op_wr",
                                 "../all_tests_fixed_subgroup_core/syn_subgroup_op_ww",
+                                "../all_tests_fixed_subgroup_core/syn_memory_converge_atomic",
                             ]
 
     if sys.argv[1] == "core":
