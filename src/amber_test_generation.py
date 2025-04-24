@@ -40,7 +40,7 @@ default_config = Configuration(timeout=10000, workgroups=65532, threads_per_work
 # program will terminate, num_testing_subgroups is the number of threads being tested, and saturation_level is the
 # type of saturation (if any)
 def write_amber_prologue(data, output, timeout, threads_per_workgroup, workgroups,
-                         subgroup_setting, subgroup_size):
+                         subgroup_setting, subgroup_size, checker_buf=0):
     output.write("#!amber\n")
     output.write("\n")
     output.write("SET ENGINE_DATA fence_timeout_ms " + str(timeout) + "\n")
@@ -53,7 +53,7 @@ def write_amber_prologue(data, output, timeout, threads_per_workgroup, workgroup
     output.write("\n")
 
 # write the necessary "boiler plate" code to end the amber test, along with generating a desired number of threads
-def write_amber_epilogue(output, workgroups, threads_per_workgroup):
+def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=0):
     total_threads = workgroups * threads_per_workgroup
     output.write("END\n")
     output.write("\n")
@@ -63,13 +63,22 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup):
     output.write("BUFFER tester DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
     output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 2\n")
     output.write("BUFFER injection DATA_TYPE vec2<float> DATA\n 0.0 1.0\nEND\n")
-
+    # 1 = read write
+    if checker_buf == 1:
+        output.write("BUFFER checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 1\n")
+        output.write("BUFFER expected_checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
+    # 2 = write read
+    elif checker_buf == 2:
+        output.write("BUFFER checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
+        output.write("BUFFER expected_checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 1\n")
     output.write("\n")
     output.write("PIPELINE compute test_pipe\n")
     output.write("  ATTACH test\n")
     # output.write("  BIND BUFFER pickthread AS storage DESCRIPTOR_SET 0 BINDING 3 \n")
     output.write("  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 \n")
     output.write("  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 \n")
+    if checker_buf == 1 or checker_buf == 2:
+        output.write("  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 \n")
 
 
     output.write("\n")
@@ -78,6 +87,8 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup):
     output.write("RUN test_pipe " + str(workgroups) + " 1 1\n")
 
     output.write("EXPECT tester EQ_BUFFER expected\n")
+    if checker_buf == 1 or checker_buf == 2:
+        output.write("EXPECT checker EQ_BUFFER expected_checker\n")
 
 
 # generate an Amber test with a provided input file, a desired output file name, and a Configuration object to set up
@@ -87,18 +98,17 @@ def generate_amber_test(inputted_file, output_file_name, config=default_config):
     timeout = config.get_timeout()
     subgroup_set = int(config.get_subgroup_setting())
     subgroup_size = int(config.get_subgroup_size())
-
+    checker_buf = 0
+    if input_file.stem.endswith("_rw"):
+        checker_buf = 1
+    elif input_file.stem.endswith("_wr"):
+        checker_buf = 2
     if output_file_name.endswith(".amber"):
         print("Script will include the .amber extension, please provide a different output file name", file=sys.stderr)
         exit(1)
 
-
     with open(input_file, 'r') as file:
         data = file.read()
-
-
-
-
 
     threads_per_workgroup = int(config.get_threads_per_workgroup())
     workgroups = int(config.get_number_of_workgroups())
@@ -112,10 +122,10 @@ def generate_amber_test(inputted_file, output_file_name, config=default_config):
 
     # call the appropriate functions to generate the amber test
     write_amber_prologue(data, output, timeout, threads_per_workgroup, workgroups,
-                         subgroup_set, subgroup_size)
+                         subgroup_set, subgroup_size, checker_buf)
 
 
-    write_amber_epilogue(output, workgroups, threads_per_workgroup)
+    write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf)
 
 
 def main():
