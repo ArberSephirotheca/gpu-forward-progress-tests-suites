@@ -1,0 +1,125 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+struct _GLF_struct_4 {
+ uvec3 _f0;
+ mat3x4 _f1;
+} ;
+
+struct _GLF_struct_2 {
+ bool _f0;
+ bvec4 _f1;
+ uvec3 _f2;
+ uvec4 _f3;
+} ;
+
+struct _GLF_struct_1 {
+ ivec3 _f0;
+ mat2 _f1;
+ int _f2;
+} ;
+
+struct _GLF_struct_0 {
+ mat2x3 _f0;
+ mat3x4 _f1;
+} ;
+
+struct _GLF_struct_3 {
+ mat2x4 _f0;
+ _GLF_struct_0 _f1;
+ vec4 _f2;
+ _GLF_struct_1 _f3;
+ _GLF_struct_2 _f4;
+ int _f5;
+ uint _f6;
+} ;
+
+struct _GLF_struct_5 {
+ _GLF_struct_3 _f0;
+ vec3 _f1;
+ mat3x2 _f2;
+ mat4x2 _f3;
+ uint virtual_gid;
+ _GLF_struct_4 _f4;
+ uint _f5;
+ ivec3 _f6;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uvec2 GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id;
+ uvec4 GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread;
+ uvec2 GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_id;
+ GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy = GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_id;
+ uvec2 GLF_merged2_0_1_4_1_1_14readworkgroup_size;
+ uvec4 GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id;
+ uint subgroup_id = gl_SubgroupID;
+ GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.y = subgroup_id;
+uint subgroup_size = 16;
+ GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.x = subgroup_size;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x = subgroup_local_id;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.z = num_workgroup;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ GLF_merged2_0_1_4_1_1_14readworkgroup_size.y = workgroup_size;
+ if(_GLF_DEAD(_GLF_IDENTITY(false, bool(bvec2(false, true)))))
+  return;
+ uint workgroup_id = gl_WorkGroupID.x;
+ GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.y = workgroup_id;
+ GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.y = GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.y;
+ GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.w = GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.y;
+ uint workgroup_base = GLF_merged2_0_1_4_1_1_14readworkgroup_size.y * GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.w;
+ if(_GLF_DEAD(false))
+  return;
+ GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.z = workgroup_base;
+ _GLF_struct_5 _GLF_struct_replacement_5 = _GLF_struct_5(_GLF_struct_3(mat2x4(1.0), _GLF_struct_0(mat2x3(1.0), mat3x4(1.0)), vec4(1.0), _GLF_struct_1(ivec3(1), mat2(1.0), 1), _GLF_struct_2(true, bvec4(true), uvec3(1u), uvec4(1u)), 1, 1u), vec3(1.0), mat3x2(1.0), mat4x2(1.0), GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.z + GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.y * GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.x + GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x, _GLF_struct_4(uvec3(1u), mat3x4(1.0)), 1u, ivec3(1));
+ uint next_virtual_gid = GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.z + GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.y * GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.x + ((GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x + 1) % GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.x);
+ GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.x = next_virtual_gid;
+ atomicStore(buf[GLF_merged4_0_1_16_1_1_11_2_1_14_3_1_12next_virtual_gidsubgroup_idworkgroup_baseworkgroup_id.x], uint(1), 4, 64, 4);
+ uint read = atomicLoad(buf[_GLF_struct_replacement_5.virtual_gid], 4, 64, 0);
+ GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.w = read;
+ GLF_merged2_0_1_4_1_1_14readworkgroup_size.x = GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.w;
+ if(_GLF_DEAD(false))
+  return;
+ if(GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x + 1 < GLF_merged3_0_2_50_2_1_13_3_1_4GLF_merged2_0_1_13_1_1_12subgroup_sizeworkgroup_idnum_workgroupread.xy.x)
+  {
+   atomicStore(checker[_GLF_struct_replacement_5.virtual_gid], GLF_merged2_0_1_4_1_1_14readworkgroup_size.x, 4, 64, 4);
+   subgroupAll(false);
+  }
+ else
+  {
+   atomicStore(checker[_GLF_struct_replacement_5.virtual_gid], GLF_merged2_0_1_4_1_1_14readworkgroup_size.x, 4, 64, 4);
+   subgroupAll(true);
+  }
+}

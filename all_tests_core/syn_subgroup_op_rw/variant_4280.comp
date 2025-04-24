@@ -1,0 +1,109 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ if(subgroup_local_id + 1 < subgroup_size)
+  {
+   switch(_GLF_SWITCH(0))
+    {
+     case 82:
+     vec2 _GLF_SWITCH_0_0v[11], _GLF_SWITCH_0_1v[17], _GLF_SWITCH_0_2v;
+     case 0:
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     case 95:
+     case 90:
+     subgroupAll(false);
+     break;
+     default:
+     1;
+    }
+  }
+ else
+  {
+   switch(_GLF_SWITCH(0))
+    {
+     case 96:
+     mat4x2 _GLF_SWITCH_1_0v;
+     if(_GLF_DEAD(false))
+      barrier();
+     case 0:
+     atomicStore(buf[virtual_gid], read, 4, 64, 4);
+     case 88:
+     subgroupAll(true);
+     break;
+     case 1:
+     if((mat2x3(-435.801, 543.106, 923.399, -24.96, 44.65, -8.5) != mat2x3(-96.36, -0.6, 2356.2366, -0.8, -453.672, 59.23)))
+      {
+       ;
+       for(       refract((2211.3013 / vec3(41.03, 326.016, 21.71)), vec3(9.9, 4513.4602, 3.3), -2795.2254);
+ false; bvec2(true, true))
+        {
+         switch(_GLF_SWITCH(0))
+          {
+           case 61:
+           mat3x2(-4.9, -9703.8266, 1411.0626, -78.25, -3332.4413, -77.44);
+           case 0:
+           case 58:
+           case 26:
+           case 24:
+           case 85:
+           ;
+           break;
+           default:
+           1;
+          }
+        }
+       if(_GLF_DEAD(false))
+        barrier();
+      }
+     case 51:
+     notEqual(ivec4(ivec2(79278, -4344), ivec2(-65544, -16328)), ivec4(98625, 49676, 54181, -99181));
+     default:
+     1;
+    }
+  }
+}

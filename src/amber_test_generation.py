@@ -5,7 +5,7 @@
 import sys
 import re
 from configuration import Configuration
-
+from pathlib import Path
 # Configuration object to be used in the Amber test generation
 
 # Notes: saturation_level describes the heuristic of running many
@@ -65,7 +65,7 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     output.write("BUFFER injection DATA_TYPE vec2<float> DATA\n 0.0 1.0\nEND\n")
     # 1 = read write
     if checker_buf == 1:
-        output.write("BUFFER checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 1\n")
+        output.write("BUFFER checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
         output.write("BUFFER expected_checker DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
     # 2 = write read
     elif checker_buf == 2:
@@ -85,23 +85,27 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     output.write("END\n")
     output.write("\n")
     output.write("RUN test_pipe " + str(workgroups) + " 1 1\n")
-
-    output.write("EXPECT tester EQ_BUFFER expected\n")
-    if checker_buf == 1 or checker_buf == 2:
+    
+    if checker_buf == 0:
+        output.write("EXPECT tester EQ_BUFFER expected\n")
+    elif checker_buf == 1 or checker_buf == 2:
         output.write("EXPECT checker EQ_BUFFER expected_checker\n")
+    else:
+        print("Invalid checker buffer value. Must be 0, 1, or 2.", file=sys.stderr)
+        exit(1)
 
 
 # generate an Amber test with a provided input file, a desired output file name, and a Configuration object to set up
 # the number of workgroups, threads per workgroup, and timeout
 def generate_amber_test(inputted_file, output_file_name, config=default_config):
-    input_file = inputted_file
+    input_file = Path(inputted_file)
     timeout = config.get_timeout()
     subgroup_set = int(config.get_subgroup_setting())
     subgroup_size = int(config.get_subgroup_size())
     checker_buf = 0
-    if input_file.stem.endswith("_rw"):
+    if input_file.parent.name.endswith("_rw"):
         checker_buf = 1
-    elif input_file.stem.endswith("_wr"):
+    elif input_file.parent.name.endswith("_wr"):
         checker_buf = 2
     if output_file_name.endswith(".amber"):
         print("Script will include the .amber extension, please provide a different output file name", file=sys.stderr)

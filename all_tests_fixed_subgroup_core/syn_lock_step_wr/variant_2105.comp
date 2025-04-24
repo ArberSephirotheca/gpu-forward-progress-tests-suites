@@ -1,0 +1,78 @@
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+uint subgroup_size = 16;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(_GLF_WRAPPED_IF_FALSE(false))
+  {
+  }
+ else
+  {
+   switch(_GLF_SWITCH((0 | 0)))
+    {
+     case 7:
+     uvec4(174553u, 97047u, 170634u, 87873u);
+     case 98:
+     ;
+     case 0:
+     case 21:
+     case 47:
+     case 68:
+     case 50:
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     break;
+     case 70:
+     while((uvec3(56321u, 169246u, 135254u) == uvec3(58842u, 5984u, 22413u)))
+      {
+       mat2 _GLF_SWITCH_0_0v[65], _GLF_SWITCH_0_1v[63];
+       ;
+       for(vec4 _GLF_SWITCH_0_2v; (mat2(-4608.3620, -3.7, 1.2, -7.9) == mat2(-97.97, 6593.6807, -865.174, 2973.6264)); uvec3(55863u, 157606u, 32169u).zz)
+        {
+         vec3 _GLF_SWITCH_0_3v, _GLF_SWITCH_0_4v[39], _GLF_SWITCH_0_5v;
+        }
+      }
+     default:
+     1;
+    }
+  }
+}

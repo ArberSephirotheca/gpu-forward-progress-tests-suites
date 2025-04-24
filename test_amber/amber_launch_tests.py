@@ -28,24 +28,18 @@ def main():
                        "../all_tests/syn_subgroup_op_release",
                        "../all_tests/syn_memory_converge",
                        "../all_tests/syn_memory_converge_atomic",
-                       "../all_tests/syn_rr",
-                       "../all_tests/syn_rr_rwr",
-                       "../all_tests/syn_rr_wrw",
                        ]
     
     directory_names_core = [
-                               "../all_tests_core/syn_branch_syn_release",
-                                "../all_tests_core/syn_lock_step_release",
-                                "../all_tests_core/syn_subgroup_op_release",
-                                "../all_tests_core/syn_branch_syn_rwr",
-                                "../all_tests_core/syn_branch_syn_wrw",
-                                "../all_tests_core/syn_branch_syn_rr",
-                                "../all_tests_core/syn_lock_step_rwr",
-                                "../all_tests_core/syn_lock_step_wrw",
-                                "../all_tests_core/syn_lock_step_rr",
-                                "../all_tests_core/syn_subgroup_op_rwr",
-                                "../all_tests_core/syn_subgroup_op_wrw",
-                                "../all_tests_core/syn_subgroup_op_rr",
+                                "../all_tests_core/syn_branch_syn_rw",
+                                "../all_tests_core/syn_branch_syn_wr",
+                                "../all_tests_core/syn_branch_syn_ww",
+                                "../all_tests_core/syn_lock_step_rw",
+                                "../all_tests_core/syn_lock_step_wr",
+                                "../all_tests_core/syn_lock_step_ww",
+                                "../all_tests_core/syn_subgroup_op_rw",
+                                "../all_tests_core/syn_subgroup_op_wr",
+                                "../all_tests_core/syn_subgroup_op_ww",
                         ]
 
     directory_names_intel = [
@@ -62,18 +56,15 @@ def main():
                                 "../all_tests_fixed_subgroup/syn_memory_converge_atomic"
                             ]
     directory_names_intel_core = [
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_release",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_release",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_release",
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rwr",
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_wrw",
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rr",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_rwr",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_wrw",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_rr",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rwr",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_wrw",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rr",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rw",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_wr",
+                                "../all_tests_fixed_subgroup_core/syn_branch_syn_ww",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_rw",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_wr",
+                                "../all_tests_fixed_subgroup_core/syn_lock_step_ww",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rw",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_wr",
+                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_ww",
                             ]
 
     if sys.argv[1] == "core":
