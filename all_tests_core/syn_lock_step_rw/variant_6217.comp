@@ -14,16 +14,26 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec3 GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size;
+ uvec2 GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base;
+ uvec2 GLF_merged2_0_1_13_1_1_4num_workgroupread;
  uint subgroup_id = gl_SubgroupID;
+ GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.y = subgroup_id;
  uint subgroup_size = gl_SubgroupSize;
+ GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.z = subgroup_size;
+ GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.x = GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.z;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
+ GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.x = num_workgroup;
+ GLF_merged2_0_1_13_1_1_4num_workgroupread.x = GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.y = workgroup_base;
+ uint virtual_gid = GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.y + GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.y * GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.x + subgroup_local_id;
+ uint next_virtual_gid = GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.y + GLF_merged3_0_1_13_1_1_11_2_1_13num_workgroupsubgroup_idsubgroup_size.y * GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.x + ((subgroup_local_id + 1) % GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_base.x);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ GLF_merged2_0_1_13_1_1_4num_workgroupread.y = read;
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], GLF_merged2_0_1_13_1_1_4num_workgroupread.y, 4, 64, 4);
 }

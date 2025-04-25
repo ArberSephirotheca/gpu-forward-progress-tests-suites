@@ -17,11 +17,6 @@
 #endif
 
 
-struct _GLF_struct_0 {
- uint num_workgroup;
- bvec3 _f0;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -41,7 +36,7 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_NumWorkGroups.x, bvec3(true));
+ uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
@@ -49,32 +44,14 @@ void main()
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- for(int _injected_loop_counter = ((int(_GLF_ONE(1.0, injectionSwitch.y)) << _GLF_IDENTITY(int(5), int(5))) >> _GLF_IDENTITY(int(5), int(5))); _GLF_WRAPPED_LOOP(_injected_loop_counter != int(_GLF_ZERO(0.0, injectionSwitch.x))); _injected_loop_counter --)
+ if(subgroup_local_id + 1 < subgroup_size)
   {
-   for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter > (0 << _GLF_IDENTITY(int(5), int(5)))); _injected_loop_counter --)
-    {
-     if(subgroup_local_id + 1 < subgroup_size)
-      {
-       do
-        {
-         atomicStore(checker[virtual_gid], read, 4, 64, 4);
-        }
-       while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
-       do
-        {
-         do
-          {
-           subgroupAll(false);
-          }
-         while(_GLF_WRAPPED_LOOP(false));
-        }
-       while(_GLF_WRAPPED_LOOP(false));
-      }
-     else
-      {
-       atomicStore(checker[virtual_gid], read, 4, 64, 4);
-       subgroupAll(true);
-      }
-    }
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(false);
+  }
+ else
+  {
+   atomicStore(checker[_GLF_IDENTITY(virtual_gid, uint(uvec2(virtual_gid, 0u)))], read, 4, 64, 4);
+   subgroupAll(true);
   }
 }

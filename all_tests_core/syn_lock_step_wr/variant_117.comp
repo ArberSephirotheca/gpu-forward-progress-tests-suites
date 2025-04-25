@@ -14,15 +14,18 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec2 GLF_merged2_0_1_13_1_1_11num_workgroupsubgroup_id;
  uint subgroup_id = gl_SubgroupID;
+ GLF_merged2_0_1_13_1_1_11num_workgroupsubgroup_id.y = subgroup_id;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
+ GLF_merged2_0_1_13_1_1_11num_workgroupsubgroup_id.x = num_workgroup;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ uint virtual_gid = workgroup_base + GLF_merged2_0_1_13_1_1_11num_workgroupsubgroup_id.y * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + GLF_merged2_0_1_13_1_1_11num_workgroupsubgroup_id.y * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  atomicStore(checker[virtual_gid], read, 4, 64, 4);

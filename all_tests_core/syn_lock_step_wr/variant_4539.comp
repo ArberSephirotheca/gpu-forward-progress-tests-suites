@@ -1,72 +1,4 @@
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
-struct _GLF_struct_4 {
- uvec4 _f0;
- mat3x2 _f1;
- mat4x2 _f2;
- mat3 _f3;
-} ;
-
-struct _GLF_struct_5 {
- _GLF_struct_4 _f0;
- int _f1;
-} ;
-
-struct _GLF_struct_2 {
- uvec2 _f0;
- bvec4 _f1;
- ivec3 _f2;
- mat2x4 _f3;
- uint read;
- ivec2 _f4;
-} ;
-
-struct _GLF_struct_1 {
- ivec2 _f0;
- vec4 _f1;
- mat4x2 _f2;
- uvec2 _f3;
- bvec4 _f4;
-} ;
-
-struct _GLF_struct_0 {
- uvec2 _f0;
- mat4 _f1;
- int _f2;
-} ;
-
-struct _GLF_struct_3 {
- bvec2 _f0;
- mat2 _f1;
- _GLF_struct_0 _f2;
- _GLF_struct_1 _f3;
- uint _f4;
- _GLF_struct_2 _f5;
-} ;
-
-struct _GLF_struct_6 {
- _GLF_struct_3 _f0;
- _GLF_struct_5 _f1;
- vec3 _f2;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -87,13 +19,11 @@ void main()
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
- if(_GLF_DEAD(false))
-  barrier();
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- _GLF_struct_6 _GLF_struct_replacement_6 = _GLF_struct_6(_GLF_struct_3(bvec2(true), mat2(1.0), _GLF_struct_0(uvec2(1u), mat4(1.0), 1), _GLF_struct_1(ivec2(1), vec4(1.0), mat4x2(1.0), uvec2(1u), bvec4(true)), 1u, _GLF_struct_2(uvec2(1u), bvec4(true), ivec3(1), mat2x4(1.0), atomicLoad(buf[virtual_gid], 4, 64, 0), ivec2(1))), _GLF_struct_5(_GLF_struct_4(uvec4(1u), mat3x2(1.0), mat4x2(1.0), mat3(1.0)), 1), vec3(1.0));
- atomicStore(checker[virtual_gid], _GLF_struct_replacement_6._f0._f5.read, 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

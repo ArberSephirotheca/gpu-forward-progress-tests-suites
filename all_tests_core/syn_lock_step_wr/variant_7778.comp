@@ -14,16 +14,21 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec4 GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
+ GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.w = workgroup_size;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.z = workgroup_id;
+ uint workgroup_base = GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.w * GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.z;
+ GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.y = workgroup_base;
+ uint virtual_gid = GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.y + subgroup_id * subgroup_size + subgroup_local_id;
+ GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.x = virtual_gid;
+ uint next_virtual_gid = GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.y + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ uint read = atomicLoad(buf[GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.x], 4, 64, 0);
+ atomicStore(checker[GLF_merged4_0_1_11_1_1_14_2_1_12_3_1_14virtual_gidworkgroup_baseworkgroup_idworkgroup_size.x], read, 4, 64, 4);
 }

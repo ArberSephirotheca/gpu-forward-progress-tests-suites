@@ -6,13 +6,13 @@ set -euo pipefail   # exit on error, undefined var, or pipe failure
 ##############################################################################
 
 # Prepare references directory for mounting into the container.
-#   $1 = pipeline  (core | intel-core | intel | generic)
+#   $1 = pipeline  (core | generic)
 #   $2 = test dir  (may be empty)
 _prepare_ref_mount() {
   local pipeline=$1 test=$2 base host_dir
 
   # Pick the right base tree
-  if [[ $pipeline == core || $pipeline == intel-core ]]; then
+  if [[ $pipeline == core ]]; then
     base="references_core"
   else
     base="references"
@@ -40,7 +40,7 @@ _prepare_ref_mount() {
 gen_core() {
   local test=${1:-}
   echo "==> [Generate → core] dir='${test:-all}'"
-  mkdir -p all_tests_core all_tests_fixed_subgroup
+  mkdir -p all_tests_core
 
   DOCKER_BUILDKIT=1 docker buildx build \
     --load \
@@ -54,16 +54,12 @@ gen_core() {
     -v "$(pwd)/donors:/opt/graphicsfuzz/temp/donors" \
     -v "$(pwd)/all_tests_core:/opt/graphicsfuzz/temp/output" \
     glsl-generator-core:local
-
-  python3 replace_all_sub_group_size.py core
 }
 
-gen_intel_core() { echo "==> [Generate → intel-core]"; gen_core "$1"; }
-
-gen_intel() {
+gen() {
   local test=${1:-}
-  echo "==> [Generate → intel] dir='${test:-all}'"
-  mkdir -p all_tests all_tests_fixed_subgroup
+  echo "==> [Generate → core] dir='${test:-all}'"
+  mkdir -p all_tests
 
   DOCKER_BUILDKIT=1 docker buildx build \
     --load \
@@ -73,22 +69,20 @@ gen_intel() {
     -t glsl-generator:local .
 
   docker run --rm \
-    -v "$(_prepare_ref_mount intel "$test")" \
+    -v "$(_prepare_ref_mount "$test")" \
     -v "$(pwd)/donors:/opt/graphicsfuzz/temp/donors" \
     -v "$(pwd)/all_tests:/opt/graphicsfuzz/temp/output" \
     glsl-generator:local
-
-  python3 replace_all_sub_group_size.py
 }
 
-gen_generic() { echo "==> [Generate → generic]"; gen_intel "$1"; }
+gen_generic() { echo "==> [Generate → generic]"; gen "$1"; }
 
 ##############################################################################
 #  Run helpers
 ##############################################################################
 
 _run_common() {
-  local suite=$1         # core | intel-core | intel | generic
+  local suite=$1         # core | generic
   local args=(-t "$suite")
   $ANDROID        && args+=(-a)
   [[ -n $SERIAL ]] && args+=(-s "$SERIAL")
@@ -97,8 +91,6 @@ _run_common() {
 }
 
 run_core()       { _run_common core        ; }
-run_intel_core() { _run_common intel-core  ; }
-run_intel()      { _run_common intel       ; }
 run_generic()    { _run_common generic     ; }
 
 ##############################################################################
@@ -116,7 +108,7 @@ Usage: orchestrate.sh <action> <pipeline> [dir] [flags]
     help       print this message
 
   pipeline:
-    core | intel-core | intel | generic
+    core | generic
 
   dir (optional):
     Sub-directory under references[_core] to limit generation. If omitted, all
@@ -132,17 +124,17 @@ Examples
   # 1. Generate core shaders and run on host default GPU
   ./orchestrate.sh both core
 
-  # 2. Generate intel-core shaders for sub-dir "my_case" only
-  ./orchestrate.sh generate intel-core my_case
+  # 2. Generate core shaders for sub-dir "my_case" only
+  ./orchestrate.sh generate core my_case
 
-  # 3. Run existing intel tests on host GPU 1
-  ./orchestrate.sh run intel -d 1
+  # 3. Run existing generic tests on host GPU 1
+  ./orchestrate.sh run generic -d 1
 
   # 4. Run core suite on first Android device adb sees
   ./orchestrate.sh run core -a
 
-  # 5. Run intel-core on a specific phone and force Vulkan device 0 inside it
-  ./orchestrate.sh run intel-core -a -s 0123456789ABCDEF -d 0
+  # 5. Run core on a specific phone and force Vulkan device 0 inside it
+  ./orchestrate.sh run core -a -s 0123456789ABCDEF -d 0
 EOF
 }
 
@@ -183,24 +175,18 @@ case $ACTION in
   generate)
     case $PIPELINE in
       core)        gen_core "$DIR" ;;
-      intel-core)  gen_intel_core "$DIR" ;;
-      intel)       gen_intel "$DIR" ;;
       generic)     gen_generic "$DIR" ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;
   run)
     case $PIPELINE in
       core)        run_core ;;
-      intel-core)  run_intel_core ;;
-      intel)       run_intel ;;
       generic)     run_generic ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;
   both)
     case $PIPELINE in
       core)        gen_core "$DIR"       ; run_core ;;
-      intel-core)  gen_intel_core "$DIR" ; run_intel_core ;;
-      intel)       gen_intel "$DIR"      ; run_intel ;;
       generic)     gen_generic "$DIR"    ; run_generic ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;

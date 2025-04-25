@@ -17,22 +17,6 @@
 #endif
 
 
-struct _GLF_struct_0 {
- bvec4 _f0;
- ivec3 _f1;
- mat4x3 _f2;
-} ;
-
-struct _GLF_struct_1 {
- _GLF_struct_0 _f0;
- mat2 _f1;
- uint subgroup_local_id;
-} ;
-
-struct _GLF_struct_2 {
- _GLF_struct_1 _f0;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -50,14 +34,16 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- _GLF_struct_2 _GLF_struct_replacement_2 = _GLF_struct_2(_GLF_struct_1(_GLF_struct_0(bvec4(true), ivec3(1), mat4x3(1.0)), mat2(1.0), gl_SubgroupInvocationID));
- uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize.x, uint(uvec4(gl_WorkGroupSize.x, (1u | 1u), 0u, 0u)));
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = _GLF_IDENTITY(gl_NumWorkGroups.x, uint(uvec4(gl_NumWorkGroups.x, 0u, 1u, uint(_GLF_ONE(1.0, injectionSwitch.y)))));
+ uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_2._f0.subgroup_local_id;
- uint next_virtual_gid = _GLF_IDENTITY(workgroup_base, ~ (_GLF_IDENTITY(~ (workgroup_base), (~ (workgroup_base)) | 0u))) + subgroup_id * subgroup_size + ((_GLF_struct_replacement_2._f0.subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], _GLF_IDENTITY(4, (_GLF_IDENTITY(4, clamp(4, 4, _GLF_IDENTITY(4, min(4, 4))))) ^ int(_GLF_ZERO(0.0, injectionSwitch.x))), 64, 0);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint workgroup_base = workgroup_size * _GLF_IDENTITY(workgroup_id, (_GLF_IDENTITY(workgroup_id, (workgroup_id) * 1u)) | (workgroup_id));
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_IDENTITY(((subgroup_local_id + 1) % subgroup_size), ((_GLF_IDENTITY((subgroup_local_id + 1), ((subgroup_local_id + 1)) | 0u) % subgroup_size)) / 1u);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(_GLF_DEAD(false))
+  return;
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, _GLF_IDENTITY(4, (4) ^ 0));
  atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

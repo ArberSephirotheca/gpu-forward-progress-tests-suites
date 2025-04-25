@@ -1,27 +1,4 @@
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
-struct _GLF_struct_0 {
- uint num_workgroup;
- ivec2 _f0;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -40,31 +17,13 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_NumWorkGroups.x, ivec2(1));
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
+ uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
- if(_GLF_DEAD(false))
-  {
-   if(_GLF_DEAD(false))
-    barrier();
-   return;
-  }
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- if(_GLF_DEAD(false))
-  barrier();
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- do
-  {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
-  }
- while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(_GLF_DEAD(false))
-  return;
  atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

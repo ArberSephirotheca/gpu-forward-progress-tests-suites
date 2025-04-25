@@ -41,7 +41,7 @@ void main()
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = _GLF_IDENTITY(workgroup_base + subgroup_id * subgroup_size, clamp(workgroup_base + subgroup_id * subgroup_size, workgroup_base + subgroup_id * subgroup_size, _GLF_IDENTITY(workgroup_base + subgroup_id * subgroup_size, (workgroup_base + subgroup_id * subgroup_size) / uint(_GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch.y, max(injectionSwitch.y, _GLF_IDENTITY(injectionSwitch.y, mix(float(_GLF_IDENTITY(injectionSwitch.y, (true ? injectionSwitch.y : _GLF_FUZZED(2.7)))), float(_GLF_FUZZED(8796.9483)), bool(false)))))))))) + ((subgroup_local_id + 1) % subgroup_size);
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
@@ -51,7 +51,18 @@ void main()
   }
  else
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   subgroupAll(true);
+   switch(_GLF_SWITCH(0))
+    {
+     case 0:
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     subgroupAll(true);
+     break;
+     case 17:
+     uvec2 _GLF_SWITCH_0_0v;
+     case 93:
+     mat4x3(-2.8, 9.8, 157.285, 7.4, 459.735, -1.7, 35.18, -36.67, -377.901, 91.01, -273.220, -75.24);
+     default:
+     1;
+    }
   }
 }

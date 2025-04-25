@@ -42,29 +42,18 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_WRAPPED_IF_FALSE(false))
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(subgroup_local_id + 1 < subgroup_size)
   {
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(false);
   }
  else
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(true);
   }
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- do
-  {
-   if(subgroup_local_id + 1 < subgroup_size)
-    {
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-     subgroupAll(false);
-    }
-   else
-    {
-     for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter > (0 | 0)); _injected_loop_counter --)
-      {
-       atomicStore(checker[virtual_gid], read, 4, 64, 4);
-      }
-     subgroupAll(true);
-    }
-  }
- while(_GLF_WRAPPED_LOOP(false));
+ if(_GLF_DEAD(false))
+  barrier();
 }

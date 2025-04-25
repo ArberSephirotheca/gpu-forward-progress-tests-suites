@@ -43,6 +43,8 @@ def write_amber_prologue(data, output, timeout, threads_per_workgroup, workgroup
                          subgroup_setting, subgroup_size, checker_buf=0):
     output.write("#!amber\n")
     output.write("\n")
+    output.write("DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl\n")
+    output.write("\n")
     output.write("SET ENGINE_DATA fence_timeout_ms " + str(timeout) + "\n")
     output.write("\n")
     output.write("SHADER compute test GLSL\n")
@@ -82,6 +84,7 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
 
 
     output.write("\n")
+    output.write("  SUBGROUP test\n\t  VARYING_SIZE on\n  END\n")
     output.write("END\n")
     output.write("\n")
     output.write("RUN test_pipe " + str(workgroups) + " 1 1\n")

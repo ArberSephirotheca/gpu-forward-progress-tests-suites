@@ -1,22 +1,4 @@
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -46,21 +28,8 @@ void main()
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
   {
-   switch(_GLF_SWITCH((0 & (56979))))
-    {
-     case 0:
-     case 58:
-     case 18:
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-     case 23:
-     case 12:
-     case 40:
-     case 94:
-     subgroupAll(false);
-     break;
-     default:
-     1;
-    }
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(false);
   }
  else
   {

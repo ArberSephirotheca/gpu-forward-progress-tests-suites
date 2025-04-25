@@ -1,22 +1,4 @@
 #version 460
-
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
-
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -33,7 +15,6 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec2 GLF_merged2_0_1_16_1_1_4next_virtual_gidread;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
@@ -43,61 +24,16 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- GLF_merged2_0_1_16_1_1_4next_virtual_gidread.x = next_virtual_gid;
- atomicStore(buf[GLF_merged2_0_1_16_1_1_4next_virtual_gidread.x], uint(1), 4, 64, 4);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- GLF_merged2_0_1_16_1_1_4next_virtual_gidread.y = read;
  if(subgroup_local_id + 1 < subgroup_size)
   {
-   atomicStore(checker[virtual_gid], GLF_merged2_0_1_16_1_1_4next_virtual_gidread.y, 4, 64, 4);
-   if(_GLF_WRAPPED_IF_FALSE(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    {
-    }
-   else
-    {
-     subgroupAll(false);
-    }
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(false);
   }
  else
   {
-   atomicStore(checker[virtual_gid], GLF_merged2_0_1_16_1_1_4next_virtual_gidread.y, 4, 64, 4);
-   for(int _injected_loop_counter = ((74010 ^ 11757) & (0 << _GLF_IDENTITY(int(2), int(2)))); _GLF_WRAPPED_LOOP(_injected_loop_counter < int(_GLF_ONE(1.0, injectionSwitch.y))); _injected_loop_counter ++)
-    {
-     switch(_GLF_SWITCH(0))
-      {
-       case 58:
-       (ivec4(64832, 38755, -67077, 7577) == ivec4(99648, 43440, -97016, 37872));
-       case 0:
-       case 85:
-       case 95:
-       case 15:
-       subgroupAll(true);
-       break;
-       case 18:
-       for(       not(bvec2(true, true));
- false; bvec3(false, false, true).yz)
-        {
-         vec3 _GLF_SWITCH_0_0v[81], _GLF_SWITCH_0_1v;
-         mat4x2 _GLF_SWITCH_0_2v, _GLF_SWITCH_0_3v;
-         if(_GLF_WRAPPED_IF_TRUE(true))
-          {
-           (mat2x4(564.472, 7.4, -9.3, 35.62, 3.0, -26.05, 4.7, 90.08) * _GLF_SWITCH_0_2v);
-          }
-         else
-          {
-          }
-         for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter > 0); _injected_loop_counter --)
-          {
-           (ivec3(43824, 17780, -43234) + ivec3(-72586, -88351, 10221));
-          }
-        }
-       default:
-       do
-        {
-         1;
-        }
-       while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
-      }
-    }
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(true);
   }
 }

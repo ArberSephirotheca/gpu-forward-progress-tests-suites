@@ -39,11 +39,11 @@ void main()
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
+ uint workgroup_base = _GLF_IDENTITY(workgroup_size * workgroup_id, min(workgroup_size * workgroup_id, workgroup_size * workgroup_id));
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_id * subgroup_size, (subgroup_id * subgroup_size) | 0u) + ((subgroup_local_id + 1) % subgroup_size);
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, _GLF_IDENTITY(64, max(_GLF_IDENTITY(64, 0 ^ (64)), 64)), 0);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
   {
    atomicStore(checker[virtual_gid], read, 4, 64, 4);
@@ -51,7 +51,13 @@ void main()
   }
  else
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   if(_GLF_WRAPPED_IF_TRUE(true))
+    {
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+    }
+   else
+    {
+    }
    subgroupAll(true);
   }
 }

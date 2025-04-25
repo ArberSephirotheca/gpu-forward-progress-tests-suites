@@ -34,14 +34,20 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
+ if(_GLF_DEAD(false))
+  barrier();
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
+ if(_GLF_DEAD(false))
+  barrier();
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = _GLF_IDENTITY(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, (workgroup_base + subgroup_id * subgroup_size + subgroup_local_id) - uint(_GLF_IDENTITY(_GLF_ZERO(0.0, injectionSwitch.x), (_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)) ? _GLF_FUZZED(-9.8) : _GLF_ZERO(0.0, injectionSwitch.x)))));
- uint next_virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_id * subgroup_size, (subgroup_id * subgroup_size) << 0u) + ((subgroup_local_id + 1) % _GLF_IDENTITY(subgroup_size, (true ? subgroup_size : _GLF_FUZZED(subgroup_local_id))));
- atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(1), (uint(1)) << 0u), 4, _GLF_IDENTITY(64, (64) | (_GLF_IDENTITY(64, (64) | (64)))), 4);
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
  atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

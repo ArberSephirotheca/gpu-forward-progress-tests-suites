@@ -1,15 +1,4 @@
 #version 460
-struct _GLF_struct_0 {
- mat2x4 _f0;
- uint read;
-} ;
-
-struct _GLF_struct_1 {
- _GLF_struct_0 _f0;
- mat3 _f1;
- uvec3 _f2;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -35,6 +24,6 @@ void main()
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(_GLF_struct_0(mat2x4(1.0), atomicLoad(buf[virtual_gid], 4, 64, 0)), mat3(1.0), uvec3(1u));
- atomicStore(checker[virtual_gid], _GLF_struct_replacement_1._f0.read, 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

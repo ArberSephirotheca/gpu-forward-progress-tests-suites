@@ -42,22 +42,61 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ do
+  {
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+  }
+ while(_GLF_WRAPPED_LOOP(false));
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(subgroup_local_id + 1 < subgroup_size)
+ do
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   subgroupAll(false);
-  }
- else
-  {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   if(_GLF_WRAPPED_IF_FALSE(false))
+   do
     {
+     if(_GLF_WRAPPED_IF_FALSE(false))
+      {
+      }
+     else
+      {
+       if(subgroup_local_id + 1 < subgroup_size)
+        {
+         do
+          {
+           for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter != (0 ^ 1)); _injected_loop_counter ++)
+            {
+             do
+              {
+               atomicStore(checker[virtual_gid], read, 4, 64, 4);
+              }
+             while(_GLF_WRAPPED_LOOP(false));
+            }
+          }
+         while(_GLF_WRAPPED_LOOP(false));
+         if(_GLF_WRAPPED_IF_FALSE(false))
+          {
+          }
+         else
+          {
+           if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+            {
+             do
+              {
+               subgroupAll(false);
+              }
+             while(_GLF_WRAPPED_LOOP(false));
+            }
+           else
+            {
+            }
+          }
+        }
+       else
+        {
+         atomicStore(checker[virtual_gid], read, 4, 64, 4);
+         subgroupAll(true);
+        }
+      }
     }
-   else
-    {
-     subgroupAll(true);
-    }
+   while(_GLF_WRAPPED_LOOP(_GLF_IDENTITY(false, ! (! (false)))));
   }
+ while(_GLF_WRAPPED_LOOP(false));
 }

@@ -33,8 +33,6 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- if(_GLF_DEAD(false))
-  barrier();
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
@@ -48,16 +46,23 @@ void main()
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   subgroupAll(false);
+   switch(_GLF_SWITCH((0 | 0)))
+    {
+     case 0:
+     case 76:
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     case 84:
+     subgroupAll(false);
+     break;
+     case 37:
+     greaterThanEqual(uvec4(29625u, 165323u, 125741u, 105350u), uvec4(78971u, 10124u, 196200u, 23365u));
+     default:
+     1;
+    }
   }
  else
   {
    atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    barrier();
    subgroupAll(true);
-   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    barrier();
   }
 }

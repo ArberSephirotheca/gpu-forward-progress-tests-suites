@@ -1,44 +1,4 @@
 #version 460
-struct _GLF_struct_2 {
- int _f0;
- mat4x2 _f1;
- uint subgroup_local_id;
- vec4 _f2;
- uint _f3;
-} ;
-
-struct _GLF_struct_1 {
- uvec3 _f0;
- bvec2 _f1;
- float _f2;
- mat2x3 _f3;
-} ;
-
-struct _GLF_struct_0 {
- ivec3 _f0;
- bool _f1;
- mat2 _f2;
- ivec3 _f3;
- uvec2 _f4;
- bvec4 _f5;
- bvec3 _f6;
-} ;
-
-struct _GLF_struct_3 {
- int _f0;
- _GLF_struct_0 _f1;
- uvec2 _f2;
- ivec4 _f3;
- uint _f4;
- _GLF_struct_1 _f5;
- _GLF_struct_2 _f6;
-} ;
-
-struct _GLF_struct_4 {
- uvec3 _f0;
- _GLF_struct_3 _f1;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -56,13 +16,13 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- _GLF_struct_4 _GLF_struct_replacement_4 = _GLF_struct_4(uvec3(1u), _GLF_struct_3(1, _GLF_struct_0(ivec3(1), true, mat2(1.0), ivec3(1), uvec2(1u), bvec4(true), bvec3(true)), uvec2(1u), ivec4(1), 1u, _GLF_struct_1(uvec3(1u), bvec2(true), 1.0, mat2x3(1.0)), _GLF_struct_2(1, mat4x2(1.0), gl_SubgroupInvocationID, vec4(1.0), 1u)));
+ uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_4._f1._f6.subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((_GLF_struct_replacement_4._f1._f6.subgroup_local_id + 1) % subgroup_size);
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  atomicStore(checker[virtual_gid], read, 4, 64, 4);

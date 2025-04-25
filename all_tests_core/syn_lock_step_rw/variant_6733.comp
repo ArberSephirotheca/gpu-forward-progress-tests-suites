@@ -1,34 +1,21 @@
 #version 460
-struct _GLF_struct_2 {
- bool _f0;
- bvec4 _f1;
- uvec2 _f2;
- mat4x2 _f3;
- uvec3 _f4;
-} ;
 
-struct _GLF_struct_3 {
- int _f0;
- _GLF_struct_2 _f1;
-} ;
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
 
-struct _GLF_struct_1 {
- mat2 _f0;
-} ;
-
-struct _GLF_struct_0 {
- bvec2 _f0;
-} ;
-
-struct _GLF_struct_4 {
- uint subgroup_local_id;
- _GLF_struct_0 _f0;
- float _f1;
- _GLF_struct_1 _f2;
- ivec3 _f3;
- _GLF_struct_3 _f4;
- float _f5;
-} ;
 
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
@@ -47,13 +34,15 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- _GLF_struct_4 _GLF_struct_replacement_4 = _GLF_struct_4(gl_SubgroupInvocationID, _GLF_struct_0(bvec2(true)), 1.0, _GLF_struct_1(mat2(1.0)), ivec3(1), _GLF_struct_3(1, _GLF_struct_2(true, bvec4(true), uvec2(1u), mat4x2(1.0), uvec3(1u))), 1.0);
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_4.subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((_GLF_struct_replacement_4.subgroup_local_id + 1) % subgroup_size);
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  atomicStore(checker[virtual_gid], read, 4, 64, 4);

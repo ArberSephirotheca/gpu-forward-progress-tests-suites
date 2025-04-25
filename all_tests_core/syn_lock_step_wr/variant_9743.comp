@@ -39,11 +39,9 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- if(_GLF_DEAD(false))
-  barrier();
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, _GLF_IDENTITY(64, (_GLF_IDENTITY(64, int(ivec3(_GLF_IDENTITY(64, ~ (~ (64))), 1, 1)))) / 1), 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

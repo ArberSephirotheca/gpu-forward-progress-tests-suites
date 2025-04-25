@@ -36,56 +36,22 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
  uint num_workgroup = gl_NumWorkGroups.x;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
- uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize.x, min(gl_WorkGroupSize.x, gl_WorkGroupSize.x));
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
+ uint next_virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_id, min(_GLF_IDENTITY(subgroup_id, (true ? subgroup_id : _GLF_FUZZED(workgroup_base))), _GLF_IDENTITY(subgroup_id, clamp(_GLF_IDENTITY(subgroup_id, min(subgroup_id, subgroup_id)), subgroup_id, _GLF_IDENTITY(subgroup_id, (true ? subgroup_id : _GLF_FUZZED(subgroup_size))))))) * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
   {
    atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   if(_GLF_DEAD(false))
-    return;
-   if(_GLF_WRAPPED_IF_FALSE(false))
-    {
-     if(_GLF_DEAD(false))
-      return;
-    }
-   else
-    {
-     subgroupAll(false);
-    }
+   subgroupAll(false);
   }
  else
   {
-   if(_GLF_WRAPPED_IF_FALSE(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    {
-    }
-   else
-    {
-     if(_GLF_DEAD(false))
-      {
-       do
-        {
-         return;
-        }
-       while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
-      }
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-     if(_GLF_DEAD(false))
-      return;
-    }
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(true);
   }
 }

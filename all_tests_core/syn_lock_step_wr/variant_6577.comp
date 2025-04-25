@@ -32,22 +32,19 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec2 GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- uint num_workgroup = gl_NumWorkGroups.x;
+ uint num_workgroup = _GLF_IDENTITY(_GLF_IDENTITY(gl_NumWorkGroups, uvec3(uvec3(_GLF_IDENTITY(gl_NumWorkGroups, uvec3(0u, 0u, 0u) + (gl_NumWorkGroups))))).x, (gl_NumWorkGroups.x) ^ 0u);
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.y = workgroup_base;
+ uint virtual_gid = GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.y + subgroup_id * subgroup_size + subgroup_local_id;
+ GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.x = virtual_gid;
+ uint next_virtual_gid = _GLF_IDENTITY(GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.y + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % _GLF_IDENTITY(subgroup_size, (subgroup_size) - uint(_GLF_ZERO(0.0, injectionSwitch.x)))), (GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.y + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size)) - 0u);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(_GLF_WRAPPED_IF_FALSE(false))
-  {
-  }
- else
-  {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-  }
+ uint read = atomicLoad(buf[GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.x], 4, 64, 0);
+ atomicStore(checker[GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_base.x], read, 4, 64, 4);
 }

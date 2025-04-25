@@ -36,12 +36,12 @@ void main()
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize, _GLF_IDENTITY((gl_WorkGroupSize), min(_GLF_IDENTITY((gl_WorkGroupSize), (true ? (gl_WorkGroupSize) : _GLF_FUZZED(uvec3(17277u, 36395u, 256u)))), _GLF_IDENTITY((gl_WorkGroupSize), max((gl_WorkGroupSize), _GLF_IDENTITY((gl_WorkGroupSize), max((gl_WorkGroupSize), (gl_WorkGroupSize))))))) + uvec3(0u, 0u, 0u)).x;
+ uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, _GLF_IDENTITY(4, (_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 4 : _GLF_FUZZED(-75289))), 64, 4);
 }

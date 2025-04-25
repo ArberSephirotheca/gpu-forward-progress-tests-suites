@@ -46,11 +46,7 @@ void main()
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  if(subgroup_local_id + 1 < subgroup_size)
   {
-   do
-    {
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-    }
-   while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(false);
   }
  else
@@ -58,4 +54,6 @@ void main()
    atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(true);
   }
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
 }

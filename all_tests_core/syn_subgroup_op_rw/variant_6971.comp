@@ -15,25 +15,36 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec3 GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base;
+ uvec2 GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size;
+ uvec3 GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
+ GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.y = subgroup_size;
+ GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.x = GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.y;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
+ GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y = workgroup_size;
+ GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.z = GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.y;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.x = workgroup_id;
+ GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.y = GLF_merged2_0_1_12_1_1_14workgroup_idworkgroup_size.x;
+ uint workgroup_base = GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.z * GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.y;
+ GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.z = workgroup_base;
+ uint virtual_gid = GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.z + subgroup_id * GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.x + subgroup_local_id;
+ uint next_virtual_gid = GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.z + subgroup_id * GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.x + ((subgroup_local_id + 1) % GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.x);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.x = read;
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(subgroup_local_id + 1 < subgroup_size)
+ if(subgroup_local_id + 1 < GLF_merged3_0_1_13_1_1_12_2_1_14subgroup_sizeworkgroup_idworkgroup_size.x)
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   atomicStore(checker[virtual_gid], GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.x, 4, 64, 4);
    subgroupAll(false);
   }
  else
   {
-   atomicStore(buf[virtual_gid], read, 4, 64, 4);
+   atomicStore(buf[virtual_gid], GLF_merged3_0_1_4_1_1_13_2_1_14readsubgroup_sizeworkgroup_base.x, 4, 64, 4);
    subgroupAll(true);
   }
 }

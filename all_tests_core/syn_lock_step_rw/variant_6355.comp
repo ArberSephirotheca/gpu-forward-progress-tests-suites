@@ -1,57 +1,21 @@
 #version 460
-struct _GLF_struct_6 {
- mat3x4 _f0;
-} ;
 
-struct _GLF_struct_5 {
- ivec2 _f0;
- vec4 _f1;
- uvec2 _f2;
- ivec2 _f3;
- ivec2 _f4;
-} ;
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
 
-struct _GLF_struct_7 {
- _GLF_struct_5 _f0;
- _GLF_struct_6 _f1;
-} ;
-
-struct _GLF_struct_3 {
- vec4 _f0;
-} ;
-
-struct _GLF_struct_4 {
- _GLF_struct_3 _f0;
- uint workgroup_base;
-} ;
-
-struct _GLF_struct_1 {
- mat4x2 _f0;
- mat3x4 _f1;
- mat3x4 _f2;
- vec2 _f3;
-} ;
-
-struct _GLF_struct_0 {
- mat4x3 _f0;
- uvec3 _f1;
- mat3x4 _f2;
- mat2 _f3;
-} ;
-
-struct _GLF_struct_2 {
- _GLF_struct_0 _f0;
- mat2x3 _f1;
- _GLF_struct_1 _f2;
- vec4 _f3;
-} ;
-
-struct _GLF_struct_8 {
- _GLF_struct_2 _f0;
- bvec4 _f1;
- _GLF_struct_4 _f2;
- _GLF_struct_7 _f3;
-} ;
 
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
@@ -74,10 +38,16 @@ void main()
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- _GLF_struct_8 _GLF_struct_replacement_8 = _GLF_struct_8(_GLF_struct_2(_GLF_struct_0(mat4x3(1.0), uvec3(1u), mat3x4(1.0), mat2(1.0)), mat2x3(1.0), _GLF_struct_1(mat4x2(1.0), mat3x4(1.0), mat3x4(1.0), vec2(1.0)), vec4(1.0)), bvec4(true), _GLF_struct_4(_GLF_struct_3(vec4(1.0)), workgroup_size * workgroup_id), _GLF_struct_7(_GLF_struct_5(ivec2(1), vec4(1.0), uvec2(1u), ivec2(1), ivec2(1)), _GLF_struct_6(mat3x4(1.0))));
- uint virtual_gid = _GLF_struct_replacement_8._f2.workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = _GLF_struct_replacement_8._f2.workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ for(int _injected_loop_counter = (1 & 1); _GLF_WRAPPED_LOOP(_injected_loop_counter != int(_GLF_ZERO(0.0, injectionSwitch.x))); _injected_loop_counter --)
+  {
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+  }
+ for(int _injected_loop_counter = ((0 ^ 0) << _GLF_IDENTITY(int(5), int(5))); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
+  {
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+  }
 }

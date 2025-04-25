@@ -33,29 +33,25 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec3 GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.x = num_workgroup;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.z = workgroup_id;
- uint workgroup_base = workgroup_size * GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.z;
+ uint workgroup_base = workgroup_size * workgroup_id;
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.y = virtual_gid;
- uint next_virtual_gid = _GLF_IDENTITY(workgroup_base, (_GLF_IDENTITY(workgroup_base, 1u * (workgroup_base))) | (workgroup_base)) + subgroup_id * subgroup_size + ((_GLF_IDENTITY(subgroup_local_id + 1, uint(_GLF_IDENTITY(uvec3(subgroup_local_id + 1, 0u, 0u), (uvec3(subgroup_local_id + 1, 0u, 0u)) | uvec3(0u, 0u, 0u))))) % subgroup_size);
- uint read = atomicLoad(buf[GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.y], 4, _GLF_IDENTITY(64, 0 | (64)), 0);
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + _GLF_IDENTITY(1, (1) << 0)) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(subgroup_local_id + 1 < _GLF_IDENTITY(subgroup_size, (subgroup_size) - 0u))
+ if(subgroup_local_id + 1 < subgroup_size)
   {
-   atomicStore(checker[GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.y], read, 4, 64, _GLF_IDENTITY(4, 0 | (4)));
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(false);
   }
  else
   {
-   atomicStore(buf[GLF_merged3_0_1_13_1_1_11_2_1_12num_workgroupvirtual_gidworkgroup_id.y], read, 4, 64, 4);
+   atomicStore(buf[virtual_gid], read, 4, 64, 4);
    subgroupAll(true);
   }
 }

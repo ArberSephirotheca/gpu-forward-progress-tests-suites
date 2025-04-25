@@ -43,15 +43,19 @@ void main()
  uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
  uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(buf[next_virtual_gid], uint(_GLF_IDENTITY(1, int(ivec4(1, 0, ((1 << _GLF_IDENTITY(int(3), _GLF_IDENTITY(int(3), int(ivec4(int(3), 1, 1, 0))))) >> _GLF_IDENTITY(int(3), int(3))), 1)))), 4, 64, 4);
- if(_GLF_IDENTITY(subgroup_local_id, min(subgroup_local_id, subgroup_local_id)) + 1 < subgroup_size)
+ atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(1), min(_GLF_IDENTITY(uint(1), min(uint(1), uint(1))), uint(1))), 4, 64, 4);
+ do
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   subgroupAll(false);
+   if(subgroup_local_id + 1 < subgroup_size)
+    {
+     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     subgroupAll(false);
+    }
+   else
+    {
+     atomicStore(buf[virtual_gid], read, 4, 64, 4);
+     subgroupAll(true);
+    }
   }
- else
-  {
-   atomicStore(buf[virtual_gid], read, 4, 64, 4);
-   subgroupAll(true);
-  }
+ while(_GLF_WRAPPED_LOOP(false));
 }

@@ -17,6 +17,16 @@
 #endif
 
 
+struct _GLF_struct_1 {
+ uint subgroup_local_id;
+ vec4 _f0;
+} ;
+
+struct _GLF_struct_0 {
+ uint read;
+ mat2 _f0;
+} ;
+
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -33,28 +43,25 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec2 GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- uint subgroup_local_id = gl_SubgroupInvocationID;
+ _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(gl_SubgroupInvocationID, vec4(1.0));
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize.x, (_GLF_IDENTITY(0u, max(0u, _GLF_IDENTITY(0u, clamp(_GLF_IDENTITY(0u, (0u) - 0u), 0u, 0u)))) ^ 1u) * (_GLF_IDENTITY(gl_WorkGroupSize.x, (gl_WorkGroupSize.x) | (gl_WorkGroupSize.x))));
- GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.y = workgroup_size;
+ uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.y * workgroup_id;
- uint virtual_gid = _GLF_IDENTITY(workgroup_base, (workgroup_base) - 0u) + _GLF_IDENTITY(subgroup_id, (subgroup_id) | 0u) * subgroup_size + subgroup_local_id;
- GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.x = virtual_gid;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[next_virtual_gid], uint(1), 4, _GLF_IDENTITY(64, max(64, 64)), 4);
- uint read = atomicLoad(buf[GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.x], 4, 64, _GLF_IDENTITY(0, (0) / 1));
- if(_GLF_IDENTITY(subgroup_local_id, max(subgroup_local_id, _GLF_IDENTITY(subgroup_local_id, ~ (~ (subgroup_local_id))))) + 1 < subgroup_size)
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_1.subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((_GLF_struct_replacement_1.subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(atomicLoad(buf[virtual_gid], 4, 64, 0), mat2(1.0));
+ if(_GLF_struct_replacement_1.subgroup_local_id + 1 < subgroup_size)
   {
-   atomicStore(checker[GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.x], _GLF_IDENTITY(read, min(read, read)), 4, 64, 4);
+   atomicStore(checker[virtual_gid], _GLF_struct_replacement_0.read, _GLF_IDENTITY(4, (_GLF_IDENTITY(4, (4) | (4))) | (4)), 64, 4);
    subgroupAll(false);
   }
  else
   {
-   atomicStore(checker[GLF_merged2_0_1_11_1_1_14virtual_gidworkgroup_size.x], read, _GLF_IDENTITY(4, (4) + 0), 64, _GLF_IDENTITY(_GLF_IDENTITY(4, 0 ^ (4)), max(4, 4)));
-   subgroupAll(true);
+   atomicStore(checker[virtual_gid], _GLF_struct_replacement_0.read, 4, 64, 4);
+   subgroupAll(_GLF_IDENTITY(true, (true) || false));
   }
 }
