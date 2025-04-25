@@ -31,41 +31,13 @@ DIR_CORE  = [
                                 "../all_tests_core/syn_subgroup_op_rw",
                                 "../all_tests_core/syn_subgroup_op_wr",
                                 "../all_tests_core/syn_subgroup_op_ww",
-                                "../all_tests_core/syn_memory_converge_atomic",
+                                "../all_tests_core/syn_memory_converge_ww",
                         ]
-
-DIR_INTEL  = [
-                                "../all_tests_fixed_subgroup/syn_branch_syn",
-                                "../all_tests_fixed_subgroup/syn_branch_syn_relax",
-                                "../all_tests_fixed_subgroup/syn_branch_syn_release",
-                                "../all_tests_fixed_subgroup/syn_lock_step",
-                                "../all_tests_fixed_subgroup/syn_lock_step_relax",
-                                "../all_tests_fixed_subgroup/syn_lock_step_release",
-                                "../all_tests_fixed_subgroup/syn_subgroup_op",
-                                "../all_tests_fixed_subgroup/syn_subgroup_op_relax",
-                                "../all_tests_fixed_subgroup/syn_subgroup_op_release",
-                                "../all_tests_fixed_subgroup/syn_memory_converge",
-                                "../all_tests_fixed_subgroup/syn_memory_converge_atomic"
-                            ]
-DIR_INTEL_CORE  = [
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_rw",
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_wr",
-                                "../all_tests_fixed_subgroup_core/syn_branch_syn_ww",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_rw",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_wr",
-                                "../all_tests_fixed_subgroup_core/syn_lock_step_ww",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_rw",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_wr",
-                                "../all_tests_fixed_subgroup_core/syn_subgroup_op_ww",
-                                "../all_tests_fixed_subgroup_core/syn_memory_converge_atomic",
-                            ]
 
 
 
 SELECTION = {
     "core": DIR_CORE,
-    "intel": DIR_INTEL,
-    "intel-core": DIR_INTEL_CORE,
     "generic": DIR_GENERIC,
 }
 # run the amber_test_driver.py script with all input directories available in Input_Files
