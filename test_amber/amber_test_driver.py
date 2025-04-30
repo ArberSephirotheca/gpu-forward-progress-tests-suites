@@ -61,10 +61,10 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 # prepare the specific run command to run amber on-device
                 if serial:
                     run__test = f"timeout -k 1 15 adb -s {serial} shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(
-                    output_file_name) + "' >> temp_results.txt"
+                    output_file_name) + "' >> temp_results.txt 2>&1"
                 else:
                     run__test = "timeout -k 1 15 adb shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(
-                    output_file_name) + "' >> temp_results.txt"
+                    output_file_name) + "' >> temp_results.txt 2>&1"
             for i in range(int(num_iter)):
                 log_print("running test: " + output_file_name)
                 log_print(run__test)
