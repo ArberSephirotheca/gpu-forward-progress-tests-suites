@@ -1,0 +1,331 @@
+#!amber
+
+DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+struct _GLF_struct_0 {
+ mat4 _f0;
+ mat4 _GLF_SWITCH_0_94v;
+ float _f1;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uvec4 GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size;
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.y = subgroup_local_id;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.x = num_workgroup;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.w = workgroup_size;
+ uint workgroup_id = gl_WorkGroupID.x;
+ GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.z = workgroup_id;
+ uint workgroup_base = GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.w * GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.z;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.y;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.y + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ if(GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size.y + 1 < subgroup_size)
+  {
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   subgroupAll(false);
+  }
+ else
+  {
+   switch(_GLF_SWITCH((91711 & 0)))
+    {
+     case 7:
+     mat4x3 _GLF_SWITCH_0_0v;
+     case 52:
+     {
+      bvec3 _GLF_SWITCH_0_1v[38], _GLF_SWITCH_0_2v, _GLF_SWITCH_0_3v;
+     }
+     case 0:
+     case 36:
+     case 73:
+     atomicStore(buf[virtual_gid], read, 4, 64, 4);
+     case 12:
+     case 14:
+     case 68:
+     subgroupAll(true);
+     break;
+     case 10:
+     {
+      {
+      }
+      if(false)
+       {
+        mat2x4 _GLF_SWITCH_0_4v[85], _GLF_SWITCH_0_5v;
+        uvec4 _GLF_SWITCH_0_6v;
+        {
+         ;
+         mat4x2 _GLF_SWITCH_0_7v;
+         mat3 _GLF_SWITCH_0_8v;
+         mat4x3(-94.79, 6.1, -0.2, 8.4, -4.5, -2.6, -2.1, 0.8, 4.9, 9.1, -67.32, -8.8);
+         mat4x2 _GLF_SWITCH_0_9v, _GLF_SWITCH_0_10v;
+         (abs(65937) + findLSB(48101));
+         float _GLF_SWITCH_0_11v, _GLF_SWITCH_0_12v[74];
+        }
+        vec3(-14.66, 36.22, 81.35);
+        bvec4(false, bvec3(true, false, true));
+       }
+      -29337;
+      if((bvec3(false, true, false) == bvec3(true, false, false)))
+       {
+        if((mat2((-77.83 - mat2x3(-9.7, -4.9, -9.1, -54.36, 1.0, 3172.5799))) == mat2(3075.9872, -5062.6803, -431.268, -17.63)))
+         {
+          mat2x3(mat3x2(615.071, 3279.5785, 6822.0315, -19.06, -3683.3684, 8.2));
+          uvec3(168654u, 174926u, 165386u);
+          tanh(vec3(-2.0, -6.5, -0.1));
+          bvec2 _GLF_SWITCH_0_13v;
+          (~ 18025);
+          mat2x4 _GLF_SWITCH_0_14v, _GLF_SWITCH_0_15v, _GLF_SWITCH_0_16v;
+          vec4(-93.86, 5.3, 7966.7258, -0.0);
+          vec4 _GLF_SWITCH_0_17v[28], _GLF_SWITCH_0_18v, _GLF_SWITCH_0_19v[15];
+         }
+        GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size;
+        mat2x3(183.420, -0.7, -311.898, -58.71, -1620.8927, -5229.4358);
+        for(        mat2(78.11, -1291.0969, -692.674, -2872.0581);
+ false; mat3x2(-7.7, 96.18, 7303.0399, -3.6, 7.6, -2.4))
+         {
+          mat3x2 _GLF_SWITCH_0_20v, _GLF_SWITCH_0_21v;
+         }
+        bvec2 _GLF_SWITCH_0_22v[61];
+        if(false)
+         {
+          uvec2 _GLF_SWITCH_0_23v, _GLF_SWITCH_0_24v[8], _GLF_SWITCH_0_25v;
+          mat3 _GLF_SWITCH_0_26v, _GLF_SWITCH_0_27v, _GLF_SWITCH_0_28v;
+         }
+        else
+         {
+          ;
+          mat2(9521.8887);
+          mat3x2 _GLF_SWITCH_0_29v, _GLF_SWITCH_0_30v, _GLF_SWITCH_0_31v;
+          atomicMin(subgroup_id, workgroup_id);
+          (ivec3(-7527, -66594, 40852) | (ivec3(41438, -25668, 55892) / -82595));
+          bool _GLF_SWITCH_0_32v[99];
+          vec4(72.85, 1.9, -546.394, -3.5);
+         }
+        vec2(-8.8, -7977.4804);
+        {
+         mat3x2(1130.2937, -35.95, -9138.3302, -8736.7183, -1.4, 9.9);
+         bvec4(true, true, true, true);
+         uint _GLF_SWITCH_0_33v, _GLF_SWITCH_0_34v, _GLF_SWITCH_0_35v[70];
+         not(bvec3(true, false, true));
+         ;
+         vec4 _GLF_SWITCH_0_36v[39], _GLF_SWITCH_0_37v;
+         uvec3(103379u, 88155u, 30147u);
+         ivec3 _GLF_SWITCH_0_38v[62], _GLF_SWITCH_0_39v;
+        }
+       }
+      ivec4(67590, 39606, -86322, 72424);
+      ivec3 _GLF_SWITCH_0_40v[45], _GLF_SWITCH_0_41v, _GLF_SWITCH_0_42v;
+      ;
+     }
+     case 75:
+     while((bvec4(false, false, true, true) == bvec4(false, true, true, false)))
+      {
+       mat3(3110.8009, -104.521, -213.203, -9975.7122, 31.15, -969.986, 14.01, 32.26, -520.976);
+       abs(vec3(50.01, -24.22, 8652.5180));
+       {
+        uvec4 _GLF_SWITCH_0_43v[66], _GLF_SWITCH_0_44v, _GLF_SWITCH_0_45v;
+        while(bvec4(false, true, false, false)[2])
+         {
+          uvec4(177180u, 44287u, 145284u, 56694u).yxy;
+          -8872.7159;
+          mat4x2(-5108.5691, -7.7, 70.05, 35.16, -361.205, -305.228, -9.9, -0.3);
+          ;
+          bvec4 _GLF_SWITCH_0_46v, _GLF_SWITCH_0_47v[69], _GLF_SWITCH_0_48v;
+         }
+        uvec2 _GLF_SWITCH_0_49v, _GLF_SWITCH_0_50v[58], _GLF_SWITCH_0_51v;
+       }
+       do
+        {
+         bvec2 _GLF_SWITCH_0_52v;
+         {
+          vec4 _GLF_SWITCH_0_53v;
+          equal(uvec2(86771u, 140306u), uvec2(33990u, 191149u));
+          ;
+          (mat2x3(6.9, 674.229, 44.99, 424.797, 9.6, -7926.9985));
+          (ivec4(-42544, -80306, 72769, 30154));
+          ;
+          vec2 _GLF_SWITCH_0_54v;
+         }
+         uvec4(packUnorm4x8(vec4(-869.116, 9056.0206, -8.8, 158.745)), workgroup_base, atomicMin(workgroup_id, (next_virtual_gid << 184227u)), workgroup_size);
+         int _GLF_SWITCH_0_55v[3], _GLF_SWITCH_0_56v;
+         (num_workgroup / (uvec4(69491u, 20011u, 100844u, 21838u) | read));
+         tanh(vec2(-4.9, 64.49));
+        }
+       while(true);
+       for(bool _GLF_SWITCH_0_57v, _GLF_SWITCH_0_58v[33]; _GLF_SWITCH_0_57v; mix(vec4(2.7, 824.231, -5377.4037, 577.737), vec4(55.38, -5385.9892, 1.9, -8.6), vec4(-944.243, 9536.6298, -7.2, 1.0)))
+        {
+         _GLF_SWITCH_0_0v;
+         if(false)
+          {
+           ;
+           mat3x2(-6200.7201, 5.6, 563.118, 690.309, 390.660, 8.5);
+           ivec3 _GLF_SWITCH_0_59v, _GLF_SWITCH_0_60v;
+          }
+         else
+          {
+           equal(vec4(-3.7, 3.2, 4.4, -1.2), vec4(871.590, 8845.4858, -4.5, -5.8));
+           (mat3x4(436.864, 1.8, -7.4, -987.903, 987.639, 8.5, -8.6, 9.0, 0.3, 964.107, 8.0, 5074.7349) / -18.43);
+           bvec3 _GLF_SWITCH_0_61v;
+           mat3x4 _GLF_SWITCH_0_62v[79], _GLF_SWITCH_0_63v[66], _GLF_SWITCH_0_64v;
+           mat3(45.39, 823.515, -369.248, 7.4, -9525.0290, 667.838, -6316.9225, 519.766, 700.050);
+           ivec2(-26983, -99377);
+          }
+         vec3 _GLF_SWITCH_0_65v, _GLF_SWITCH_0_66v[74];
+         while(bvec4(false, true, false, true)[0])
+          {
+           mat4x3 _GLF_SWITCH_0_67v;
+           injectionSwitch;
+           ;
+           bvec3(true, true, true);
+           uvec4 _GLF_SWITCH_0_68v[92], _GLF_SWITCH_0_69v, _GLF_SWITCH_0_70v;
+           mat3x4(1.9, 56.80, -8.7, 612.926, -2656.5219, 61.58, -9.7, -2.0, 34.58, -4.4, -414.181, 184.394);
+           GLF_merged4_0_1_13_1_1_17_2_1_12_3_1_14num_workgroupsubgroup_local_idworkgroup_idworkgroup_size;
+           sin(injectionSwitch);
+           ;
+          }
+         {
+          bvec2(true, false).rr;
+          ;
+          uvec2(193049u, 167286u)[0];
+          ivec2(48381, -86933);
+          ;
+          float _GLF_SWITCH_0_71v[70], _GLF_SWITCH_0_72v, _GLF_SWITCH_0_73v;
+         }
+         if(false)
+          {
+           mat2x3(mat4(3.2, -77.68, -114.371, 76.88, -583.864, 1.1, 946.191, 72.50, 1917.9701, 1064.8695, 35.64, 619.991, 5.5, 7.7, 8.3, -9.6));
+           vec4 _GLF_SWITCH_0_74v, _GLF_SWITCH_0_75v;
+           _GLF_SWITCH_0_74v;
+           uvec4(116767u, 2708u, 119941u, 115096u);
+          }
+         else
+          {
+           ;
+           bvec3(false, false, false);
+           injectionSwitch;
+           ivec2((ivec3(-42527, -20600, 8956) % -2458));
+           mat4x3 _GLF_SWITCH_0_76v, _GLF_SWITCH_0_77v[32], _GLF_SWITCH_0_78v;
+           ivec4 _GLF_SWITCH_0_79v[13];
+          }
+         for(         _GLF_SWITCH_0_65v;
+ ((true ? -5.9 : _GLF_SWITCH_0_65v.p) > 58.59); bvec4(true, true, false, true))
+          {
+          }
+        }
+       mat3 _GLF_SWITCH_0_80v, _GLF_SWITCH_0_81v, _GLF_SWITCH_0_82v;
+       {
+       }
+       if((mat3(6.2, 94.47, -2.7, 657.629, -1836.5351, 0.9, 6.9, 7.7, -27.31) == _GLF_SWITCH_0_82v))
+        {
+         while(false)
+          {
+           mat4x2(_GLF_SWITCH_0_82v);
+           ivec4 _GLF_SWITCH_0_83v, _GLF_SWITCH_0_84v, _GLF_SWITCH_0_85v;
+           (float(21838) + mat4(-329.162, 4.0, 2.8, 365.928, 879.214, -7823.6098, -57.24, 7407.2627, 392.139, -4.6, -89.22, 5.4, 86.07, -144.684, -3759.5645, -29.18));
+           ;
+           uvec3(186616u, 165726u, 146290u).r;
+           vec3(-1.5, -7.2, 981.471);
+           mat4x2 _GLF_SWITCH_0_86v, _GLF_SWITCH_0_87v, _GLF_SWITCH_0_88v;
+           mat3(-28.17, 91.17, 8.5, -2.7, step(-3.2, 0.7), -7.3, -9.3, (-2.2 / -69.17), 0.8);
+           mat2x3(-8.5, -6461.3309, 1858.9967, 8.3, 65.22, -6.3);
+          }
+         if((ivec3(52322, 23130, -46123) != ivec3(17048, -79545, -88112)))
+          {
+           ((mat4x3(92.18, -8.1, 354.091, 5.0, 2.7, -2.4, 46.40, -62.85, 4508.3807, -61.97, -6897.4570, 9.9) * mat4(695.140, -7.5, -9.7, -1010.0455, 794.778, 6.4, 4.2, 559.921, -7.7, 17.49, 828.569, 1.8, 785.086, 4755.8966, 9.7, 67.08)) + mat4x3(196.008, -3.3, 1205.6041, -12.17, -72.00, 118.195, 95.99, -1231.3664, 1515.3028, -6824.7843, 6519.9649, 73.94));
+           outerProduct(vec3(4.0, -3836.2912, 167.884), vec2(-9.4, -9.0));
+           inverse(mat3(mat3x4(81.07, -466.290, -32.30, 91.86, -1096.0948, -3.1, -4.4, 962.925, -802.879, 834.543, 601.229, 12.53)));
+          }
+         else
+          {
+           (mat4x2(-5.3, 7.6, -654.857, -4.5, 223.270, -4670.4866, -2677.4057, -135.719));
+           (mat4x2(6.9, -926.425, -2.8, 58.55, 1.4, -22.23, 3.5, 7.9) == (mat4x2(-3.5, -0.1, -6.2, 6.9, 369.783, -6.9, -53.11, 866.694) / 3951.6574));
+           ivec2 _GLF_SWITCH_0_89v[48], _GLF_SWITCH_0_90v;
+           mat2x4(13.94, 1284.8879, 189.866, -5.8, 230.218, -5.6, 4.4, -7.6);
+           (ivec4(46206, -111, 78004, 46283) ^ ivec4(-3853, -45180, 91589, -83043));
+          }
+         {
+          vec2(72.55, 8127.0896);
+         }
+         vec4 _GLF_SWITCH_0_91v;
+         mat2x4(38.82, 7479.3211, -3.7, -91.77, -124.670, -87.28, 7.5, -854.883);
+         (mat3x4(-748.556, 3323.0548, 4754.1093, -1160.3400, 5279.1168, 8620.4051, 7.5, 35.75, -616.288, 180.012, 4966.3313, 333.562) - mat3x4(-4.0, 0.7, -1.8, 3676.6025, -2.7, -9.2, -1865.4918, -9.1, 2.4, -689.345, 90.62, -8.3));
+         ;
+         mat2 _GLF_SWITCH_0_92v[88], _GLF_SWITCH_0_93v[77];
+         _GLF_struct_0 _GLF_struct_replacement_0;
+        }
+       else
+        {
+         mat2x3(mat4x2(-172.773, 590.881, -608.249, 8.5, 5.6, 609.307, 2496.9035, -529.204));
+        }
+      }
+     default:
+     1;
+    }
+  }
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+BUFFER checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected_checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 
+
+  SUBGROUP test
+	  VARYING_SIZE on
+  END
+END
+
+RUN test_pipe 65532 1 1
+EXPECT checker EQ_BUFFER expected_checker

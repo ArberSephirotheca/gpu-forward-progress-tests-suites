@@ -1,0 +1,274 @@
+#!amber
+
+DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+struct _GLF_struct_24 {
+ mat2 _f0;
+ bvec2 _f1;
+} ;
+
+struct _GLF_struct_23 {
+ mat2 _f0;
+ mat3x2 _f1;
+} ;
+
+struct _GLF_struct_25 {
+ mat2x3 _f0;
+ _GLF_struct_23 _f1;
+ uint workgroup_base;
+ _GLF_struct_24 _f2;
+ bvec2 _f3;
+} ;
+
+struct _GLF_struct_26 {
+ _GLF_struct_25 _f0;
+ mat3x2 _f1;
+ mat2 _f2;
+ uint _f3;
+} ;
+
+struct _GLF_struct_21 {
+ mat3x4 _f0;
+} ;
+
+struct _GLF_struct_19 {
+ mat4x2 _f0;
+ mat4x2 _f1;
+ uvec3 _f2;
+ vec2 _f3;
+ float _f4;
+ ivec2 _f5;
+} ;
+
+struct _GLF_struct_18 {
+ int _f0;
+ mat3 _f1;
+ mat4x2 _f2;
+ int _f3;
+} ;
+
+struct _GLF_struct_20 {
+ ivec4 _f0;
+ _GLF_struct_18 _f1;
+ bool _f2;
+ _GLF_struct_19 _f3;
+ mat2x3 _f4;
+} ;
+
+struct _GLF_struct_17 {
+ ivec2 _f0;
+ uvec3 _f1;
+} ;
+
+struct _GLF_struct_15 {
+ vec4 _f0;
+ ivec2 _f1;
+ mat2 _f2;
+} ;
+
+struct _GLF_struct_16 {
+ _GLF_struct_15 _f0;
+ uint subgroup_local_id;
+} ;
+
+struct _GLF_struct_22 {
+ _GLF_struct_16 _f0;
+ _GLF_struct_17 _f1;
+ _GLF_struct_20 _f2;
+ mat2x3 _f3;
+ _GLF_struct_21 _f4;
+ mat2 _f5;
+} ;
+
+struct _GLF_struct_12 {
+ mat3 _f0;
+ uvec3 _f1;
+ float _f2;
+ mat2x3 _f3;
+ bvec3 _f4;
+ ivec3 _f5;
+} ;
+
+struct _GLF_struct_11 {
+ mat2 _f0;
+ mat4x2 _f1;
+} ;
+
+struct _GLF_struct_10 {
+ mat4 _f0;
+ bvec2 _f1;
+ uint _f2;
+} ;
+
+struct _GLF_struct_13 {
+ _GLF_struct_10 _f0;
+ uvec4 _f1;
+ _GLF_struct_11 _f2;
+ _GLF_struct_12 _f3;
+} ;
+
+struct _GLF_struct_8 {
+ uint _f0;
+ mat4x3 _f1;
+ mat3 _f2;
+ mat2x4 _f3;
+ vec4 _f4;
+} ;
+
+struct _GLF_struct_7 {
+ mat4x3 _f0;
+ vec3 _f1;
+} ;
+
+struct _GLF_struct_9 {
+ _GLF_struct_7 _f0;
+ _GLF_struct_8 _f1;
+ float _f2;
+} ;
+
+struct _GLF_struct_5 {
+ vec2 _f0;
+} ;
+
+struct _GLF_struct_6 {
+ _GLF_struct_5 _f0;
+ bvec4 _f1;
+ int _f2;
+ vec3 _f3;
+ bvec4 _f4;
+} ;
+
+struct _GLF_struct_3 {
+ mat2x4 _f0;
+ bvec2 _f1;
+ mat3x2 _f2;
+ mat3x4 _f3;
+ uint _f4;
+} ;
+
+struct _GLF_struct_4 {
+ _GLF_struct_3 _f0;
+} ;
+
+struct _GLF_struct_1 {
+ mat3x4 _f0;
+ ivec3 _f1;
+ vec2 _f2;
+ bvec3 _f3;
+} ;
+
+struct _GLF_struct_0 {
+ mat3x4 _f0;
+ mat2x4 _f1;
+ ivec4 _f2;
+ mat4x3 _f3;
+ uvec3 _f4;
+ float _f5;
+ mat2x4 _f6;
+} ;
+
+struct _GLF_struct_2 {
+ uint read_val;
+ uvec2 _f0;
+ bool _f1;
+ _GLF_struct_0 _f2;
+ bvec3 _f3;
+ _GLF_struct_1 _f4;
+ ivec2 _f5;
+} ;
+
+struct _GLF_struct_14 {
+ _GLF_struct_2 _f0;
+ _GLF_struct_4 _f1;
+ _GLF_struct_6 _f2;
+ _GLF_struct_9 _f3;
+ mat4x2 _f4;
+ bvec3 _f5;
+ _GLF_struct_13 _f6;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer WriteVal {
+ uint write_val;
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ _GLF_struct_22 _GLF_struct_replacement_22 = _GLF_struct_22(_GLF_struct_16(_GLF_struct_15(vec4(1.0), ivec2(_GLF_IDENTITY(1, ~ (~ (_GLF_IDENTITY(1, (1) >> 0))))), mat2(1.0)), gl_SubgroupInvocationID), _GLF_struct_17(ivec2(1), uvec3(1u)), _GLF_struct_20(ivec4(1), _GLF_struct_18(1, mat3(1.0), mat4x2(1.0), 1), true, _GLF_struct_19(mat4x2(_GLF_IDENTITY(1.0, 1.0 * (1.0))), mat4x2(_GLF_IDENTITY(1.0, max(1.0, _GLF_IDENTITY(1.0, max(1.0, 1.0))))), uvec3(1u), vec2(1.0), 1.0, ivec2(1)), mat2x3(1.0)), mat2x3(1.0), _GLF_struct_21(mat3x4(1.0)), mat2(1.0));
+ uint num_workgroup = gl_NumWorkGroups.x;
+ if(_GLF_DEAD(false))
+  barrier();
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (_GLF_IDENTITY(injectionSwitch.x > injectionSwitch.y, (injectionSwitch.x > injectionSwitch.y) && true)))))
+    barrier();
+   barrier();
+  }
+ uint workgroup_size = _GLF_IDENTITY(_GLF_IDENTITY(gl_WorkGroupSize, uvec3(_GLF_ZERO(0.0, injectionSwitch.x), _GLF_ZERO(0.0, injectionSwitch.x), _GLF_ZERO(0.0, injectionSwitch.x)) | (gl_WorkGroupSize)).x, (gl_WorkGroupSize.x) | 0u);
+ uint workgroup_id = _GLF_IDENTITY(gl_WorkGroupID, (_GLF_IDENTITY(gl_WorkGroupID, (gl_WorkGroupID) - uvec3(0u, 0u, 0u))) | _GLF_IDENTITY((gl_WorkGroupID), ~ (~ ((gl_WorkGroupID))))).x;
+ _GLF_struct_26 _GLF_struct_replacement_26 = _GLF_struct_26(_GLF_struct_25(mat2x3(1.0), _GLF_struct_23(mat2(1.0), mat3x2(1.0)), _GLF_IDENTITY(workgroup_size * workgroup_id, 0u ^ (workgroup_size * workgroup_id)), _GLF_struct_24(mat2(_GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(-17.55)), bool(false)))), bvec2(true)), bvec2(true)), mat3x2(1.0), mat2(1.0), 1u);
+ uint virtual_gid = _GLF_struct_replacement_26._f0.workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_22._f0.subgroup_local_id;
+ atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  barrier();
+ if(_GLF_DEAD(_GLF_FALSE(_GLF_IDENTITY(false, (_GLF_IDENTITY(false, (false) && true)) && _GLF_IDENTITY(true, true && (true))), (_GLF_IDENTITY(injectionSwitch.x, (true ? injectionSwitch.x : _GLF_FUZZED(reflect(_GLF_IDENTITY(-4.1, min(-4.1, -4.1)), -8.7)))) > injectionSwitch.y))))
+  barrier();
+ _GLF_struct_14 _GLF_struct_replacement_14 = _GLF_struct_14(_GLF_struct_2(atomicLoad(write_val, 4, 64, 0), uvec2(1u), true, _GLF_struct_0(mat3x4(1.0), mat2x4(1.0), ivec4(_GLF_IDENTITY(1, clamp(1, 1, _GLF_IDENTITY(1, (false ? _GLF_FUZZED(37019) : 1))))), mat4x3(1.0), _GLF_IDENTITY(uvec3(1u), (uvec3(1u)) | uvec3(0u, 0u, 0u)), 1.0, mat2x4(1.0)), _GLF_IDENTITY(bvec3(true), bvec3(bvec4(bvec3(true), false))), _GLF_struct_1(mat3x4(_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, clamp(1.0, 1.0, 1.0)), 1.0))), ivec3(1), vec2(1.0), bvec3(true)), _GLF_IDENTITY(ivec2(1), (_GLF_IDENTITY(ivec2(1), (ivec2(1)) << ivec2(0, 0))) | (ivec2(1)))), _GLF_struct_4(_GLF_struct_3(mat2x4(1.0), bvec2(true), mat3x2(1.0), mat3x4(1.0), 1u)), _GLF_struct_6(_GLF_struct_5(vec2(1.0)), bvec4(_GLF_IDENTITY(true, _GLF_IDENTITY((true) || false, _GLF_IDENTITY(bool(_GLF_IDENTITY(bvec2((true) || _GLF_IDENTITY(false, _GLF_IDENTITY(bool(bvec3(_GLF_IDENTITY(false, true && (false)), false, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)))), (bool(bvec3(_GLF_IDENTITY(false, true && (false)), false, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))) && _GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)))), true), bvec2(bvec2(bvec2(_GLF_IDENTITY((true) || false, bool(bool(_GLF_IDENTITY((true) || false, ! (! (_GLF_IDENTITY((true) || false, false || ((true) || false)))))))), true))))), ! (! (bool(_GLF_IDENTITY(bvec2((true) || _GLF_IDENTITY(false, _GLF_IDENTITY(bool(bvec3(_GLF_IDENTITY(false, true && (false)), false, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)))), (bool(bvec3(_GLF_IDENTITY(false, true && (false)), false, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))) && _GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)))), true), bvec2(bvec2(bvec2(_GLF_IDENTITY((true) || false, bool(bool(_GLF_IDENTITY((true) || false, ! (! (_GLF_IDENTITY((true) || false, false || ((true) || false)))))))), true))))))))))), 1, vec3(_GLF_IDENTITY(1.0, (1.0) / 1.0)), bvec4(_GLF_IDENTITY(true, _GLF_IDENTITY(bool(_GLF_IDENTITY(bool(true), ! (! (bool(true))))), (bool(_GLF_IDENTITY(bool(true), ! (! (bool(true)))))) && true)))), _GLF_struct_9(_GLF_struct_7(mat4x3(1.0), vec3(1.0)), _GLF_struct_8(1u, mat4x3(1.0), mat3(_GLF_IDENTITY(1.0, _GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0), (true ? mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0) : _GLF_FUZZED(mat4(8.4, 699.440, 8.9, 3.1, -80.24, 1.9, -9691.5630, -7.2, -1.9, -4.4, -10.95, -68.54, -88.03, -0.4, 791.199, 607.890)))))), 1.0, 0.0, 1.0, _GLF_IDENTITY(sqrt(0.0), (false ? _GLF_FUZZED(ldexp(4.8, 88467)) : _GLF_IDENTITY(sqrt(0.0), max(sqrt(0.0), sqrt(0.0))))), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, (true ? 1.0 : _GLF_FUZZED(-13.02))), _GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-8.2)), float(1.0), bool(true))))))), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, float(mat3x4(_GLF_IDENTITY(1.0, clamp(1.0, 1.0, 1.0)), 1.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), _GLF_IDENTITY(1.0, float(float(1.0))), 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(-2946.0919)), float(0.0), bool(true))), 1.0)), (dot(_GLF_IDENTITY(vec2(1.0, 0.0), (vec2(1.0, 0.0)) / exp(abs(vec2(0.0, 0.0)))), _GLF_IDENTITY(vec2(0.0, 1.0), mix(vec2((vec2(0.0, 1.0))[0], (vec2(0.0, 1.0))[1]), vec2(_GLF_FUZZED(0.7), _GLF_FUZZED(-1863.9773)), bvec2(false, false))))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, mix(vec2(_GLF_FUZZED(2.8), _GLF_IDENTITY((injectionSwitch)[1], min((injectionSwitch)[1], (injectionSwitch)[1]))), vec2((injectionSwitch)[0], _GLF_FUZZED(7.8)), bvec2(true, false))).y), _GLF_IDENTITY(0.0, max(0.0, 0.0)), 0.0))))), max(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - _GLF_IDENTITY(0.0, min(0.0, _GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(0.4)), float(0.0), bool(true))))))), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, clamp(1.0, 1.0, 1.0)))), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), (_GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), mix(float(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), _GLF_IDENTITY(vec2(0.0, 1.0), min(_GLF_IDENTITY(vec2(0.0, 1.0), clamp(_GLF_IDENTITY(vec2(0.0, 1.0), (vec2(0.0, 1.0)) * mat2(1.0)), vec2(0.0, 1.0), vec2(0.0, 1.0))), vec2(0.0, 1.0)))), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0))), float(_GLF_FUZZED(658.231)), bool(false)))) / 1.0), 0.0, 0.0, _GLF_IDENTITY(_GLF_ONE(1.0, injectionSwitch.y), (_GLF_ONE(1.0, injectionSwitch.y)) * 1.0), 0.0, 0.0))))), _GLF_IDENTITY(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(_GLF_IDENTITY(vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0), (vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0)) + vec2(0.0, 0.0)), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0, clamp(_GLF_IDENTITY(_GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0, (true ? (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0 : _GLF_FUZZED(-4697.9964))), (false ? _GLF_FUZZED(distance(injectionSwitch, injectionSwitch)) : (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - _GLF_IDENTITY(0.0, max(_GLF_IDENTITY(0.0, float(mat4(0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0))), 0.0)), _GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0, ((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0) / 1.0))))), _GLF_IDENTITY(0.0, float(mat2(0.0, 1.0, 0.0, 0.0))), 0.0, _GLF_ONE(1.0, injectionSwitch.y), _GLF_IDENTITY(0.0, mix(float(0.0), float(_GLF_FUZZED(6210.8864)), bool(false))), 0.0)), float(_GLF_IDENTITY(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, _GLF_IDENTITY(1.0, float(mat4x2(1.0, 1.0, sqrt(1.0), 0.0, 0.0, abs(abs(1.0)), determinant(mat4(0.0, 0.0, 0.0, determinant(mat2(0.0, 0.0, 1.0, 0.0)), 0.0, 0.0, log(1.0), 0.0, round(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), clamp(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), min(length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0))))), length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0)))))), 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0)), 0.0))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, _GLF_IDENTITY(0.0, min(_GLF_IDENTITY(0.0, min(0.0, 0.0)), _GLF_IDENTITY(0.0, float(float(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(49.60)), _GLF_IDENTITY(float(0.0), float(mat3x2(float(0.0), 0.0, 0.0, 0.0, 1.0, length(vec4(0.0, 0.0, 0.0, 0.0))))), bool(true)))))))), 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), _GLF_IDENTITY(0.0, min(0.0, 0.0)), 0.0))), mix(float(_GLF_FUZZED(-9.8)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, _GLF_IDENTITY(1.0, float(mat4x2(1.0, 1.0, sqrt(1.0), 0.0, 0.0, abs(abs(1.0)), determinant(mat4(0.0, 0.0, 0.0, determinant(mat2(0.0, 0.0, 1.0, 0.0)), 0.0, 0.0, log(1.0), 0.0, round(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), clamp(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), min(length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0))))), length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0)))))), 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0)), 0.0))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, _GLF_IDENTITY(0.0, min(_GLF_IDENTITY(0.0, min(0.0, 0.0)), _GLF_IDENTITY(0.0, float(float(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(49.60)), _GLF_IDENTITY(float(0.0), float(mat3x2(float(0.0), 0.0, 0.0, 0.0, 1.0, length(vec4(0.0, 0.0, 0.0, 0.0))))), bool(true)))))))), 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), _GLF_IDENTITY(0.0, min(0.0, 0.0)), 0.0)))), bool(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))))), clamp(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), _GLF_IDENTITY(vec2(0.0, 1.0), mat2(1.0) * (vec2(0.0, 1.0)))), _GLF_IDENTITY(dot(_GLF_IDENTITY(vec2(1.0, 0.0), sqrt(vec2(0.0, 0.0)) + (vec2(1.0, 0.0))), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(1911.3244) : 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0))))), _GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(_GLF_IDENTITY(vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))), mix(vec2(_GLF_IDENTITY((vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))))[0], (true ? (vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))))[0] : _GLF_FUZZED(94.75))), (vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))))[1]), vec2(_GLF_FUZZED(-77.09), _GLF_FUZZED(-2.6)), bvec2(false, false))), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, float(mat4x2(0.0, 1.0, 0.0, 0.0, 0.0, log(1.0), 0.0, sqrt(0.0)))), 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), _GLF_IDENTITY(0.0, (_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356))), 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, _GLF_IDENTITY(0.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0)))) * (0.0)), 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, clamp(1.0, 1.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(413.413) : 1.0)))), 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, clamp(0.0, _GLF_IDENTITY(0.0, max(0.0, 0.0)), 0.0)), 1.0))) - _GLF_IDENTITY(0.0, max(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(6405.3801)), float(0.0), bool(true))), 0.0)))), 0.0, _GLF_IDENTITY(0.0, float(_GLF_IDENTITY(mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0), _GLF_IDENTITY((mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0)), (_GLF_IDENTITY((mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0)), (false ? _GLF_FUZZED(mat3(7.8, -517.077, -848.303, -214.117, 5.2, -419.974, -74.89, -101.779, -485.631)) : (mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0))))) - mat3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)) - mat3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)))), _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, clamp(injectionSwitch, injectionSwitch, injectionSwitch)).y), 0.0, 0.0))))), _GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, _GLF_IDENTITY(sqrt(0.0), float(_GLF_IDENTITY(mat2x3(sqrt(0.0), log(1.0), 1.0, 1.0, cos(0.0), 1.0), (true ? mat2x3(sqrt(0.0), log(1.0), 1.0, 1.0, cos(0.0), 1.0) : _GLF_FUZZED(mat2x3(53.57, 82.43, -64.93, -1.6, -49.69, 368.635)))))), 1.0, _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, (1.0) + 0.0), 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, float(mat2(1.0, 0.0, 0.0, 1.0)))))) - 0.0)), (_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, _GLF_IDENTITY(0.0, (_GLF_IDENTITY(0.0, clamp(0.0, 0.0, _GLF_IDENTITY(0.0, clamp(0.0, 0.0, 0.0))))) / 1.0)), vec2(0.0, 1.0))) - 0.0))) / 1.0), 0.0, _GLF_IDENTITY(0.0, float(vec3(0.0, 1.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0))))))), _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), _GLF_IDENTITY(float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(43.06)), bool(false))), _GLF_IDENTITY(0.0, (0.0) - abs(0.0)), 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, max(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)))), (true ? _GLF_IDENTITY(float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat2(1.0, 0.0, 0.0, 1.0), mat2(mat3x2(mat2(1.0, 0.0, 0.0, 1.0)))))), 1.0)), 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)))), mix(float(_GLF_IDENTITY(_GLF_FUZZED(-884.713), (_GLF_IDENTITY(_GLF_FUZZED(-884.713), (false ? _GLF_FUZZED(6090.3947) : _GLF_IDENTITY(_GLF_FUZZED(-884.713), min(_GLF_FUZZED(-884.713), _GLF_FUZZED(-884.713)))))) - abs(0.0))), float(float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_IDENTITY(_GLF_ONE(1.0, injectionSwitch.y), float(mat4x2(_GLF_ONE(1.0, injectionSwitch.y), 1.0, 1.0, 0.0, 0.0, 1.0, cos(0.0), sin(0.0)))), 0.0, 0.0))))), bool(true))) : _GLF_FUZZED(-770.474)))))))), (_GLF_IDENTITY(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0), (true ? mat4(1.0, 1.0, 1.0, _GLF_IDENTITY(0.0, float(vec3(0.0, length(0.0), 1.0))), 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, _GLF_IDENTITY(0.0, _GLF_IDENTITY(float(vec3(0.0, 1.0, 1.0)), min(float(vec3(0.0, 1.0, 1.0)), float(vec3(0.0, 1.0, 1.0))))), 0.0, 1.0, 0.0, 1.0, 0.0) : _GLF_IDENTITY(_GLF_FUZZED(mat4(8.4, 699.440, 8.9, 3.1, -80.24, 1.9, -9691.5630, -7.2, -1.9, -4.4, -10.95, -68.54, -88.03, -0.4, 791.199, 607.890)), (_GLF_IDENTITY(_GLF_FUZZED(mat4(8.4, 699.440, 8.9, 3.1, -80.24, 1.9, -9691.5630, -7.2, -1.9, -4.4, -10.95, -68.54, -88.03, -0.4, 791.199, 607.890)), (_GLF_FUZZED(mat4(8.4, 699.440, 8.9, 3.1, -80.24, 1.9, -9691.5630, -7.2, -1.9, -4.4, -10.95, -68.54, -88.03, -0.4, 791.199, 607.890))) * mat4(1.0))) * mat4(1.0)))))), 1.0, 0.0, 1.0, _GLF_IDENTITY(sqrt(0.0), (false ? _GLF_FUZZED(ldexp(4.8, 88467)) : _GLF_IDENTITY(sqrt(0.0), max(sqrt(0.0), _GLF_IDENTITY(sqrt(0.0), max(sqrt(0.0), sqrt(0.0))))))), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, (true ? 1.0 : _GLF_FUZZED(-13.02))), _GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-8.2)), float(_GLF_IDENTITY(1.0, length(abs(vec3(0.0, 0.0, 0.0))) + (1.0))), bool(true))))))), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, float(mat3x4(_GLF_IDENTITY(1.0, clamp(1.0, 1.0, 1.0)), 1.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), _GLF_IDENTITY(1.0, float(float(1.0))), 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(-2946.0919)), float(0.0), bool(true))), 1.0)), (dot(_GLF_IDENTITY(vec2(1.0, 0.0), (vec2(1.0, 0.0)) / exp(abs(vec2(0.0, _GLF_IDENTITY(0.0, max(0.0, _GLF_IDENTITY(0.0, max(0.0, 0.0)))))))), _GLF_IDENTITY(vec2(0.0, 1.0), mix(vec2((vec2(0.0, 1.0))[0], (vec2(0.0, 1.0))[1]), vec2(_GLF_FUZZED(0.7), _GLF_FUZZED(-1863.9773)), bvec2(false, false))))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, _GLF_IDENTITY(_GLF_IDENTITY(injectionSwitch, mix(vec2(_GLF_FUZZED(2.8), _GLF_IDENTITY((injectionSwitch)[1], min((injectionSwitch)[1], (injectionSwitch)[1]))), vec2((injectionSwitch)[0], _GLF_FUZZED(7.8)), bvec2(true, false))).y, (_GLF_IDENTITY(injectionSwitch, mix(vec2(_GLF_FUZZED(2.8), _GLF_IDENTITY((injectionSwitch)[1], min((injectionSwitch)[1], (injectionSwitch)[1]))), vec2((injectionSwitch)[0], _GLF_FUZZED(7.8)), bvec2(true, false))).y) * 1.0)), _GLF_IDENTITY(0.0, max(0.0, 0.0)), 0.0))))), max(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0), transpose(transpose(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0)))))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), mix(float(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), max(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), dot(vec2(1.0, 0.0), vec2(0.0, 1.0))))), float(_GLF_FUZZED(-5.5)), bool(false))), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - _GLF_IDENTITY(0.0, min(0.0, _GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(0.4)), float(0.0), bool(true))))))), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), _GLF_IDENTITY(1.0, clamp(1.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)))), _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, clamp(1.0, 1.0, 1.0)))), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), (_GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), mix(float(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), _GLF_IDENTITY(vec2(0.0, 1.0), min(_GLF_IDENTITY(vec2(0.0, 1.0), clamp(_GLF_IDENTITY(_GLF_IDENTITY(vec2(0.0, 1.0), (false ? _GLF_FUZZED(vec2(-58.46, -49.46)) : vec2(0.0, 1.0))), (vec2(0.0, 1.0)) * mat2(1.0)), vec2(0.0, 1.0), vec2(0.0, 1.0))), vec2(0.0, 1.0)))), (dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, (0.0) * 1.0), 1.0))) - _GLF_IDENTITY(0.0, mix(float(_GLF_IDENTITY(0.0, min(0.0, 0.0))), float(_GLF_FUZZED(-81.30)), bool(false)))))), float(_GLF_FUZZED(658.231)), bool(false)))) / 1.0), 0.0, 0.0, _GLF_IDENTITY(_GLF_ONE(1.0, injectionSwitch.y), (_GLF_ONE(1.0, injectionSwitch.y)) * 1.0), 0.0, 0.0))))), _GLF_IDENTITY(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(_GLF_IDENTITY(_GLF_IDENTITY(vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0), (true ? _GLF_IDENTITY(vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0), (vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0)) / vec2(1.0, 1.0)) : _GLF_FUZZED(injectionSwitch))), (vec2(_GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), 0.0)) + vec2(0.0, 0.0)), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0, clamp(_GLF_IDENTITY(_GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, min(1.0, _GLF_IDENTITY(1.0, (1.0) + 0.0)))))) - 0.0, (true ? (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0 : _GLF_FUZZED(-4697.9964))), (false ? _GLF_FUZZED(distance(injectionSwitch, injectionSwitch)) : (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), (_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), clamp(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), mix(float(_GLF_FUZZED(947.774)), float(dot(vec2(1.0, 0.0), vec2(0.0, 1.0))), bool(true))), dot(vec2(1.0, 0.0), vec2(0.0, 1.0))))) - _GLF_IDENTITY(0.0, max(_GLF_IDENTITY(0.0, float(mat4(0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, _GLF_IDENTITY(0.0, max(0.0, _GLF_IDENTITY(0.0, 1.0 * (0.0)))), 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0))), 0.0)), _GLF_IDENTITY((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0, ((dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0) / 1.0))))), _GLF_IDENTITY(0.0, float(mat2(0.0, 1.0, 0.0, 0.0))), 0.0, _GLF_ONE(1.0, injectionSwitch.y), _GLF_IDENTITY(0.0, mix(float(0.0), float(_GLF_FUZZED(6210.8864)), bool(false))), 0.0)), float(_GLF_IDENTITY(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, _GLF_IDENTITY(1.0, float(mat4x2(1.0, 1.0, sqrt(1.0), 0.0, 0.0, abs(abs(1.0)), determinant(mat4(0.0, 0.0, 0.0, determinant(_GLF_IDENTITY(mat2(0.0, 0.0, 1.0, 0.0), mat2(0.0, 0.0, 0.0, 0.0) + (mat2(0.0, 0.0, 1.0, 0.0)))), 0.0, 0.0, log(1.0), 0.0, round(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), clamp(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), min(length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0))))), length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0)))))), 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0)), 0.0))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, _GLF_IDENTITY(0.0, min(_GLF_IDENTITY(0.0, min(0.0, 0.0)), _GLF_IDENTITY(0.0, float(float(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(49.60)), _GLF_IDENTITY(float(0.0), _GLF_IDENTITY(float(mat3x2(float(0.0), 0.0, 0.0, 0.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(-0.4) : 1.0)), length(vec4(0.0, 0.0, 0.0, 0.0)))), min(float(mat3x2(float(0.0), 0.0, 0.0, 0.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(-0.4) : 1.0)), length(vec4(0.0, 0.0, 0.0, 0.0)))), float(mat3x2(float(0.0), 0.0, 0.0, 0.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(-0.4) : 1.0)), length(vec4(0.0, 0.0, 0.0, 0.0))))))), bool(true)))))))), 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(_GLF_IDENTITY(1.0, (1.0) - 0.0), (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), _GLF_IDENTITY(0.0, min(0.0, 0.0)), 0.0))), mix(float(_GLF_FUZZED(-9.8)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, _GLF_IDENTITY(1.0, float(mat4x2(1.0, 1.0, sqrt(1.0), 0.0, 0.0, abs(abs(1.0)), determinant(mat4(0.0, 0.0, 0.0, determinant(mat2(0.0, 0.0, 1.0, 0.0)), 0.0, 0.0, log(1.0), 0.0, round(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), clamp(_GLF_IDENTITY(length(normalize(vec3(1.0, 1.0, 1.0))), min(length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0))))), length(normalize(vec3(1.0, 1.0, 1.0))), length(normalize(vec3(1.0, 1.0, 1.0)))))), 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0)), 0.0))), 1.0, 0.0, 0.0, 1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, float(vec4(0.0, 1.0, 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(1.0, 0.0)), dot(vec2(1.0, 0.0), vec2(1.0, 0.0)))))), 0.0, 0.0)), 1.0, 1.0, 1.0, 0.0, _GLF_IDENTITY(0.0, min(_GLF_IDENTITY(0.0, min(0.0, 0.0)), _GLF_IDENTITY(0.0, float(float(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(49.60)), _GLF_IDENTITY(float(0.0), float(mat3x2(float(0.0), 0.0, 0.0, 0.0, 1.0, length(vec4(0.0, 0.0, 0.0, 0.0))))), bool(true)))))))), 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), _GLF_IDENTITY(1.0, min(1.0, 1.0)), _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), (false ? _GLF_FUZZED(2767.9066) : _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), min(_GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)), _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(_GLF_IDENTITY(1.0, (1.0) * 1.0), 0.0), vec2(0.0, 1.0))) - 0.0)))))), 0.0, 0.0, _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, (injectionSwitch) * mat2(1.0)).y), _GLF_IDENTITY(0.0, min(0.0, 0.0)), 0.0)))), bool(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))))), clamp(_GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), _GLF_IDENTITY(vec2(0.0, 1.0), mat2(1.0) * (vec2(0.0, _GLF_IDENTITY(1.0, mix(float(_GLF_IDENTITY(1.0, min(1.0, 1.0))), float(_GLF_FUZZED(926.402)), bool(false))))))), _GLF_IDENTITY(dot(_GLF_IDENTITY(vec2(1.0, 0.0), sqrt(vec2(0.0, 0.0)) + (vec2(1.0, 0.0))), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat4x3(1.0, 1.0, 0.0, 0.0, 0.0, 0.0, exp(0.0), 0.0, determinant(mat3(1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0)), _GLF_ZERO(0.0, injectionSwitch.x), 1.0, _GLF_ONE(1.0, injectionSwitch.y)), (mat4x3(1.0, 1.0, 0.0, 0.0, 0.0, 0.0, exp(0.0), 0.0, determinant(mat3(1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0)), _GLF_ZERO(0.0, injectionSwitch.x), 1.0, _GLF_ONE(1.0, injectionSwitch.y))) + mat4x3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)))), injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, (false ? _GLF_IDENTITY(_GLF_FUZZED(1911.3244), min(_GLF_FUZZED(1911.3244), _GLF_FUZZED(1911.3244))) : 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0))))), _GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(_GLF_IDENTITY(vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))), mix(vec2(_GLF_IDENTITY((vec2(1.0, _GLF_IDENTITY(_GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)), clamp(_GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)), _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)), _GLF_IDENTITY(_GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)), min(_GLF_IDENTITY(_GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)), (false ? _GLF_FUZZED(-3.0) : _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)))), _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))))))))[0], (true ? (vec2(1.0, _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))))[0] : _GLF_FUZZED(94.75))), (_GLF_IDENTITY(vec2(_GLF_IDENTITY(1.0, max(1.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(-4.2)), bool(false))))), _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0))), _GLF_IDENTITY((vec2(_GLF_IDENTITY(1.0, max(1.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(-4.2)), bool(false))))), _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)))) * mat2(1.0), vec2(1.0, 1.0) * ((vec2(_GLF_IDENTITY(1.0, max(1.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(-4.2)), bool(false))))), _GLF_IDENTITY(0.0, clamp(_GLF_IDENTITY(0.0, (0.0) - 0.0), 0.0, 0.0)))) * mat2(1.0)))))[1]), vec2(_GLF_FUZZED(-77.09), _GLF_FUZZED(-2.6)), bvec2(false, false))), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, float(mat4x2(0.0, 1.0, 0.0, 0.0, 0.0, log(1.0), 0.0, sqrt(0.0)))), 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), _GLF_IDENTITY(0.0, (_GLF_IDENTITY(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356), clamp(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356), _GLF_IDENTITY(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356), mix(float(_GLF_IDENTITY(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356), float(mat2(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356), 0.0, 0.0, 1.0)))), float(_GLF_FUZZED(-58.84)), bool(false))), _GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? 0.0 : _GLF_FUZZED(260.356))))), 0.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, _GLF_IDENTITY(0.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0)))) * (0.0)), 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, clamp(1.0, 1.0, _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(413.413) : _GLF_IDENTITY(1.0, float(mat4x2(1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 0.0, length(vec4(0.0, 0.0, 0.0, 0.0)), _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 1.0))))))), 1.0)), 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, _GLF_IDENTITY(0.0, (0.0) - 0.0)), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(_GLF_IDENTITY(0.0, clamp(0.0, _GLF_IDENTITY(0.0, max(0.0, 0.0)), 0.0)), 1.0))) - _GLF_IDENTITY(0.0, max(_GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(6405.3801)), float(0.0), bool(true))), 0.0)))), 0.0, _GLF_IDENTITY(0.0, float(_GLF_IDENTITY(mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(-7.1)), bool(false))), 0.0)), 1.0, _GLF_IDENTITY(1.0, (1.0) / 1.0), 0.0, sqrt(0.0), 1.0, 1.0), _GLF_IDENTITY((mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0)), (_GLF_IDENTITY((mat3(0.0, determinant(mat3(0.0, sin(0.0), _GLF_IDENTITY(0.0, (0.0) - 0.0), 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0)), (false ? _GLF_FUZZED(mat3(7.8, -517.077, -848.303, -214.117, 5.2, -419.974, -74.89, -101.779, -485.631)) : (mat3(0.0, determinant(mat3(0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, tan(0.0), 1.0, 0.0)), determinant(mat4(0.0, 0.0, 0.0, _GLF_IDENTITY(0.0, clamp(0.0, 0.0, 0.0)), 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, _GLF_ZERO(0.0, injectionSwitch.x), 0.0, 1.0, 0.0, 1.0, 0.0)), 1.0, 1.0, 0.0, sqrt(0.0), 1.0, 1.0))))) - mat3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)) - mat3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, _GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(-9949.4318)), float(0.0), bool(true))), 0.0)))), _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, clamp(injectionSwitch, injectionSwitch, injectionSwitch)).y), 0.0, 0.0))))), _GLF_IDENTITY(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(0.0, (0.0) / 1.0)))), 1.0, 0.0, 1.0, _GLF_IDENTITY(sqrt(0.0), float(_GLF_IDENTITY(mat2x3(sqrt(0.0), log(1.0), 1.0, 1.0, cos(0.0), 1.0), (true ? mat2x3(sqrt(0.0), log(1.0), 1.0, 1.0, cos(0.0), 1.0) : _GLF_FUZZED(mat2x3(53.57, 82.43, -64.93, -1.6, -49.69, 368.635)))))), 1.0, _GLF_IDENTITY(_GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, (1.0) + 0.0), 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, _GLF_IDENTITY(1.0, float(mat2(1.0, 0.0, 0.0, 1.0)))))) - 0.0)), (_GLF_IDENTITY(dot(vec2(1.0, _GLF_IDENTITY(0.0, clamp(0.0, _GLF_IDENTITY(0.0, (true ? 0.0 : _GLF_FUZZED(9.5))), 0.0))), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, _GLF_IDENTITY(0.0, (_GLF_IDENTITY(0.0, clamp(0.0, 0.0, _GLF_IDENTITY(0.0, clamp(0.0, 0.0, 0.0))))) / 1.0)), vec2(0.0, _GLF_IDENTITY(1.0, (true ? _GLF_IDENTITY(1.0, min(1.0, 1.0)) : _GLF_FUZZED((72.82 - 9118.4365))))))) - 0.0))) / _GLF_IDENTITY(1.0, (_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-1.1)), float(1.0), bool(true)))) / _GLF_IDENTITY(dot(vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 0.0)), dot(vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 0.0))))), 0.0, _GLF_IDENTITY(0.0, float(vec3(0.0, 1.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0))))))), _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0)), _GLF_IDENTITY(float(float(float(mat4x3(_GLF_IDENTITY(_GLF_IDENTITY(1.0, (1.0) + 0.0), float(mat4(1.0, 1.0, _GLF_IDENTITY(1.0, mix(float(1.0), float(_GLF_FUZZED(43.06)), bool(false))), _GLF_IDENTITY(0.0, (0.0) - abs(0.0)), 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(_GLF_IDENTITY(1.0, max(1.0, 1.0)), 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(_GLF_IDENTITY(1.0, (1.0) / 1.0), injectionSwitch.y), 0.0, 0.0)))), (true ? _GLF_IDENTITY(float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, _GLF_IDENTITY(1.0, (1.0) + _GLF_IDENTITY(dot(vec3(1.0, 0.0, 0.0), vec3(sqrt(0.0), 1.0, 1.0)), dot(vec3(1.0, 0.0, 0.0), vec3(sqrt(0.0), 1.0, 1.0)))), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, float(_GLF_IDENTITY(mat2(1.0, 0.0, _GLF_IDENTITY(0.0, 0.0 + (0.0)), 1.0), mat2(mat3x2(mat2(_GLF_IDENTITY(1.0, (false ? _GLF_FUZZED((mat2x3(9.9, 656.040, -55.26, -1064.1946, 8.2, -676.947) , 8381.2748)) : 1.0)), 0.0, 0.0, 1.0)))))), 1.0)), 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, (injectionSwitch) * mat2(1.0)).y), 0.0, 0.0)))), mix(float(_GLF_IDENTITY(_GLF_FUZZED(-884.713), (_GLF_IDENTITY(_GLF_FUZZED(-884.713), (false ? _GLF_FUZZED(6090.3947) : _GLF_IDENTITY(_GLF_FUZZED(-884.713), min(_GLF_FUZZED(-884.713), _GLF_FUZZED(-884.713)))))) - abs(0.0))), float(float(float(float(mat4x3(_GLF_IDENTITY(1.0, float(mat4(1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, _GLF_IDENTITY(1.0, min(1.0, 1.0)), 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0))), 1.0, 0.0, 1.0, sqrt(0.0), 1.0, _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), _GLF_IDENTITY(dot(vec2(1.0, 0.0), vec2(0.0, 1.0)), (dot(vec2(1.0, 0.0), vec2(0.0, 1.0))) - 0.0)), 0.0, 0.0, _GLF_IDENTITY(_GLF_ONE(1.0, injectionSwitch.y), float(mat4x2(_GLF_ONE(1.0, injectionSwitch.y), 1.0, 1.0, 0.0, 0.0, 1.0, cos(0.0), sin(0.0)))), 0.0, 0.0))))), bool(true))) : _GLF_FUZZED(_GLF_IDENTITY(-770.474, (_GLF_IDENTITY(-770.474, clamp(-770.474, -770.474, -770.474))) - determinant(mat3(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, sin(0.0), 0.0)))))))))))) / 1.0))), mat2x4(1.0), vec4(1.0)), 1.0), mat4x2(1.0), bvec3(true), _GLF_struct_13(_GLF_struct_10(_GLF_IDENTITY(_GLF_IDENTITY(mat4(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + _GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), clamp(_GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), float(mat3x4((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))))))), (_GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(80.47, 3.3, 990.116, 7074.3944, -1.4, -9432.5785, 71.88, 9180.9306, -78.35, -2497.6123, 75.62, 19.50, 542.140, 2.7, 667.393, -881.903)) : _GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(-8220.6168, -25.34, -97.40, -0.1, -4.8, 586.276, -79.89, 2.8, -6.1, -50.27, 0.3, -4.8, 6.5, 1.2, -3.6, -7441.1189)) : true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)))))))), transpose(transpose(_GLF_IDENTITY(_GLF_IDENTITY(mat4(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + _GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), clamp(_GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), float(mat3x4((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))))))), (_GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(80.47, 3.3, 990.116, 7074.3944, -1.4, -9432.5785, 71.88, 9180.9306, -78.35, -2497.6123, 75.62, 19.50, 542.140, 2.7, 667.393, -881.903)) : _GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(-8220.6168, -25.34, -97.40, -0.1, -4.8, 586.276, -79.89, 2.8, -6.1, -50.27, 0.3, -4.8, 6.5, 1.2, -3.6, -7441.1189)) : true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)))))))), (true ? _GLF_IDENTITY(mat4(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + _GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), clamp(_GLF_IDENTITY((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), float(mat3x4((_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))), (_GLF_IDENTITY(1.0, max(_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(-82.30)), float(1.0), bool(true))), 1.0))))))), (_GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(80.47, 3.3, 990.116, 7074.3944, -1.4, -9432.5785, 71.88, 9180.9306, -78.35, -2497.6123, 75.62, 19.50, 542.140, 2.7, 667.393, -881.903)) : _GLF_IDENTITY(true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)), (false ? _GLF_FUZZED(mat4(-8220.6168, -25.34, -97.40, -0.1, -4.8, 586.276, -79.89, 2.8, -6.1, -50.27, 0.3, -4.8, 6.5, 1.2, -3.6, -7441.1189)) : true ? mat4(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), max(_GLF_IDENTITY(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), float(mat4x3(_GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0)), 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, _GLF_ONE(1.0, injectionSwitch.y), exp(0.0), 1.0, 0.0, sqrt(0.0)))), _GLF_IDENTITY(1.0, length(vec3(0.0, 0.0, 0.0)) + (1.0))))) : _GLF_FUZZED(mat4(7834.3684, 1935.3438, -1.0, -9.5, -5.1, -389.002, -4.3, 8.2, 48.79, 74.56, -56.94, -45.29, -61.79, -977.915, -6.5, -1.7)))))))) : _GLF_FUZZED(mat4(-400.751, -37.08, -81.59, -7.8, 9121.7322, -1.9, 151.774, 3.6, -374.195, -6.6, 204.758, -613.060, -25.67, -972.066, 8.8, -224.884))))))), bvec2(true), 1u), uvec4(1u), _GLF_struct_11(mat2(1.0), mat4x2(1.0)), _GLF_struct_12(mat3(1.0), uvec3(1u), 1.0, mat2x3(1.0), bvec3(true), ivec3(1))));
+ if(_GLF_IDENTITY(_GLF_DEAD(false), ! (! (_GLF_DEAD(false)))))
+  barrier();
+ buf[virtual_gid] = uint(subgroupAllEqual(_GLF_struct_replacement_14._f0.read_val));
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+
+  SUBGROUP test
+	  VARYING_SIZE on
+  END
+END
+
+RUN test_pipe 65532 1 1
+EXPECT tester EQ_BUFFER expected
