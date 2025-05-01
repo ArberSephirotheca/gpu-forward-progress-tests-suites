@@ -26,16 +26,17 @@ void main()
     uint workgroup_base = workgroup_size * workgroup_id;
     uint virtual_gid = workgroup_base + subgroup_id * subgroup_size +subgroup_local_id;
     uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
-    uint read = atomicLoad(buf[virtual_gid], 4, 64, 0); // read, should all read 0
-    atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4); // write, should all write 1
+    uint read = atomicLoad(buf[virtual_gid], 4, 64, 2); // read, should all read 0
     if (subgroup_local_id + 1 < subgroup_size) {
         // scope: invocation, storage: buffer, memory semantics: relax
 	    // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
-	    atomicStore(checker[virtual_gid], read, 4, 64, 4);
-        subgroupAll(false); // this really does nothing but acts like a subgroup barrier
+        subgroupAll(false); // this really does nothing but acts like a subgroup synchronization
+        atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4); // write, should all write 1
     } else {
-        atomicStore(buf[virtual_gid], read, 4, 64, 4);
-        subgroupAll(true); // this really does nothing but acts like a subgroup barrier
+        subgroupAll(true); // this really does nothing but acts like a subgroup synchronization
+        atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4); // write, should all write 1
     }
+    subgroupBarrier();
+    atomicStore(buf[virtual_gid], read, 4, 64, 4);
 }
 
