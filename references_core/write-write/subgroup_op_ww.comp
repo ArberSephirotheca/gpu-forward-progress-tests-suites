@@ -27,11 +27,10 @@ void main()
     if (subgroup_local_id + 1 < subgroup_size) {
         // scope: invocation, storage: buffer, memory semantics: relax
 	    // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
+        subgroupAll(true); // this really does nothing but acts like a subgroup synch
 	    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-        subgroupAll(false); // this really does nothing but acts like a subgroup barrier
-    } else {
+     } else {
         atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-        subgroupAll(true); // this really does nothing but acts like a subgroup barrier
     }
 }
 
