@@ -4,7 +4,6 @@
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
 #extension GL_EXT_maximal_reconvergence : enable
-#extension GLSL_EXT_shader_quad_control : enable
 
 layout(set = 0, binding = 0)  buffer Buf {
 	uint buf[];
@@ -36,6 +35,7 @@ void main()
 	    // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
         read = atomicLoad(buf[virtual_gid], 4, 64, 2); // read
     } else {
+        subgroupAll(false);
         read = atomicLoad(buf[virtual_gid], 4, 64, 2); // read
     }
     subgroupBarrier();

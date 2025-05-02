@@ -4,7 +4,6 @@
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
 #extension GL_EXT_maximal_reconvergence : enable
-#extension GLSL_EXT_shader_quad_control : enable
 
 layout(set = 0, binding = 0)  buffer Buf {
 	uint buf[];
@@ -34,6 +33,7 @@ void main()
         subgroupAll(false); // this really does nothing but acts like a subgroup synchronization
         atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4); // write, should all write 1
     } else {
+        subgroupAll(false);
         atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4); // write, should all write 1
     }
     subgroupBarrier();
