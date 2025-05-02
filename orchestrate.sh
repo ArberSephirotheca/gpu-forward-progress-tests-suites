@@ -84,10 +84,10 @@ gen_generic() { echo "==> [Generate → generic]"; gen "$1"; }
 _run_common() {
   local suite=$1         # core | generic
   local args=(-t "$suite")
-  $ANDROID        && args+=(-a)
+  $ANDROID        && args+=(-a "1")
   [[ -n $SERIAL ]] && args+=(-s "$SERIAL")
   [[ -n $DEVICE ]] && args+=(-d "$DEVICE")
-  ( cd test_amber && sh to_run.sh "${args[@]}" )
+  ( cd test_amber && ./to_run.sh "${args[@]}" )
 }
 
 run_core()       { _run_common core        ; }

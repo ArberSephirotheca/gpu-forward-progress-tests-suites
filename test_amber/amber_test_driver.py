@@ -56,13 +56,16 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
             # generate command to run the amber test for a specified iteration count and append results to a temp file
             run__test = "timeout -k 1 15 " + amber_build_path + output_file_name + amber_build_flags + ">> temp_results.txt 2>&1"
             if android:
-                # push test file on the device
-                os.system("adb push " + output_file_name + " /data/local/tmp/")
-                # prepare the specific run command to run amber on-device
                 if serial:
+                    # push test file on the device
+                    os.system(f"adb -s {serial} push " + output_file_name + " /data/local/tmp/")
+                    # prepare the specific run command to run amber on-device
                     run__test = f"timeout -k 1 15 adb -s {serial} shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(
                     output_file_name) + "' >> temp_results.txt 2>&1"
                 else:
+                    # push test file on the device
+                    os.system("adb push " + output_file_name + " /data/local/tmp/")
+                    # prepare the specific run command to run amber on-device
                     run__test = "timeout -k 1 15 adb shell 'cd /data/local/tmp ; ./amber_ndk " + amber_build_flags + " " + os.path.basename(
                     output_file_name) + "' >> temp_results.txt 2>&1"
             for i in range(int(num_iter)):
