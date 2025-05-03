@@ -1,0 +1,119 @@
+#!amber
+
+DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ if(subgroup_local_id + 1 < subgroup_size)
+  {
+   int i = 0;
+   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+  }
+ else
+  {
+   switch(_GLF_SWITCH(0))
+    {
+     case 50:
+     bvec2 _GLF_SWITCH_0_0v, _GLF_SWITCH_0_1v;
+     case 0:
+     case 59:
+     case 41:
+     case 85:
+     case 10:
+     case 67:
+     case 90:
+     case 81:
+     case 97:
+     case 55:
+     switch(_GLF_SWITCH(0))
+      {
+       case 30:
+       matrixCompMult((- mat3x2(-4416.5769, 8.8, -1.0, 864.794, -51.27, 80.12)), matrixCompMult(mat3x2(-2940.8372, -2.4, 4.0, 44.20, _GLF_IDENTITY(134.986, (false ? _GLF_FUZZED(-74.95) : _GLF_IDENTITY(134.986, clamp(_GLF_IDENTITY(134.986, (134.986) - 0.0), 134.986, 134.986)))), 4.7), mat3x2(-4.9, 4.7, -6.0, 9.5, -35.38, 3.9)));
+       case 65:
+       (~ workgroup_base);
+       case 0:
+       case 35:
+       atomicStore(checker[virtual_gid], read, _GLF_IDENTITY(4, _GLF_IDENTITY(int(ivec2(4, 1)), (false ? _GLF_FUZZED(134) : int(ivec2(4, 1))))), 64, 4);
+       break;
+       case 48:
+       uvec2(155048u, 188147u);
+       default:
+       1;
+      }
+     break;
+     default:
+     1;
+    }
+  }
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+BUFFER checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected_checker DATA_TYPE uint32 SIZE 8388096 FILL 1
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 
+
+  SUBGROUP test
+	  VARYING_SIZE on
+  END
+END
+
+RUN test_pipe 65532 1 1
+EXPECT checker EQ_BUFFER expected_checker
