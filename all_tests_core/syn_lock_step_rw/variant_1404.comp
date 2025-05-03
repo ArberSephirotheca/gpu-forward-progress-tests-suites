@@ -23,6 +23,7 @@ layout(set = 0, binding = 1) uniform buf1 {
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -37,11 +38,13 @@ void main()
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
- uint workgroup_id = _GLF_IDENTITY(gl_WorkGroupID.x, (_GLF_IDENTITY(gl_WorkGroupID.x, (gl_WorkGroupID.x) << 0u)) | (_GLF_IDENTITY(gl_WorkGroupID.x, uint(uvec2(_GLF_IDENTITY(gl_WorkGroupID.x, (gl_WorkGroupID.x) - 0u), 0u)))));
+ uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = _GLF_IDENTITY(workgroup_base, clamp(workgroup_base, workgroup_base, _GLF_IDENTITY(workgroup_base, max(workgroup_base, _GLF_IDENTITY(workgroup_base, min(workgroup_base, workgroup_base)))))) + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % _GLF_IDENTITY(subgroup_size, uint(_GLF_IDENTITY(uvec2(subgroup_size, (89884u & 0u)), min(_GLF_IDENTITY(uvec2(subgroup_size, (89884u & 0u)), uvec2(0u, 0u) ^ (uvec2(subgroup_size, (89884u & 0u)))), uvec2(subgroup_size, (89884u & 0u)))))));
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, _GLF_IDENTITY(2, min(2, 2)));
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ subgroupBarrier();
  atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

@@ -23,6 +23,7 @@ layout(set = 0, binding = 1) uniform buf1 {
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -39,15 +40,13 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(_GLF_WRAPPED_IF_FALSE(false))
-  {
-  }
- else
-  {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-  }
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

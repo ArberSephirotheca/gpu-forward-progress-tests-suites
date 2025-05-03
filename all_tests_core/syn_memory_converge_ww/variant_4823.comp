@@ -1,29 +1,34 @@
 #version 460
+struct _GLF_struct_1 {
+ mat4x2 _f0;
+ mat3x2 _f1;
+ bvec2 _f2;
+} ;
 
-#ifndef REDUCER
-#define _GLF_ZERO(X, Y)                   (Y)
-#define _GLF_ONE(X, Y)                    (Y)
-#define _GLF_FALSE(X, Y)                  (Y)
-#define _GLF_TRUE(X, Y)                   (Y)
-#define _GLF_IDENTITY(X, Y)               (Y)
-#define _GLF_DEAD(X)                      (X)
-#define _GLF_FUZZED(X)                    (X)
-#define _GLF_WRAPPED_LOOP(X)              X
-#define _GLF_WRAPPED_IF_TRUE(X)           X
-#define _GLF_WRAPPED_IF_FALSE(X)          X
-#define _GLF_SWITCH(X)                    X
-#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
-#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
-#endif
+struct _GLF_struct_2 {
+ uvec3 _f0;
+ _GLF_struct_1 _f1;
+ mat2 _f2;
+} ;
 
+struct _GLF_struct_0 {
+ ivec3 _f0;
+ mat4x2 _f1;
+} ;
+
+struct _GLF_struct_3 {
+ _GLF_struct_0 _f0;
+ _GLF_struct_2 _f1;
+ uint workgroup_size;
+} ;
 
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -37,13 +42,12 @@ void main()
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = gl_WorkGroupSize.x;
+ _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(_GLF_struct_0(ivec3(1), mat4x2(1.0)), _GLF_struct_2(uvec3(1u), _GLF_struct_1(mat4x2(1.0), mat3x2(1.0), bvec2(true)), mat2(1.0)), gl_WorkGroupSize.x);
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint workgroup_base = _GLF_struct_replacement_3.workgroup_size * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);
- if(_GLF_DEAD(false))
-  return;
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }

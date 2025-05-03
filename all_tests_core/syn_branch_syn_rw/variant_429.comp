@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -109,7 +109,7 @@ void main()
   }
  if(_GLF_DEAD(false))
   return;
- uvec3 GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size;
+ uvec2 GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid;
  if(_GLF_DEAD(false))
   return;
  if(_GLF_DEAD(false))
@@ -304,7 +304,7 @@ void main()
    if(_GLF_DEAD(false))
     return;
   }
- GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.x = subgroup_size;
+ GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.x = subgroup_size;
  if(_GLF_DEAD(false))
   {
    if(_GLF_DEAD(false))
@@ -1296,7 +1296,7 @@ void main()
   return;
  if(_GLF_DEAD(false))
   return;
- GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.z = workgroup_size;
+ uint workgroup_id = gl_WorkGroupID.x;
  if(_GLF_DEAD(false))
   {
    if(_GLF_DEAD(false))
@@ -1845,7 +1845,7 @@ void main()
   }
  if(_GLF_DEAD(false))
   return;
- uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
  if(_GLF_DEAD(false))
   return;
  if(_GLF_DEAD(false))
@@ -1928,7 +1928,7 @@ void main()
   return;
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
   return;
- uint workgroup_base = GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.z * workgroup_id;
+ uint subgroup_base = subgroup_id * GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.x;
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
   {
    if(_GLF_DEAD(_GLF_IDENTITY(false, _GLF_IDENTITY(bool(bvec2(false, true)), true && (bool(bvec2(false, true)))))))
@@ -1955,12 +1955,12 @@ void main()
   return;
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
   return;
- uint virtual_gid = workgroup_base + subgroup_id * GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.x + subgroup_local_id;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  if(_GLF_DEAD(false))
   return;
  if(_GLF_DEAD(false))
   return;
- GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.y = virtual_gid;
+ GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.y = virtual_gid;
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
   return;
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
@@ -2171,8 +2171,8 @@ void main()
   }
  if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
   return;
- uint next_virtual_gid = workgroup_base + subgroup_id * GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.x + ((subgroup_local_id + 1) % GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.x);
- uint read = atomicLoad(buf[GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.y], 4, 64, 0);
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.x);
+ uint read = atomicLoad(buf[GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.y], 4, 64, 2);
  if(_GLF_DEAD(false))
   {
    if(_GLF_DEAD(_GLF_IDENTITY(false, ! (! (false)))))
@@ -2223,77 +2223,79 @@ void main()
    if(_GLF_DEAD(false))
     return;
   }
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+ if((subgroup_local_id % 2) == 0)
   {
-   if(_GLF_DEAD(false))
-    return;
-   return;
-  }
- if(_GLF_DEAD(false))
-  {
-   if(_GLF_DEAD(false))
-    return;
-   if(_GLF_DEAD(false))
-    return;
-   if(_GLF_DEAD(false))
-    return;
-   return;
-  }
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    {
+     if(_GLF_DEAD(false))
+      return;
+     return;
+    }
    if(_GLF_DEAD(false))
     {
+     if(_GLF_DEAD(false))
+      return;
+     if(_GLF_DEAD(false))
+      return;
+     if(_GLF_DEAD(false))
+      return;
+     return;
+    }
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    {
+     if(_GLF_DEAD(false))
+      {
+       if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+        return;
+       return;
+      }
+     return;
+    }
+   if(_GLF_DEAD(false))
+    {
+     if(_GLF_DEAD(false))
+      return;
+     return;
      if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
       return;
-     return;
     }
-   return;
-  }
- if(_GLF_DEAD(false))
-  {
    if(_GLF_DEAD(false))
     return;
-   return;
-   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    return;
-  }
- if(_GLF_DEAD(false))
-  return;
- if(_GLF_DEAD(false))
-  {
    if(_GLF_DEAD(false))
-    return;
-   return;
-  }
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
- if(_GLF_DEAD(false))
-  return;
- if(_GLF_DEAD(_GLF_IDENTITY(false, bool(bool(false)))))
-  {
-   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
     {
      if(_GLF_DEAD(false))
       return;
-     if(_GLF_DEAD(false))
-      return;
      return;
     }
-   return;
-   if(_GLF_DEAD(false))
-    return;
-  }
- if(_GLF_DEAD(false))
-  return;
- if(subgroup_local_id + 1 < GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.x)
-  {
-   int i = 0;
    if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
     return;
    if(_GLF_DEAD(false))
     return;
-   atomicStore(checker[GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.y], read, 4, 64, 4);
+   if(_GLF_DEAD(_GLF_IDENTITY(false, bool(bool(false)))))
+    {
+     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+      {
+       if(_GLF_DEAD(false))
+        return;
+       if(_GLF_DEAD(false))
+        return;
+       return;
+      }
+     return;
+     if(_GLF_DEAD(false))
+      return;
+    }
+   if(_GLF_DEAD(false))
+    return;
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+  }
+ else
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
+   if(_GLF_DEAD(false))
+    return;
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
    if(_GLF_DEAD(false))
     return;
    if(_GLF_DEAD(false))
@@ -2729,54 +2731,25 @@ void main()
       return;
     }
   }
- else
+ if(_GLF_DEAD(false))
   {
    if(_GLF_DEAD(false))
     {
+     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+      return;
      if(_GLF_DEAD(false))
-      {
-       if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-        return;
-       if(_GLF_DEAD(false))
-        return;
-       if(_GLF_DEAD(false))
-        return;
-       return;
-       if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-        return;
-       if(_GLF_DEAD(false))
-        return;
-      }
+      return;
      if(_GLF_DEAD(false))
-      {
-       if(_GLF_DEAD(false))
-        {
-         if(_GLF_DEAD(false))
-          return;
-         return;
-        }
-       if(_GLF_DEAD(false))
-        return;
-       return;
-      }
+      return;
      return;
+     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+      return;
+     if(_GLF_DEAD(false))
+      return;
     }
    if(_GLF_DEAD(false))
-    return;
-   if(_GLF_DEAD(false))
-    return;
-   atomicStore(checker[GLF_merged3_0_1_13_1_1_11_2_1_14subgroup_sizevirtual_gidworkgroup_size.y], read, 4, 64, 4);
-   if(_GLF_DEAD(_GLF_IDENTITY(false, (false) && true)))
-    return;
-   if(_GLF_DEAD(false))
     {
-     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-      {
-       if(_GLF_DEAD(false))
-        return;
-       return;
-      }
-     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+     if(_GLF_DEAD(false))
       {
        if(_GLF_DEAD(false))
         return;
@@ -2786,7 +2759,34 @@ void main()
       return;
      return;
     }
+   return;
   }
+ if(_GLF_DEAD(false))
+  return;
+ if(_GLF_DEAD(false))
+  return;
+ subgroupBarrier();
+ if(_GLF_DEAD(_GLF_IDENTITY(false, (false) && true)))
+  return;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    {
+     if(_GLF_DEAD(false))
+      return;
+     return;
+    }
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    {
+     if(_GLF_DEAD(false))
+      return;
+     return;
+    }
+   if(_GLF_DEAD(false))
+    return;
+   return;
+  }
+ atomicStore(checker[GLF_merged2_0_1_13_1_1_11subgroup_sizevirtual_gid.y], read, 4, 64, 4);
  if(_GLF_DEAD(false))
   {
    if(_GLF_DEAD(_GLF_IDENTITY(false, (false) || false)))

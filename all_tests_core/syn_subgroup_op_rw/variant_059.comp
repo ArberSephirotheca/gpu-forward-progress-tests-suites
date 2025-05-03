@@ -17,86 +17,13 @@
 #endif
 
 
-struct _GLF_struct_7 {
- mat4x2 _f0;
- uvec2 _f1;
- mat4 _f2;
- int _f3;
-} ;
-
-struct _GLF_struct_6 {
- bvec2 _f0;
- mat4x3 _f1;
- uvec2 _f2;
- uvec3 _f3;
- mat2x3 _f4;
-} ;
-
-struct _GLF_struct_8 {
- _GLF_struct_6 _f0;
- _GLF_struct_7 _f1;
-} ;
-
-struct _GLF_struct_4 {
- uint virtual_gid;
- uint _f0;
- mat3 _f1;
- bvec3 _f2;
-} ;
-
-struct _GLF_struct_3 {
- mat3 _f0;
- bvec3 _f1;
- mat2x4 _f2;
- mat2 _f3;
- uint _f4;
- mat3 _f5;
-} ;
-
-struct _GLF_struct_2 {
- bvec4 _f0;
- uint _f1;
- mat3 _f2;
-} ;
-
-struct _GLF_struct_1 {
- ivec2 _f0;
- uvec4 _f1;
- float _f2;
-} ;
-
-struct _GLF_struct_5 {
- int _f0;
- _GLF_struct_1 _f1;
- _GLF_struct_2 _f2;
- mat4x2 _f3;
- _GLF_struct_3 _f4;
- _GLF_struct_4 _f5;
- bool _f6;
-} ;
-
-struct _GLF_struct_9 {
- _GLF_struct_5 _f0;
- bvec4 _f1;
- bool _f2;
- uvec3 _f3;
- mat4x3 _f4;
- _GLF_struct_8 _f5;
-} ;
-
-struct _GLF_struct_0 {
- uint workgroup_id;
- mat3x4 _f0;
- ivec4 _f1;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -110,27 +37,35 @@ void main()
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ if(_GLF_DEAD(false))
+  return;
  uint workgroup_size = gl_WorkGroupSize.x;
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_WorkGroupID.x, mat3x4(1.0), ivec4(1));
- uint workgroup_base = workgroup_size * _GLF_struct_replacement_0.workgroup_id;
- _GLF_struct_9 _GLF_struct_replacement_9 = _GLF_struct_9(_GLF_struct_5(1, _GLF_struct_1(ivec2(1), uvec4(1u), 1.0), _GLF_struct_2(bvec4(true), 1u, mat3(1.0)), mat4x2(1.0), _GLF_struct_3(mat3(1.0), bvec3(true), mat2x4(1.0), mat2(1.0), 1u, mat3(1.0)), _GLF_struct_4(workgroup_base + subgroup_id * subgroup_size + subgroup_local_id, 1u, mat3(1.0), bvec3(true)), true), bvec4(true), true, uvec3(1u), mat4x3(1.0), _GLF_struct_8(_GLF_struct_6(bvec2(true), mat4x3(1.0), uvec2(1u), uvec3(1u), mat2x3(1.0)), _GLF_struct_7(mat4x2(1.0), uvec2(1u), mat4(1.0), 1)));
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[_GLF_struct_replacement_9._f0._f5.virtual_gid], 4, 64, 0);
- for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ if((subgroup_local_id % 2) == 0)
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
-  }
- if(subgroup_local_id + 1 < subgroup_size)
-  {
-   atomicStore(checker[_GLF_struct_replacement_9._f0._f5.virtual_gid], read, 4, 64, 4);
    subgroupAll(false);
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
   }
  else
   {
-   atomicStore(buf[_GLF_struct_replacement_9._f0._f5.virtual_gid], read, 4, 64, 4);
-   for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter != int(_GLF_ONE(1.0, injectionSwitch.y))); _injected_loop_counter ++)
-    {
-     subgroupAll(true);
-    }
+   if(_GLF_DEAD(false))
+    return;
+   subgroupAll(false);
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   if(_GLF_DEAD(false))
+    return;
   }
+ subgroupBarrier();
+ atomicStore(buf[virtual_gid], read, 4, 64, 4);
 }

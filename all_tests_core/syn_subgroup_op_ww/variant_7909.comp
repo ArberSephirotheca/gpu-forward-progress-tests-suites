@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -37,20 +37,18 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- for(int _injected_loop_counter = (0 >> _GLF_IDENTITY(int(5), int(5))); _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = _GLF_IDENTITY(workgroup_base + subgroup_base + (_GLF_IDENTITY((subgroup_local_id + 1) % subgroup_size, (0u | 0u) | ((subgroup_local_id + 1) % subgroup_size))), min(workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size), workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size)));
+ atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
+ if((subgroup_local_id % 2) == _GLF_IDENTITY(0, min(0, 0)))
   {
-   atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
-  }
- if(subgroup_local_id + 1 < subgroup_size)
-  {
-   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-   subgroupAll(false);
+   subgroupAll(true);
+   atomicStore(buf[next_virtual_gid], uint(2), 4, _GLF_IDENTITY(64, max(64, _GLF_IDENTITY(64, (1 ^ 0) * (64)))), 4);
   }
  else
   {
+   subgroupAll(false);
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-   subgroupAll(true);
   }
 }

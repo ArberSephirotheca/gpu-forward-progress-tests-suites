@@ -17,13 +17,22 @@
 #endif
 
 
+struct _GLF_struct_0 {
+ vec2 _f0;
+ uint num_workgroup;
+} ;
+
+struct _GLF_struct_1 {
+ _GLF_struct_0 _f0;
+} ;
+
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -33,29 +42,20 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- if(_GLF_DEAD(false))
-  return;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- if(_GLF_DEAD(false))
-  return;
  uint subgroup_local_id = gl_SubgroupInvocationID;
+ _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(_GLF_struct_0(vec2(1.0), gl_NumWorkGroups.x));
  if(_GLF_DEAD(false))
   return;
- uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
- if(_GLF_DEAD(false))
-  return;
  uint workgroup_id = gl_WorkGroupID.x;
- if(_GLF_DEAD(_GLF_IDENTITY(false, ! (! (false)))))
+ if(_GLF_DEAD(false))
   return;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint workgroup_base = _GLF_IDENTITY(workgroup_size, (workgroup_size) | uint(_GLF_ZERO(0.0, _GLF_IDENTITY(injectionSwitch, (injectionSwitch) * vec2(1.0, 1.0)).x))) * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- if(_GLF_DEAD(false))
-  return;
  uint read_val = atomicLoad(write_val, 4, 64, 0);
- if(_GLF_DEAD(false))
-  return;
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ _GLF_IDENTITY(buf[virtual_gid] = uint(subgroupAllEqual(read_val)), (_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)) ? _GLF_FUZZED(subgroup_size) : buf[virtual_gid] = uint(subgroupAllEqual(read_val))));
 }

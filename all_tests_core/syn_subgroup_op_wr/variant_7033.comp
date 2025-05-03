@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -33,16 +33,6 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  barrier();
- if(_GLF_DEAD(false))
-  {
-   if(_GLF_DEAD(false))
-    barrier();
-   if(_GLF_DEAD(false))
-    barrier();
-   barrier();
-  }
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
@@ -50,26 +40,25 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+ if(_GLF_DEAD(false))
   barrier();
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = 0;
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(subgroup_local_id + 1 < subgroup_size)
+ if((subgroup_local_id % 2) == 0)
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(false);
+   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+   if(_GLF_DEAD(_GLF_IDENTITY(false, ! (! (false)))))
+    barrier();
   }
  else
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
-   subgroupAll(true);
-   if(_GLF_DEAD(false))
-    {
-     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-      barrier();
-     barrier();
-    }
+   subgroupAll(false);
+   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
   }
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

@@ -17,74 +17,65 @@
 #endif
 
 
-struct _GLF_struct_6 {
- mat3 _f0;
- mat4 _f1;
-} ;
-
 struct _GLF_struct_5 {
- mat3 _f0;
- uvec2 _f1;
- vec2 _f2;
- uvec3 _f3;
-} ;
-
-struct _GLF_struct_7 {
- _GLF_struct_5 _f0;
- uvec2 _f1;
- _GLF_struct_6 _f2;
- uvec3 _f3;
+ mat3x4 _f0;
 } ;
 
 struct _GLF_struct_4 {
- mat3x4 _f0;
+ mat2 _f0;
+ mat3x4 _f1;
+ int _f2;
+ uvec2 _f3;
+ mat4 _f4;
+ mat3x2 _f5;
+ bool _f6;
+} ;
+
+struct _GLF_struct_6 {
+ _GLF_struct_4 _f0;
+ _GLF_struct_5 _f1;
+ mat4x3 _f2;
+ vec2 _f3;
 } ;
 
 struct _GLF_struct_2 {
- bool _f0;
- mat2x4 _f1;
- mat2x3 _f2;
- ivec3 _f3;
+ mat4x2 _f0;
 } ;
 
 struct _GLF_struct_1 {
- mat3x2 _f0;
- mat4x3 _f1;
- mat2x4 _f2;
- mat2 _f3;
- bvec3 _f4;
- uvec4 _f5;
- mat2x4 _f6;
-} ;
-
-struct _GLF_struct_3 {
- mat4x2 _f0;
- _GLF_struct_1 _f1;
- _GLF_struct_2 _f2;
- bool _f3;
-} ;
-
-struct _GLF_struct_0 {
  mat3x4 _f0;
 } ;
 
-struct _GLF_struct_8 {
+struct _GLF_struct_0 {
+ uvec2 _f0;
+ mat3x2 _f1;
+ ivec2 _f2;
+ int _f3;
+} ;
+
+struct _GLF_struct_3 {
  _GLF_struct_0 _f0;
- uint read;
- mat2x3 _f1;
- _GLF_struct_3 _f2;
- _GLF_struct_4 _f3;
- ivec2 _f4;
- _GLF_struct_7 _f5;
+ _GLF_struct_1 _f1;
+ mat4x2 _f2;
+ _GLF_struct_2 _f3;
+ bool _f4;
+} ;
+
+struct _GLF_struct_7 {
+ _GLF_struct_3 _f0;
+ _GLF_struct_6 _f1;
+ uint workgroup_base;
+ uvec4 _f2;
+ mat3x2 _f3;
 } ;
 
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -100,9 +91,11 @@ void main()
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
+ _GLF_struct_7 _GLF_struct_replacement_7 = _GLF_struct_7(_GLF_struct_3(_GLF_struct_0(uvec2(1u), mat3x2(1.0), ivec2(1), 1), _GLF_struct_1(mat3x4(1.0)), mat4x2(1.0), _GLF_struct_2(mat4x2(1.0)), true), _GLF_struct_6(_GLF_struct_4(mat2(1.0), mat3x4(1.0), 1, uvec2(1u), mat4(1.0), mat3x2(1.0), true), _GLF_struct_5(mat3x4(1.0)), mat4x3(1.0), vec2(1.0)), workgroup_size * workgroup_id, uvec4(1u), mat3x2(1.0));
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = _GLF_struct_replacement_7.workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = _GLF_struct_replacement_7.workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = 0;
  if(_GLF_WRAPPED_IF_TRUE(true))
   {
    atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
@@ -110,21 +103,47 @@ void main()
  else
   {
   }
- _GLF_struct_8 _GLF_struct_replacement_8 = _GLF_struct_8(_GLF_struct_0(mat3x4(1.0)), atomicLoad(buf[virtual_gid], 4, 64, 0), mat2x3(1.0), _GLF_struct_3(mat4x2(1.0), _GLF_struct_1(mat3x2(1.0), mat4x3(1.0), mat2x4(1.0), mat2(1.0), bvec3(true), uvec4(1u), mat2x4(1.0)), _GLF_struct_2(true, mat2x4(1.0), mat2x3(1.0), ivec3(1)), true), _GLF_struct_4(mat3x4(1.0)), ivec2(1), _GLF_struct_7(_GLF_struct_5(mat3(1.0), uvec2(1u), vec2(1.0), uvec3(1u)), uvec2(1u), _GLF_struct_6(mat3(1.0), mat4(1.0)), uvec3(1u)));
- if(subgroup_local_id + 1 < subgroup_size)
+ if(_GLF_WRAPPED_IF_TRUE(true))
   {
-   atomicStore(checker[virtual_gid], _GLF_struct_replacement_8.read, 4, 64, 4);
-   if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+   if((subgroup_local_id % 2) == 0)
     {
      subgroupAll(false);
+     read = atomicLoad(buf[virtual_gid], 4, 64, 2);
     }
    else
     {
+     do
+      {
+       subgroupAll(false);
+      }
+     while(_GLF_WRAPPED_LOOP(false));
+     if(_GLF_WRAPPED_IF_FALSE(_GLF_IDENTITY(false, ! (! (false)))))
+      {
+      }
+     else
+      {
+       if(_GLF_WRAPPED_IF_FALSE(false))
+        {
+        }
+       else
+        {
+         if(_GLF_WRAPPED_IF_FALSE(false))
+          {
+          }
+         else
+          {
+           read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+          }
+        }
+      }
     }
   }
  else
   {
-   atomicStore(checker[virtual_gid], _GLF_struct_replacement_8.read, 4, 64, 4);
-   subgroupAll(true);
   }
+ for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter < ((1 << _GLF_IDENTITY(int(7), int(7))) >> _GLF_IDENTITY(int(7), int(7)))); _injected_loop_counter ++)
+  {
+   subgroupBarrier();
+  }
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

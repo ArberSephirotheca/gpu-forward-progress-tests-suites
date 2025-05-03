@@ -5,6 +5,12 @@
 #extension GL_KHR_memory_scope_semantics : enable
 #extension GL_EXT_maximal_reconvergence : enable
 
+#define scope_invocation 4
+#define storage_sem_buffer 64
+#define sem_relaxed 0
+#define sem_release 4
+#define sem_acquire 2
+
 layout(set = 0, binding = 0)  buffer Buf {
 	uint buf[];
 }; 
@@ -20,17 +26,18 @@ void main()
     uint workgroup_size = gl_WorkGroupSize.x;
     uint workgroup_id = gl_WorkGroupID.x;
     uint workgroup_base = workgroup_size * workgroup_id;
-    uint virtual_gid = workgroup_base + subgroup_id * subgroup_size +subgroup_local_id;
-    uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
-    atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
-    if (subgroup_local_id + 1 < subgroup_size) {
+    uint subgroup_base = subgroup_id * subgroup_size;
+    uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+    uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+    atomicStore(buf[virtual_gid], uint(1), scope_invocation, storage_sem_buffer, 4);
+    if ((subgroup_local_id % 2) == 0) {
         // scope: invocation, storage: buffer, memory semantics: relax
 	    // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
         subgroupAll(true); // this really does nothing but acts like a subgroup synch
-	    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+	    atomicStore(buf[next_virtual_gid], uint(2), scope_invocation, storage_sem_buffer, sem_release);
      } else {
         subgroupAll(false);
-        atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+        atomicStore(buf[next_virtual_gid], uint(2), scope_invocation, storage_sem_buffer, sem_release);
     }
 }
 

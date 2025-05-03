@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -36,32 +36,28 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- if(_GLF_DEAD(false))
-  return;
- if(_GLF_DEAD(false))
-  return;
  uint num_workgroup = gl_NumWorkGroups.x;
- if(_GLF_DEAD(false))
-  return;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(subgroup_local_id + 1 < subgroup_size)
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ if((subgroup_local_id % 2) == 0)
   {
-   if(_GLF_DEAD(false))
-    return;
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
    subgroupAll(false);
+   do
+    {
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+    }
+   while(_GLF_WRAPPED_LOOP(false));
   }
  else
   {
-   atomicStore(buf[virtual_gid], read, 4, 64, _GLF_IDENTITY(4, (4) ^ 0));
-   subgroupAll(true);
-   if(_GLF_DEAD(false))
-    return;
+   subgroupAll(_GLF_IDENTITY(false, (false) || false));
+   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
   }
+ subgroupBarrier();
+ atomicStore(buf[virtual_gid], read, 4, 64, 4);
 }

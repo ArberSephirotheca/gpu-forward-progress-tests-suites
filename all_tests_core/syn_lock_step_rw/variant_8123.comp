@@ -5,6 +5,7 @@ layout(set = 0, binding = 1) uniform buf1 {
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -14,21 +15,18 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec4 GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size;
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.x = num_workgroup;
  uint workgroup_size = gl_WorkGroupSize.x;
- GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.w = workgroup_size;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.w * workgroup_id;
- GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.z = workgroup_base;
- uint virtual_gid = GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.z + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.z + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.y = read;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
  atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- atomicStore(checker[virtual_gid], GLF_merged4_0_1_13_1_1_4_2_1_14_3_1_14num_workgroupreadworkgroup_baseworkgroup_size.y, 4, 64, 4);
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

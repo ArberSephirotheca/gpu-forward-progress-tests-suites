@@ -17,115 +17,13 @@
 #endif
 
 
-struct _GLF_struct_11 {
- uvec2 _f0;
- ivec2 _f1;
- mat4x2 _f2;
- mat4x2 _f3;
-} ;
-
-struct _GLF_struct_10 {
- float _f0;
- ivec3 _f1;
- uvec4 _f2;
- mat3x4 _f3;
-} ;
-
-struct _GLF_struct_9 {
- uvec3 _f0;
- mat3x4 _f1;
- mat2 _f2;
- mat4 _f3;
- bvec3 _f4;
- vec4 _f5;
- bvec3 _f6;
-} ;
-
-struct _GLF_struct_12 {
- mat4x3 _f0;
- _GLF_struct_9 _f1;
- uint subgroup_local_id;
- _GLF_struct_10 _f2;
- uvec3 _f3;
- mat3 _f4;
- _GLF_struct_11 _f5;
- mat2 _f6;
-} ;
-
-struct _GLF_struct_7 {
- uvec4 _f0;
- mat4x2 _f1;
- uvec4 _f2;
-} ;
-
-struct _GLF_struct_6 {
- float _f0;
- mat4x2 _f1;
-} ;
-
-struct _GLF_struct_5 {
- mat3 _f0;
- uint _f1;
- mat3x4 _f2;
- vec4 _f3;
- uint _f4;
-} ;
-
-struct _GLF_struct_4 {
- mat2 _f0;
- uvec4 _f1;
- mat3 _f2;
-} ;
-
-struct _GLF_struct_8 {
- vec4 _f0;
- _GLF_struct_4 _f1;
- _GLF_struct_5 _f2;
- bool _f3;
- _GLF_struct_6 _f4;
- _GLF_struct_7 _f5;
- mat2 _f6;
-} ;
-
-struct _GLF_struct_2 {
- mat3x2 _f0;
-} ;
-
-struct _GLF_struct_1 {
- mat2 _f0;
- uvec3 _f1;
-} ;
-
-struct _GLF_struct_0 {
- mat4 _f0;
- mat2 _f1;
-} ;
-
-struct _GLF_struct_3 {
- _GLF_struct_0 _f0;
- _GLF_struct_1 _f1;
- mat2x4 _f2;
- uint _f3;
- mat2x4 _f4;
- _GLF_struct_2 _f5;
-} ;
-
-struct _GLF_struct_13 {
- mat2 _f0;
- _GLF_struct_3 _f1;
- mat2 _f2;
- _GLF_struct_8 _f3;
- _GLF_struct_12 _f4;
- int _f5;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -137,49 +35,104 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- _GLF_struct_13 _GLF_struct_replacement_13 = _GLF_struct_13(mat2(1.0), _GLF_struct_3(_GLF_struct_0(mat4(1.0), mat2(1.0)), _GLF_struct_1(mat2(1.0), uvec3(1u)), mat2x4(1.0), 1u, mat2x4(1.0), _GLF_struct_2(mat3x2(1.0))), mat2(1.0), _GLF_struct_8(vec4(1.0), _GLF_struct_4(mat2(1.0), uvec4(1u), mat3(1.0)), _GLF_struct_5(mat3(1.0), 1u, mat3x4(1.0), vec4(1.0), 1u), true, _GLF_struct_6(1.0, mat4x2(1.0)), _GLF_struct_7(uvec4(1u), mat4x2(1.0), uvec4(1u)), mat2(1.0)), _GLF_struct_12(mat4x3(1.0), _GLF_struct_9(uvec3(1u), mat3x4(1.0), mat2(1.0), mat4(1.0), bvec3(true), vec4(1.0), bvec3(true)), gl_SubgroupInvocationID, _GLF_struct_10(1.0, ivec3(1), uvec4(1u), mat3x4(1.0)), uvec3(1u), mat3(1.0), _GLF_struct_11(uvec2(1u), ivec2(1), mat4x2(1.0), mat4x2(1.0)), mat2(1.0)), 1);
+ uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- if(_GLF_WRAPPED_IF_TRUE(true))
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = 0;
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ if((subgroup_local_id % 2) == 0)
   {
-   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-    return;
+   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
   }
  else
   {
-  }
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_13._f4.subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((_GLF_struct_replacement_13._f4.subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
-  {
-   if(_GLF_struct_replacement_13._f4.subgroup_local_id + 1 < subgroup_size)
+   switch(_GLF_SWITCH(0))
     {
-     int i = 0;
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-    }
-   else
-    {
-     do
+     case 31:
+     if(true)
       {
-       for(int _injected_loop_counter = (int(_GLF_ONE(1.0, injectionSwitch.y)) ^ 1); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
+       bvec4 _GLF_SWITCH_0_0v, _GLF_SWITCH_0_1v;
+      }
+     else
+      {
+       ;
+       vec3 _GLF_SWITCH_0_2v, _GLF_SWITCH_0_3v;
+       bool _GLF_SWITCH_0_4v;
+       for(       mat4x3(873.818, 306.145, -92.75, -3984.6402, 2.2, 9.7, -7.1, -288.384, -391.513, -120.513, 414.857, 33.22);
+ (_GLF_SWITCH_0_4v); mat2(57.96, -163.149, 1313.3074, -843.879))
         {
-         if(_GLF_DEAD(false))
-          return;
+         while((ivec4(23674, -68839, -35227, -23348) != ivec4(-48564, -19106, 86713, -85753)))
+          {
+           bvec4(false, true, true, false);
+           ;
+           mat4 _GLF_SWITCH_0_5v;
+           vec2(5435.5411, 8.0);
+           float _GLF_SWITCH_0_6v;
+          }
+         mat2x3 _GLF_SWITCH_0_7v[53];
+         if(false)
+          {
+           ivec3 _GLF_SWITCH_0_8v[90], _GLF_SWITCH_0_9v;
+           uvec4 _GLF_SWITCH_0_10v;
+           uvec2 _GLF_SWITCH_0_11v, _GLF_SWITCH_0_12v[98], _GLF_SWITCH_0_13v;
+           mat3x2(90.78);
+           ;
+           mat2x4(8.9, -5.3, -6362.9712, 4119.2467, 6.6, -94.91, -93.80, -82.61);
+           float _GLF_SWITCH_0_14v;
+           float _GLF_SWITCH_0_15v, _GLF_SWITCH_0_16v, _GLF_SWITCH_0_17v;
+           bvec3 _GLF_SWITCH_0_18v;
+          }
         }
        do
         {
-         atomicStore(checker[virtual_gid], read, 4, 64, 4);
+         while(_GLF_SWITCH_0_4v)
+          {
+           mat3 _GLF_SWITCH_0_19v;
+           mat4(5.1, 387.308, -8.5, -5453.6162, 7.2, -3.0, 1212.8089, -4.1, 4249.8078, 6.3, 3.0, 198.785, 491.797, 0.5, 3.4, 1.9);
+           mat4x2 _GLF_SWITCH_0_20v, _GLF_SWITCH_0_21v, _GLF_SWITCH_0_22v[2];
+           mat4(-6.6, -7.8, 2.6, 1.0, 9.7, -99.38, 8061.1531, -2.7, 6861.7388, 5886.7419, 133.331, -2857.9481, 3486.9763, -15.31, -1.9, 5.6);
+           ;
+           vec3(153.748, 6.0, -3939.5380);
+           bvec2(true, false);
+          }
+         for(         vec2(vec4(-6.5, -510.584, -9162.7637, -3.2));
+ (mat3x2(-6349.7198, -7.8, 4.5, 1.8, 2747.3684, -0.1) == mat3x2(-484.943, 193.661, -448.815, 39.62, 8871.6006, 6.6)); ivec4(86565, -44753, 70102, 61020))
+          {
+           uvec3(187991u, 84827u, 24471u);
+           uvec2 _GLF_SWITCH_0_23v, _GLF_SWITCH_0_24v[42];
+           ;
+           bvec2 _GLF_SWITCH_0_25v, _GLF_SWITCH_0_26v[61];
+           uvec3 _GLF_SWITCH_0_27v, _GLF_SWITCH_0_28v;
+          }
+         while((mat2x3(9067.5440, 6.1, -84.59, -6.7, 5121.2634, 79.72) == mat2x3(-8.5, 831.693, -815.814, -292.418, -5503.0890, -37.75)))
+          {
+           (-4.1 + mat4x3(85.64, 775.799, -687.668, 117.192, 25.60, -3755.8936, -0.1, 5.5, -258.945, -931.237, 2.3, 3999.4763));
+           mat3x4(-8251.4404, 9.4, 665.759, -68.21, -0.8, -76.12, 4.3, -262.901, 15.90, -64.86, -23.87, -854.991);
+           (ivec3(93535, -83746, 12574) + findMSB(105141u));
+           ((_GLF_SWITCH_0_4v ? mat3(mat4(-103.293, -1.9, 5.7, 87.24, 1918.5147, -818.666, 6.3, 271.558, 7.2, 5522.8737, -760.249, -5.1, 1366.5295, 3333.7979, -98.79, 312.015)) : mat3(6.5, -7.5, 14.78, -92.00, 4.1, 2.8, -445.222, 6.3, 814.977)) / mat3(-11.14, -4149.4490, -3.7, 66.99, -4.1, -0.4, 5.3, 2.5, -768.873));
+           ivec2(87038, -1855);
+          }
         }
-       while(_GLF_WRAPPED_LOOP(_GLF_IDENTITY(false, ! (! (_GLF_IDENTITY(false, (false) && true))))));
+       while(false);
       }
-     while(_GLF_WRAPPED_LOOP(false));
+     case 52:
+     true;
+     case 0:
+     read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+     break;
+     case 85:
+     bvec4 _GLF_SWITCH_0_29v, _GLF_SWITCH_0_30v, _GLF_SWITCH_0_31v;
+     case 45:
+     ivec3 _GLF_SWITCH_0_32v[60], _GLF_SWITCH_0_33v, _GLF_SWITCH_0_34v[42];
+     default:
+     1;
     }
   }
- else
-  {
-  }
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

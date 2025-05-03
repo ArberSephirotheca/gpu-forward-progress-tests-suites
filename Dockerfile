@@ -2,7 +2,7 @@
     # install docker buildx if not installed
     # docker buildx build --target final --output type=local,dest=./output .
 FROM ubuntu:22.04 AS builder 
-
+ARG CACHE_BREAKER=30
 # Install essential packages
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \

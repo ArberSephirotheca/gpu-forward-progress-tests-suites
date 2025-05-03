@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -33,15 +33,60 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ if(_GLF_DEAD(false))
+  return;
  uint subgroup_id = gl_SubgroupID;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    {
+     if(_GLF_DEAD(false))
+      return;
+     return;
+    }
+   if(_GLF_DEAD(false))
+    {
+     if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+      return;
+     return;
+    }
+   return;
+  }
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- uint num_workgroup = _GLF_IDENTITY(gl_NumWorkGroups, uvec3(gl_NumWorkGroups[0], gl_NumWorkGroups[1], _GLF_IDENTITY(gl_NumWorkGroups[2], clamp(gl_NumWorkGroups[2], _GLF_IDENTITY(gl_NumWorkGroups[2], (gl_NumWorkGroups[2]) | (_GLF_IDENTITY(gl_NumWorkGroups[2], (gl_NumWorkGroups[2]) + 0u))), _GLF_IDENTITY(gl_NumWorkGroups[2], (gl_NumWorkGroups[2]) - 0u))))).x;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ if(_GLF_DEAD(false))
+  return;
  uint workgroup_size = gl_WorkGroupSize.x;
+ if(_GLF_DEAD(false))
+  return;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, _GLF_IDENTITY(64, clamp(64, 64, 64)), 0);
- uint read_val = atomicLoad(write_val, 4, 64, 0);
+ uint workgroup_base = workgroup_size * _GLF_IDENTITY(workgroup_id, uint(uvec4(workgroup_id, 0u, 0u, 1u)));
+ uint subgroup_base = subgroup_id * subgroup_size;
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ if(_GLF_DEAD(false))
+  return;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(false))
+    return;
+   if(_GLF_DEAD(false))
+    return;
+   return;
+  }
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
+   return;
+  }
+ atomicStore(write_val, uint(virtual_gid), 4, _GLF_IDENTITY(64, ~ (~ (64))), 0);
+ uint read_val = atomicLoad(write_val, 4, _GLF_IDENTITY(64, ~ (_GLF_IDENTITY(~ (64), (~ (64)) | (_GLF_IDENTITY(~ (64), int(ivec4(~ (64), 1, 0, 1))))))), 0);
+ if(_GLF_DEAD(false))
+  return;
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }

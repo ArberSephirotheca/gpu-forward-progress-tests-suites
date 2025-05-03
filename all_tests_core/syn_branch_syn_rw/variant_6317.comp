@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -40,26 +40,51 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter != ((+ -31785) & 0)); _injected_loop_counter --)
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ if((subgroup_local_id % 2) == 0)
   {
-   for(int _injected_loop_counter = _GLF_IDENTITY(0, (0) | 0); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
+   switch(_GLF_SWITCH(0))
     {
-     if(subgroup_local_id + 1 < subgroup_size)
-      {
-       int i = 0;
-       atomicStore(checker[virtual_gid], read, 4, 64, 4);
-      }
-     else
-      {
-       for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter != _GLF_IDENTITY(1, clamp(_GLF_IDENTITY(1, ~ (~ (1))), 1, _GLF_IDENTITY(1, 0 ^ (1))))); _injected_loop_counter ++)
-        {
-         atomicStore(checker[virtual_gid], read, 4, 64, 4);
-        }
-      }
+     case 0:
+     case 48:
+     case 60:
+     case 91:
+     case 54:
+     case 87:
+     case 72:
+     case 93:
+     case 23:
+     case 66:
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+     break;
+     case 2:
+     mat4x3 _GLF_SWITCH_0_0v;
+     default:
+     1;
     }
   }
+ else
+  {
+   switch(_GLF_SWITCH(0))
+    {
+     case 3:
+     for(mat4 _GLF_SWITCH_1_0v[9], _GLF_SWITCH_1_1v; false; uvec3(159175u, 184723u, 131428u))
+      {
+       uvec2 _GLF_SWITCH_1_2v, _GLF_SWITCH_1_3v, _GLF_SWITCH_1_4v[69];
+       ;
+      }
+     case 0:
+     case 92:
+     case 26:
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+     break;
+     default:
+     1;
+    }
+  }
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, _GLF_IDENTITY(64, min(64, 64)), 4);
 }

@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -40,39 +40,43 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
  do
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
-  }
- while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
- for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
-  {
-   if(subgroup_local_id + 1 < subgroup_size)
-    {
-     int i = 0;
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
-    }
-   else
+   if((subgroup_local_id % 2) == 0)
     {
      if(_GLF_WRAPPED_IF_TRUE(true))
       {
-       if(_GLF_WRAPPED_IF_TRUE(true))
-        {
-         for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter != (0 >> _GLF_IDENTITY(int(4), int(4)))); _injected_loop_counter --)
-          {
-           atomicStore(checker[virtual_gid], read, 4, 64, 4);
-          }
-        }
-       else
-        {
-        }
+       atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
       }
      else
       {
       }
     }
+   else
+    {
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+    }
   }
+ while(_GLF_WRAPPED_LOOP(false));
+ if(_GLF_WRAPPED_IF_FALSE(false))
+  {
+  }
+ else
+  {
+   for(int _injected_loop_counter = int(_GLF_ONE(1.0, injectionSwitch.y)); _GLF_WRAPPED_LOOP(_injected_loop_counter != int(_GLF_ZERO(0.0, injectionSwitch.x))); _injected_loop_counter --)
+    {
+     if(_GLF_WRAPPED_IF_FALSE(false))
+      {
+      }
+     else
+      {
+       subgroupBarrier();
+      }
+    }
+  }
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

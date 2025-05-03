@@ -1,39 +1,11 @@
 #version 460
-struct _GLF_struct_2 {
- uvec3 _f0;
-} ;
-
-struct _GLF_struct_0 {
- mat2x4 _f0;
- uvec3 _f1;
- int _f2;
- mat4x3 _f3;
- bvec2 _f4;
- int _f5;
- bool _f6;
-} ;
-
-struct _GLF_struct_1 {
- _GLF_struct_0 _f0;
-} ;
-
-struct _GLF_struct_3 {
- uvec4 _f0;
- bvec4 _f1;
- _GLF_struct_1 _f2;
- _GLF_struct_2 _f3;
- int _f4;
- uint num_workgroup;
- vec4 _f5;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -46,11 +18,12 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(uvec4(1u), bvec4(true), _GLF_struct_1(_GLF_struct_0(mat2x4(1.0), uvec3(1u), 1, mat4x3(1.0), bvec2(true), 1, true)), _GLF_struct_2(uvec3(1u)), 1, gl_NumWorkGroups.x, vec4(1.0));
+ uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
  uint read_val = atomicLoad(write_val, 4, 64, 0);
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));

@@ -20,10 +20,10 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -40,29 +40,19 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
- if(subgroup_local_id + 1 < subgroup_size)
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ if((subgroup_local_id % 2) == 0)
   {
-   switch(_GLF_SWITCH(0))
+   switch(_GLF_SWITCH(int(_GLF_ZERO(0.0, injectionSwitch.x))))
     {
      case 0:
-     case 54:
-     case 87:
-     case 66:
-     int i = 0;
-     case 48:
-     case 60:
-     case 91:
-     case 72:
-     case 93:
-     case 23:
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
      break;
-     case 2:
-     mat4x3 _GLF_SWITCH_0_0v;
+     case 66:
+     int _GLF_SWITCH_0_0v[16], _GLF_SWITCH_0_1v[17];
      default:
      1;
     }
@@ -71,19 +61,20 @@ void main()
   {
    switch(_GLF_SWITCH(0))
     {
-     case 3:
-     for(mat4 _GLF_SWITCH_1_0v[9], _GLF_SWITCH_1_1v; false; uvec3(159175u, 184723u, 131428u))
-      {
-       uvec2 _GLF_SWITCH_1_2v, _GLF_SWITCH_1_3v, _GLF_SWITCH_1_4v[69];
-       ;
-      }
+     case 47:
+     mat4x3 _GLF_SWITCH_1_0v[10], _GLF_SWITCH_1_1v;
+     case 95:
+     vec4(4.1, -2.8, 3.9, -6.8);
      case 0:
-     case 92:
-     case 26:
-     atomicStore(checker[virtual_gid], read, 4, 64, 4);
+     case 51:
+     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
      break;
+     case 60:
+     bitfieldReverse(ivec3(-75147, -41750, -35582));
      default:
      1;
     }
   }
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

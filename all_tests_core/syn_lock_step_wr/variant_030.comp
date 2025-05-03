@@ -17,9 +17,23 @@
 #endif
 
 
-struct _GLF_struct_0 {
- uint workgroup_base;
+struct _GLF_struct_2 {
  mat2 _f0;
+} ;
+
+struct _GLF_struct_0 {
+ mat4x3 _f0;
+} ;
+
+struct _GLF_struct_1 {
+ _GLF_struct_0 _f0;
+} ;
+
+struct _GLF_struct_3 {
+ _GLF_struct_1 _f0;
+ uvec2 _f1;
+ _GLF_struct_2 _f2;
+ uint workgroup_base;
 } ;
 
 layout(set = 0, binding = 1) uniform buf1 {
@@ -28,6 +42,7 @@ layout(set = 0, binding = 1) uniform buf1 {
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -41,12 +56,14 @@ void main()
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
- uint workgroup_size = gl_WorkGroupSize.x;
+ uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize.x, clamp(gl_WorkGroupSize.x, _GLF_IDENTITY(gl_WorkGroupSize.x, max(gl_WorkGroupSize.x, gl_WorkGroupSize.x)), gl_WorkGroupSize.x));
  uint workgroup_id = gl_WorkGroupID.x;
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(_GLF_IDENTITY(workgroup_size, min(workgroup_size, workgroup_size)) * workgroup_id, mat2(1.0));
- uint virtual_gid = _GLF_struct_replacement_0.workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- uint next_virtual_gid = _GLF_struct_replacement_0.workgroup_base + _GLF_IDENTITY(subgroup_id * subgroup_size, ~ (~ (subgroup_id * subgroup_size))) + ((subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[next_virtual_gid], uint(1), 4, _GLF_IDENTITY(64, 0 ^ (64)), 4);
- uint read = atomicLoad(_GLF_IDENTITY(buf[virtual_gid], (buf[virtual_gid]) | (buf[virtual_gid])), 4, 64, 0);
- atomicStore(checker[virtual_gid], _GLF_IDENTITY(read, (read) / 1u), 4, 64, 4);
+ _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(_GLF_struct_1(_GLF_struct_0(mat4x3(1.0))), uvec2(1u), _GLF_struct_2(mat2(1.0)), _GLF_IDENTITY(workgroup_size, min(workgroup_size, workgroup_size)) * workgroup_id);
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = _GLF_struct_replacement_3.workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = _GLF_struct_replacement_3.workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, _GLF_IDENTITY(4, ~ (~ (4))));
+ uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

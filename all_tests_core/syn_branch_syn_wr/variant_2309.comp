@@ -1,98 +1,11 @@
 #version 460
-struct _GLF_struct_10 {
- uvec2 _f0;
- mat3x4 _f1;
- int _f2;
- bvec2 _f3;
-} ;
-
-struct _GLF_struct_11 {
- _GLF_struct_10 _f0;
-} ;
-
-struct _GLF_struct_8 {
- float _f0;
- bvec2 _f1;
- vec3 _f2;
- ivec2 _f3;
- mat3 _f4;
- ivec2 _f5;
-} ;
-
-struct _GLF_struct_9 {
- mat4x3 _f0;
- _GLF_struct_8 _f1;
-} ;
-
-struct _GLF_struct_7 {
- mat2x3 _f0;
-} ;
-
-struct _GLF_struct_5 {
- bvec3 _f0;
- mat3 _f1;
- mat4x3 _f2;
- vec2 _f3;
- bvec4 _f4;
- bvec3 _f5;
- float _f6;
-} ;
-
-struct _GLF_struct_6 {
- uvec4 _f0;
- _GLF_struct_5 _f1;
-} ;
-
-struct _GLF_struct_3 {
- int _f0;
- mat4x3 _f1;
- mat3x4 _f2;
- ivec2 _f3;
- int _f4;
-} ;
-
-struct _GLF_struct_4 {
- _GLF_struct_3 _f0;
-} ;
-
-struct _GLF_struct_12 {
- mat3x4 _f0;
- int _f1;
- _GLF_struct_4 _f2;
- _GLF_struct_6 _f3;
- _GLF_struct_7 _f4;
- _GLF_struct_9 _f5;
- uint next_virtual_gid;
- _GLF_struct_11 _f6;
-} ;
-
-struct _GLF_struct_0 {
- uint _f0;
- ivec2 _f1;
- ivec4 _f2;
- ivec2 _f3;
- bvec3 _f4;
-} ;
-
-struct _GLF_struct_1 {
- uint num_workgroup;
- _GLF_struct_0 _f0;
- uvec3 _f1;
- float _f2;
-} ;
-
-struct _GLF_struct_2 {
- _GLF_struct_1 _f0;
- uvec2 _f1;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -105,21 +18,23 @@ void main()
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- _GLF_struct_2 _GLF_struct_replacement_2 = _GLF_struct_2(_GLF_struct_1(gl_NumWorkGroups.x, _GLF_struct_0(1u, ivec2(1), ivec4(1), ivec2(1), bvec3(true)), uvec3(1u), 1.0), uvec2(1u));
+ uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + subgroup_local_id;
- _GLF_struct_12 _GLF_struct_replacement_12 = _GLF_struct_12(mat3x4(1.0), 1, _GLF_struct_4(_GLF_struct_3(1, mat4x3(1.0), mat3x4(1.0), ivec2(1), 1)), _GLF_struct_6(uvec4(1u), _GLF_struct_5(bvec3(true), mat3(1.0), mat4x3(1.0), vec2(1.0), bvec4(true), bvec3(true), 1.0)), _GLF_struct_7(mat2x3(1.0)), _GLF_struct_9(mat4x3(1.0), _GLF_struct_8(1.0, bvec2(true), vec3(1.0), ivec2(1), mat3(1.0), ivec2(1))), workgroup_base + subgroup_id * subgroup_size + ((subgroup_local_id + 1) % subgroup_size), _GLF_struct_11(_GLF_struct_10(uvec2(1u), mat3x4(1.0), 1, bvec2(true))));
- atomicStore(buf[_GLF_struct_replacement_12.next_virtual_gid], uint(1), 4, 64, 4);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 0);
- if(subgroup_local_id + 1 < subgroup_size)
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = 0;
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ if((subgroup_local_id % 2) == 0)
   {
-   int i = 0;
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
   }
  else
   {
-   atomicStore(checker[virtual_gid], read, 4, 64, 4);
+   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
   }
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
 }

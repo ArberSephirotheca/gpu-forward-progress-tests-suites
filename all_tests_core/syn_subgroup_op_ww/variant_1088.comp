@@ -1,53 +1,11 @@
 #version 460
-struct _GLF_struct_3 {
- mat2x4 _f0;
- uint _f1;
- uvec2 _f2;
- mat3x4 _f3;
- float _f4;
- mat3x4 _f5;
-} ;
-
-struct _GLF_struct_4 {
- ivec2 _f0;
- _GLF_struct_3 _f1;
- bvec4 _f2;
-} ;
-
-struct _GLF_struct_1 {
- mat2x4 _f0;
- bool _f1;
- float _f2;
-} ;
-
-struct _GLF_struct_0 {
- float _f0;
-} ;
-
-struct _GLF_struct_2 {
- _GLF_struct_0 _f0;
- ivec2 _f1;
- _GLF_struct_1 _f2;
- uvec3 _f3;
- bvec4 _f4;
- bvec2 _f5;
- uint subgroup_local_id;
- mat4x2 _f6;
-} ;
-
-struct _GLF_struct_5 {
- bool _f0;
- _GLF_struct_2 _f1;
- _GLF_struct_4 _f2;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
-#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
 layout(set = 0, binding = 0) buffer Buf {
  uint buf[];
 };
@@ -56,22 +14,23 @@ void main()
 {
  uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
- _GLF_struct_5 _GLF_struct_replacement_5 = _GLF_struct_5(true, _GLF_struct_2(_GLF_struct_0(1.0), ivec2(1), _GLF_struct_1(mat2x4(1.0), true, 1.0), uvec3(1u), bvec4(true), bvec2(true), gl_SubgroupInvocationID, mat4x2(1.0)), _GLF_struct_4(ivec2(1), _GLF_struct_3(mat2x4(1.0), 1u, uvec2(1u), mat3x4(1.0), 1.0, mat3x4(1.0)), bvec4(true)));
+ uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint virtual_gid = workgroup_base + subgroup_id * subgroup_size + _GLF_struct_replacement_5._f1.subgroup_local_id;
- uint next_virtual_gid = workgroup_base + subgroup_id * subgroup_size + ((_GLF_struct_replacement_5._f1.subgroup_local_id + 1) % subgroup_size);
+ uint subgroup_base = subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
- if(_GLF_struct_replacement_5._f1.subgroup_local_id + 1 < subgroup_size)
+ if((subgroup_local_id % 2) == 0)
   {
+   subgroupAll(true);
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-   subgroupAll(false);
   }
  else
   {
+   subgroupAll(false);
    atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-   subgroupAll(true);
   }
 }
