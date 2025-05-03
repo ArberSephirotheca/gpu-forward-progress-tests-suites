@@ -3,8 +3,9 @@ set -euo pipefail
 
 usage() {
   cat <<EOF >&2
-Usage: $0 [-a ANDROID_PATH] [-s SERIAL] [-d DEVICE]
-  -a   path to Android sdk/emulator
+Usage: $0 -g GPU_NAME [-a 1] [-s SERIAL] [-d DEVICE]
+  -g   GPU name (to be used in table of results)
+  -a   run Android tests with adb
   -s   device serial (only valid with -a)
   -d   device name/ID for non-Android tests
 EOF
@@ -18,8 +19,9 @@ serial=""
 device=""
 
 # parse options
-while getopts ":t:a:s:d:h:" opt; do
+while getopts ":g:t:a:s:d:h:" opt; do
   case $opt in
+    g) gpu_name=$OPTARG ;;
     t) test=$OPTARG ;;
     a) android=$OPTARG ;;
     s) serial=$OPTARG ;;
@@ -30,9 +32,13 @@ while getopts ":t:a:s:d:h:" opt; do
   esac
 done
 
+if [[ -z "${gpu_name:-}" ]]; then
+  echo "Error: GPU name is required (-g)." >&2
+  usage
+fi
 
 # build up the command
-cmd=(python3 amber_launch_tests.py $test)
+cmd=(python3 amber_launch_tests.py "$test" --gpu "$gpu_name")
 
 if [[ -n $android ]]; then
   cmd+=(--android)

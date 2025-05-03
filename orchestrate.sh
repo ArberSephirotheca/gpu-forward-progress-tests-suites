@@ -84,9 +84,10 @@ gen_generic() { echo "==> [Generate → generic]"; gen "$1"; }
 _run_common() {
   local suite=$1         # core | generic
   local args=(-t "$suite")
-  $ANDROID        && args+=(-a "1")
-  [[ -n $SERIAL ]] && args+=(-s "$SERIAL")
-  [[ -n $DEVICE ]] && args+=(-d "$DEVICE")
+  [[ -n $GPU_NAME ]]  && args+=(-g "$GPU_NAME")
+  $ANDROID            && args+=(-a "1")
+  [[ -n $SERIAL ]]    && args+=(-s "$SERIAL")
+  [[ -n $DEVICE ]]    && args+=(-d "$DEVICE")
   ( cd test_amber && ./to_run.sh "${args[@]}" )
 }
 
@@ -115,6 +116,7 @@ Usage: orchestrate.sh <action> <pipeline> [dir] [flags]
     reference shaders are used (nested sub-dirs are flattened automatically).
 
   flags (valid for "run" or "both"):
+    -g, --gpu_name GPU_NAME name of the GPU to use in results table (optional for gen, required for run / both)
     -a, --android           run on Android via adb
     -s, --serial SERIAL     adb serial (use when multiple phones are plugged in)
     -d, --device  ID        Vulkan device index on host or Android target
@@ -153,16 +155,18 @@ shift 2                    # leave the rest for [dir] and/or flags
 ##############################################################################
 
 DIR=""
+GPU_NAME=""
 ANDROID=false
 SERIAL=""
 DEVICE=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -a|--android) ANDROID=true ;;
-    -s|--serial)  SERIAL=$2; shift ;;
-    -d|--device)  DEVICE=$2; shift ;;
-    *)            DIR=$1 ;;
+    -g|--gpu_name) GPU_NAME=$2; shift ;;
+    -a|--android)  ANDROID=true ;;
+    -s|--serial)   SERIAL=$2; shift ;;
+    -d|--device)   DEVICE=$2; shift ;;
+    *)             DIR=$1 ;;
   esac
   shift
 done
