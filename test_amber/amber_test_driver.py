@@ -213,7 +213,6 @@ def amber_driver(all_config_variants, input_dir, output_dir, amber_build_path, a
 
     format_output_results(final_simple_results, final_verbose_results, all_config_variants, output_dir)
 
-
 # prepare the headers and file name information for each type of file outputted
 def format_output_results(final_simple_results, final_verbose_results, all_config_variants, output_dir):
     today = date.today()
@@ -470,6 +469,8 @@ def main():
     log_print("Execution time (s):")
     log_print(str(end - start))
     LOG_FILE.close()
+
+    
 
 
 if __name__ == "__main__":
