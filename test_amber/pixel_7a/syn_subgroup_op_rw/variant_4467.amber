@@ -1,0 +1,609 @@
+#!amber
+
+DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+struct _GLF_struct_62 {
+ uint subgroup_size;
+ float _f0;
+} ;
+
+struct _GLF_struct_59 {
+ mat4 _f0;
+ vec3 _f1;
+ ivec4 _f2;
+} ;
+
+struct _GLF_struct_58 {
+ mat4x3 _f0;
+ bool _f1;
+ float _f2;
+ uint workgroup_id;
+} ;
+
+struct _GLF_struct_57 {
+ uvec4 _f0;
+ ivec4 _f1;
+} ;
+
+struct _GLF_struct_56 {
+ float _f0;
+ vec2 _f1;
+ mat4x3 _f2;
+ bvec4 _f3;
+} ;
+
+struct _GLF_struct_60 {
+ _GLF_struct_56 _f0;
+ _GLF_struct_57 _f1;
+ _GLF_struct_58 _f2;
+ _GLF_struct_59 _f3;
+} ;
+
+struct _GLF_struct_61 {
+ ivec2 _f0;
+ _GLF_struct_60 _f1;
+} ;
+
+struct _GLF_struct_53 {
+ ivec3 _f0;
+ bvec3 _f1;
+ bvec2 _f2;
+} ;
+
+struct _GLF_struct_52 {
+ uvec4 _f0;
+ uvec2 _f1;
+ vec2 _f2;
+ mat2x3 _f3;
+ bvec3 _f4;
+} ;
+
+struct _GLF_struct_51 {
+ mat2x3 _f0;
+ ivec2 _f1;
+ bool _f2;
+ mat4x2 _f3;
+ vec4 _f4;
+ vec3 _f5;
+} ;
+
+struct _GLF_struct_54 {
+ _GLF_struct_51 _f0;
+ _GLF_struct_52 _f1;
+ float _f2;
+ vec4 _f3;
+ uvec2 _f4;
+ _GLF_struct_53 _f5;
+ mat4 _f6;
+} ;
+
+struct _GLF_struct_55 {
+ _GLF_struct_54 _f0;
+ uvec2 _f1;
+ mat3 _f2;
+ mat2x4 _f3;
+ vec2 _f4;
+ uint subgroup_id;
+} ;
+
+struct _GLF_struct_48 {
+ vec4 _f0;
+ mat2 _GLF_SWITCH_0_10v;
+} ;
+
+struct _GLF_struct_49 {
+ _GLF_struct_48 _f0;
+} ;
+
+struct _GLF_struct_46 {
+ mat2x3 _f0;
+ mat3 _f1;
+ ivec3 _f2;
+} ;
+
+struct _GLF_struct_45 {
+ mat4 _f0;
+ bvec4 _f1;
+ vec2 _f2;
+ mat3x4 _f3;
+} ;
+
+struct _GLF_struct_44 {
+ mat2 _f0;
+ int _f1;
+} ;
+
+struct _GLF_struct_47 {
+ _GLF_struct_44 _f0;
+ _GLF_struct_45 _f1;
+ _GLF_struct_46 _f2;
+} ;
+
+struct _GLF_struct_50 {
+ bvec2 _f0;
+ _GLF_struct_47 _f1;
+ _GLF_struct_49 _f2;
+ mat3x2 _f3;
+ ivec4 _f4;
+} ;
+
+struct _GLF_struct_41 {
+ ivec3 _f0;
+} ;
+
+struct _GLF_struct_40 {
+ uint _f0;
+ mat2x4 _f1;
+} ;
+
+struct _GLF_struct_39 {
+ ivec2 _f0;
+ float _f1;
+} ;
+
+struct _GLF_struct_38 {
+ uvec2 _f0;
+ uvec4 _f1;
+ bvec2 _f2;
+ float _f3;
+ bvec3 _f4;
+ int _f5;
+} ;
+
+struct _GLF_struct_42 {
+ int _f0;
+ _GLF_struct_38 _f1;
+ _GLF_struct_39 _f2;
+ _GLF_struct_40 _f3;
+ bvec4 _f4;
+ _GLF_struct_41 _f5;
+} ;
+
+struct _GLF_struct_36 {
+ uvec4 _f0;
+ mat4x3 _f1;
+ bvec3 _f2;
+ bool _f3;
+} ;
+
+struct _GLF_struct_37 {
+ _GLF_struct_36 _f0;
+ mat2 _f1;
+} ;
+
+struct _GLF_struct_34 {
+ ivec4 _f0;
+ uint _f1;
+ uvec2 _f2;
+ mat4x2 _f3;
+ int _f4;
+} ;
+
+struct _GLF_struct_33 {
+ vec3 _f0;
+ vec3 _f1;
+ mat3 _f2;
+ mat4x3 _f3;
+ mat3x2 _f4;
+} ;
+
+struct _GLF_struct_32 {
+ mat3 _f0;
+} ;
+
+struct _GLF_struct_31 {
+ mat3 _f0;
+ mat2x3 _f1;
+ mat3x4 _f2;
+ uvec3 _f3;
+ uvec4 _f4;
+} ;
+
+struct _GLF_struct_30 {
+ uvec2 _f0;
+ bvec3 _f1;
+ vec4 _f2;
+ mat2x4 _f3;
+ uvec4 _f4;
+ mat3x2 _f5;
+ uint virtual_gid;
+ bvec4 _f6;
+} ;
+
+struct _GLF_struct_35 {
+ vec4 _f0;
+ _GLF_struct_30 _f1;
+ _GLF_struct_31 _f2;
+ mat2 _f3;
+ _GLF_struct_32 _f4;
+ _GLF_struct_33 _f5;
+ _GLF_struct_34 _f6;
+} ;
+
+struct _GLF_struct_43 {
+ mat3x4 _f0;
+ _GLF_struct_35 _f1;
+ mat3x4 _f2;
+ _GLF_struct_37 _f3;
+ _GLF_struct_42 _f4;
+ bvec3 _f5;
+} ;
+
+struct _GLF_struct_28 {
+ mat4x3 _f0;
+} ;
+
+struct _GLF_struct_26 {
+ bool _f0;
+} ;
+
+struct _GLF_struct_25 {
+ ivec2 _f0;
+ vec2 _f1;
+ ivec4 _f2;
+ vec4 _f3;
+} ;
+
+struct _GLF_struct_24 {
+ uvec2 _f0;
+ mat4x2 _f1;
+ mat2 _f2;
+} ;
+
+struct _GLF_struct_23 {
+ mat2 _f0;
+ uvec3 _f1;
+ bvec4 _f2;
+ bvec4 _f3;
+ bvec2 _f4;
+} ;
+
+struct _GLF_struct_27 {
+ _GLF_struct_23 _f0;
+ mat2x4 _f1;
+ mat2 _f2;
+ _GLF_struct_24 _f3;
+ _GLF_struct_25 _f4;
+ _GLF_struct_26 _f5;
+ vec3 _f6;
+} ;
+
+struct _GLF_struct_21 {
+ bvec3 _f0;
+ vec4 _f1;
+ ivec4 _f2;
+ ivec2 _f3;
+ ivec2 _f4;
+ bool _f5;
+ ivec2 _f6;
+} ;
+
+struct _GLF_struct_20 {
+ ivec3 _f0;
+} ;
+
+struct _GLF_struct_19 {
+ vec3 _f0;
+ mat4x3 _f1;
+} ;
+
+struct _GLF_struct_18 {
+ mat4x2 _f0;
+} ;
+
+struct _GLF_struct_17 {
+ mat4x2 _f0;
+ int _f1;
+} ;
+
+struct _GLF_struct_16 {
+ bvec4 _f0;
+} ;
+
+struct _GLF_struct_22 {
+ _GLF_struct_16 _f0;
+ _GLF_struct_17 _f1;
+ mat3x2 _f2;
+ _GLF_struct_18 _f3;
+ _GLF_struct_19 _f4;
+ _GLF_struct_20 _f5;
+ _GLF_struct_21 _f6;
+} ;
+
+struct _GLF_struct_29 {
+ uint workgroup_size;
+ _GLF_struct_22 _f0;
+ _GLF_struct_27 _f1;
+ _GLF_struct_28 _f2;
+} ;
+
+struct _GLF_struct_13 {
+ ivec2 _f0;
+ mat4 _f1;
+ uint _f2;
+ uvec4 _f3;
+ mat4 _f4;
+ bvec2 _f5;
+ float _f6;
+} ;
+
+struct _GLF_struct_12 {
+ mat3x2 _f0;
+ ivec2 _f1;
+ uvec2 _f2;
+ uvec4 _f3;
+} ;
+
+struct _GLF_struct_14 {
+ _GLF_struct_12 _f0;
+ bvec2 _f1;
+ _GLF_struct_13 _f2;
+} ;
+
+struct _GLF_struct_10 {
+ bvec3 _GLF_SWITCH_0_19v;
+ mat3x4 _f0;
+ ivec3 _f1;
+ mat4x2 _f2;
+ mat4x2 _f3;
+} ;
+
+struct _GLF_struct_11 {
+ _GLF_struct_10 _f0;
+} ;
+
+struct _GLF_struct_8 {
+ ivec3 _f0;
+ int _f1;
+ uint _f2;
+} ;
+
+struct _GLF_struct_9 {
+ ivec3 _f0;
+ mat3x4 _f1;
+ _GLF_struct_8 _f2;
+} ;
+
+struct _GLF_struct_6 {
+ ivec2 _f0;
+ float _f1;
+ uint _f2;
+ bvec2 _f3;
+ mat4x2 _f4;
+ float _f5;
+} ;
+
+struct _GLF_struct_5 {
+ float _f0;
+ mat4 _f1;
+ int _f2;
+} ;
+
+struct _GLF_struct_7 {
+ ivec3 _f0;
+ mat2x4 _f1;
+ _GLF_struct_5 _f2;
+ _GLF_struct_6 _f3;
+} ;
+
+struct _GLF_struct_3 {
+ mat3 _f0;
+ vec2 _f1;
+ ivec4 _f2;
+ bvec2 _f3;
+ vec4 _f4;
+ mat2 _f5;
+} ;
+
+struct _GLF_struct_2 {
+ uvec2 _f0;
+ mat3x2 _f1;
+ mat2x3 _f2;
+ bvec3 _f3;
+ int _f4;
+} ;
+
+struct _GLF_struct_1 {
+ uvec3 _f0;
+} ;
+
+struct _GLF_struct_4 {
+ ivec4 _f0;
+ _GLF_struct_1 _f1;
+ uvec2 _f2;
+ _GLF_struct_2 _f3;
+ bvec4 _f4;
+ _GLF_struct_3 _f5;
+} ;
+
+struct _GLF_struct_15 {
+ _GLF_struct_4 _f0;
+ bvec2 _f1;
+ _GLF_struct_7 _f2;
+ _GLF_struct_9 _f3;
+ _GLF_struct_11 _f4;
+ _GLF_struct_14 _f5;
+} ;
+
+struct _GLF_struct_0 {
+ uint num_workgroup;
+ uint _f0;
+} ;
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ _GLF_struct_55 _GLF_struct_replacement_55 = _GLF_struct_55(_GLF_struct_54(_GLF_struct_51(mat2x3(1.0), ivec2(1), true, mat4x2(1.0), vec4(1.0), vec3(1.0)), _GLF_struct_52(uvec4(1u), uvec2(1u), vec2(1.0), mat2x3(1.0), bvec3(true)), 1.0, vec4(1.0), uvec2(1u), _GLF_struct_53(ivec3(1), bvec3(true), bvec2(true)), mat4(1.0)), uvec2(1u), mat3(1.0), mat2x4(1.0), vec2(1.0), gl_SubgroupID);
+ _GLF_struct_62 _GLF_struct_replacement_62 = _GLF_struct_62(gl_SubgroupSize, 1.0);
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_NumWorkGroups.x, 1u);
+ _GLF_struct_29 _GLF_struct_replacement_29 = _GLF_struct_29(gl_WorkGroupSize.x, _GLF_struct_22(_GLF_struct_16(bvec4(true)), _GLF_struct_17(mat4x2(1.0), 1), mat3x2(1.0), _GLF_struct_18(mat4x2(1.0)), _GLF_struct_19(vec3(1.0), mat4x3(1.0)), _GLF_struct_20(ivec3(1)), _GLF_struct_21(bvec3(true), vec4(1.0), ivec4(1), ivec2(1), ivec2(1), true, ivec2(1))), _GLF_struct_27(_GLF_struct_23(mat2(1.0), uvec3(1u), bvec4(true), bvec4(true), bvec2(true)), mat2x4(1.0), mat2(1.0), _GLF_struct_24(uvec2(1u), mat4x2(1.0), mat2(1.0)), _GLF_struct_25(ivec2(1), vec2(1.0), ivec4(1), vec4(1.0)), _GLF_struct_26(true), vec3(1.0)), _GLF_struct_28(mat4x3(1.0)));
+ _GLF_struct_61 _GLF_struct_replacement_61 = _GLF_struct_61(ivec2(1), _GLF_struct_60(_GLF_struct_56(1.0, vec2(1.0), mat4x3(1.0), bvec4(true)), _GLF_struct_57(uvec4(1u), ivec4(1)), _GLF_struct_58(mat4x3(1.0), true, 1.0, gl_WorkGroupID.x), _GLF_struct_59(mat4(1.0), vec3(1.0), ivec4(1))));
+ uint workgroup_base = _GLF_struct_replacement_29.workgroup_size * _GLF_struct_replacement_61._f1._f2.workgroup_id;
+ _GLF_struct_43 _GLF_struct_replacement_43 = _GLF_struct_43(mat3x4(1.0), _GLF_struct_35(vec4(1.0), _GLF_struct_30(uvec2(1u), bvec3(true), vec4(1.0), mat2x4(1.0), uvec4(1u), mat3x2(1.0), workgroup_base + _GLF_struct_replacement_55.subgroup_id * _GLF_struct_replacement_62.subgroup_size + subgroup_local_id, bvec4(true)), _GLF_struct_31(mat3(1.0), mat2x3(1.0), mat3x4(1.0), uvec3(1u), uvec4(1u)), mat2(1.0), _GLF_struct_32(mat3(1.0)), _GLF_struct_33(vec3(1.0), vec3(1.0), mat3(1.0), mat4x3(1.0), mat3x2(1.0)), _GLF_struct_34(ivec4(1), 1u, uvec2(1u), mat4x2(1.0), 1)), mat3x4(1.0), _GLF_struct_37(_GLF_struct_36(uvec4(1u), mat4x3(1.0), bvec3(true), true), mat2(1.0)), _GLF_struct_42(1, _GLF_struct_38(uvec2(1u), uvec4(1u), bvec2(true), 1.0, bvec3(true), 1), _GLF_struct_39(ivec2(1), 1.0), _GLF_struct_40(1u, mat2x4(1.0)), bvec4(true), _GLF_struct_41(ivec3(1))), bvec3(true));
+ uint next_virtual_gid = workgroup_base + _GLF_struct_replacement_55.subgroup_id * _GLF_struct_replacement_62.subgroup_size + ((subgroup_local_id + 1) % _GLF_struct_replacement_62.subgroup_size);
+ uint read = atomicLoad(buf[_GLF_struct_replacement_43._f1._f1.virtual_gid], 4, 64, 0);
+ atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ if(subgroup_local_id + 1 < _GLF_struct_replacement_62.subgroup_size)
+  {
+   switch(_GLF_SWITCH(_GLF_IDENTITY((0 | 0), int(int((0 | 0))))))
+    {
+     case 17:
+     {
+     }
+     case 0:
+     atomicStore(checker[_GLF_struct_replacement_43._f1._f1.virtual_gid], read, 4, 64, 4);
+     subgroupAll(false);
+     break;
+     case 34:
+     if((1.7 >= 3.0))
+      {
+       bvec2(false, true);
+       while(any(bvec3(bvec2(true, true), (mat3x2(-35.17, -2.9, -3.6, -6.1, 6.0, -6.4) != mat3x2(244.203, 1181.9059, -0.1, 6938.7819, 979.647, 6.1)))))
+        {
+         ;
+         while((-4360.0457 > 81.73))
+          {
+           vec3(1824.2556, -7762.0738, -9301.8082);
+           uvec2 _GLF_SWITCH_0_0v;
+           ivec3(78374, 60050, -19876);
+           ;
+           mat2x4 _GLF_SWITCH_0_1v;
+           min(-43222, -38714);
+           ;
+           mat4 _GLF_SWITCH_0_2v, _GLF_SWITCH_0_3v;
+           not(bvec4(true, true, true, false));
+          }
+         (ivec4(10989, -58935, -65057, -9183) & sign((-91854 | 13881)));
+         uvec2 _GLF_SWITCH_0_4v[19], _GLF_SWITCH_0_5v;
+         vec3(29.90, 52.53, 0.4);
+         {
+          mat4x3(-7.6, 9681.6892, -2.1, -43.90, 8.9, 5.3, 328.559, -4.2, -6261.1296, 5765.6725, 8.7, -3.4);
+          mat4x2(0.2, 277.857, 4102.0477, 7209.2403, -8.4, 4919.0561, 2.0, -9660.3556);
+          (31795 == (-11473 + -74112));
+         }
+         for(uvec4 _GLF_SWITCH_0_6v[55], _GLF_SWITCH_0_7v[2], _GLF_SWITCH_0_8v; (lessThanEqual(ivec3(86651, -1034, 56771), (ivec3(-21440, 55694, -96299) | 96503)) != bvec3(false, false, false)); uvec4(171592u, 160098u, 28561u, 88303u))
+          {
+           ivec2(-32491, 37510);
+           ivec3 _GLF_SWITCH_0_9v;
+           (vec3(243.952, -316.837, -1.8) , (mat2(-6863.7217, -5.8, -7.7, -52.65) - mat2(297.248, 7143.8769, 5.7, 32.55)));
+           vec4(-6.5, 45.12, -4.3, 9884.2660);
+           (mat4x2(5.9, -403.975, 7.3, -78.59, 0.1, 34.54, 7.3, -84.32) * mat4(1.1, -5018.8396, 789.829, -97.93, 5.9, -36.29, -5615.9607, -189.154, -8098.7586, 7.9, 46.71, -9.1, 8957.4389, -5.2, -349.382, 7.4));
+           -821.577;
+          }
+         ivec4(-95890, -39295, -20581, 72191);
+        }
+       if((42104 > -81305))
+        {
+         {
+          uvec4(69505u, 139459u, 119994u, 120154u);
+          mat2(2329.9319, 1.3, -168.840, -2.6);
+          (mat3(8637.3609, -3.1, -8.4, 8074.4544, 3.3, -2.3, 6648.2757, -334.576, 83.74) - -536.385);
+          bvec4(true, false, false, false);
+          mat3x4(mat4x2(6367.6018, -1.5, 7782.1644, -92.77, 5.8, 8699.7367, 2.8, 79.46));
+          mat2x3(-696.084, -8.8, 1.2, -499.027, 767.246, -0.4);
+         }
+         while(false)
+          {
+           _GLF_struct_50 _GLF_struct_replacement_50;
+           mat4 _GLF_SWITCH_0_11v;
+           uvec3(84004u, 101416u, 186745u);
+           workgroup_base;
+           vec3(1962.7604, -9.1, -473.273);
+          }
+         (mat3x2(1.0, -66.03, 9686.6739, 9449.9313, -7.0, -51.62) - mat3x2(2.2, 3.8, -8.6, -48.37, -15.13, 658.038));
+         mat3(-2299.9457, -519.831, -27.53, 689.787, -8.7, 56.03, 88.68, -9.0, 7.2);
+         int _GLF_SWITCH_0_12v, _GLF_SWITCH_0_13v[7];
+        }
+       else
+        {
+        }
+       (ivec2(-40937, -86056) ^ 95162);
+       vec2 _GLF_SWITCH_0_14v, _GLF_SWITCH_0_15v[36];
+       mat4x2 _GLF_SWITCH_0_16v, _GLF_SWITCH_0_17v, _GLF_SWITCH_0_18v;
+       for(       inverse(mat4(2840.4158, -2259.3735, 90.62, 2357.7563, -675.622, -882.807, -65.56, -649.884, 5.2, 9.4, -854.279, -7.9, -41.17, 9564.9176, 106.255, -9.0));
+ true; inverse(mat3(-79.40, -19.67, -1.1, 6228.8117, -933.792, -365.421, 344.893, 3345.6318, 5.9)))
+        {
+         while(true)
+          {
+           (++ _GLF_SWITCH_0_17v);
+          }
+         {
+          (ivec4(-98695, 22266, 61662, -53945) % ivec4(-15981, 74423, -20732, 34145));
+         }
+        }
+       while(true)
+        {
+        }
+      }
+     case 9:
+     _GLF_struct_15 _GLF_struct_replacement_15;
+     default:
+     1;
+    }
+  }
+ else
+  {
+   atomicStore(buf[_GLF_struct_replacement_43._f1._f1.virtual_gid], read, 4, 64, 4);
+   subgroupAll(true);
+  }
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+BUFFER checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected_checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 
+
+  SUBGROUP test
+	  VARYING_SIZE on
+  END
+END
+
+RUN test_pipe 65532 1 1
+EXPECT checker EQ_BUFFER expected_checker
