@@ -58,6 +58,7 @@ def check_fails(directory):
     return failure
 
 def update_table(gpu, directory_name, failure, suite):
+    print(f"Updating results for {'results/' + directory_name}")
     try:
         results = pd.read_csv(RESULTS_SUMMARY_PATH).reset_index(drop=True)
     except:
@@ -119,8 +120,8 @@ def main():
         if not args.gpu:
             args.gpu = "unknown"
         try:
-            update_table(args.gpu, name, check_fails(name), args.suite)
-            add_to_git(args.gpu, name)
+            update_table(args.gpu, name.split('/')[-1], check_fails(name.split('/')[-1]), args.suite)
+            add_to_git(args.gpu, name.split('/')[-1])
         except Exception as e:
             print(f"Error updating results for {name}: {e}")
             continue
