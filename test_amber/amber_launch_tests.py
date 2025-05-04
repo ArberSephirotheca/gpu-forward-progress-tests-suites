@@ -50,7 +50,7 @@ def check_fails(directory):
     try:
         f = [f for f in os.listdir('results/' + directory) if re.match('simple_final_results.*csv', f)][0]
     except:
-        print(f'no results csv found, skipping {'results/' + directory}')
+        print(f'no results csv found, skipping {"results/" + directory}')
         return True
     results = pd.read_csv(os.path.join('results', directory, f)).reset_index(drop=True)
     print(results['All Passed'].values[-1])
