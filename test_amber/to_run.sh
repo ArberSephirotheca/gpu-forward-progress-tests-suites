@@ -3,11 +3,13 @@ set -euo pipefail
 
 usage() {
   cat <<EOF >&2
-Usage: $0 -g GPU_NAME [-a 1] [-s SERIAL] [-d DEVICE]
-  -g   GPU name (to be used in table of results)
-  -a   run Android tests with adb
-  -s   device serial (only valid with -a)
-  -d   device name/ID for non-Android tests
+Usage: $0 -g GPU_NAME [-t SUITE] [-a 1] [-s SERIAL] [-d DEVICE] [--dir DIR]
+  -g   GPU name (used in results table) [required]
+  -t   Test suite: core or generic [default: core]
+  -a   Run on Android via adb
+  -s   Android device serial (used with -a)
+  -d   Vulkan device ID (host or Android)
+  --dir  Subdirectory of test suite to run (optional)
 EOF
   exit 1
 }
@@ -17,19 +19,21 @@ test="core"
 android=""
 serial=""
 device=""
+dir=""
 
-# parse options
-while getopts ":g:t:a:s:d:h:" opt; do
-  case $opt in
-    g) gpu_name=$OPTARG ;;
-    t) test=$OPTARG ;;
-    a) android=$OPTARG ;;
-    s) serial=$OPTARG ;;
-    d) device=$OPTARG ;;
-    h) usage ;;
-    :) echo "Error: option -${OPTARG} requires an argument." >&2; usage ;;
-    \?) echo "Error: invalid option -${OPTARG}" >&2; usage ;;
+# parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -g) gpu_name="$2"; shift ;;
+    -t) test="$2"; shift ;;
+    -a) android=1 ;;
+    -s) serial="$2"; shift ;;
+    -d) device="$2"; shift ;;
+    --dir) dir="$2"; shift ;;
+    -h|--help) usage ;;
+    *) echo "Error: Unknown argument: $1" >&2; usage ;;
   esac
+  shift
 done
 
 if [[ -z "${gpu_name:-}" ]]; then
@@ -37,20 +41,18 @@ if [[ -z "${gpu_name:-}" ]]; then
   usage
 fi
 
-# build up the command
+# build command
 cmd=(python3 amber_launch_tests.py "$test" --gpu "$gpu_name")
 
-if [[ -n $android ]]; then
-  cmd+=(--android)
-  if [[ -n $serial ]]; then
-    cmd+=(--serial "$serial")
-  fi
-elif [[ -n $device ]]; then
-  cmd+=(--device "$device")
-fi
+[[ -n $android ]] && cmd+=(--android)
+[[ -n $serial ]] && cmd+=(--serial "$serial")
+[[ -n $device ]] && cmd+=(--device "$device")
+[[ -n $dir ]] && cmd+=(--dir "$dir")
 
-# run it once
+# run
+echo "Running: ${cmd[*]}"
 "${cmd[@]}"
 
+# post-processing
 bash cleanup.sh
 python3 summarize.py
