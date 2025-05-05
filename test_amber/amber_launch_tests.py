@@ -37,6 +37,7 @@ DIR_CORE  = [
                                 "../all_tests_core/syn_subgroup_op_wr",
                                 "../all_tests_core/syn_subgroup_op_ww",
                                 "../all_tests_core/syn_memory_converge_ww",
+                                "../all_tests_core/syn_memory_converge_ra"
                         ]
 
 
