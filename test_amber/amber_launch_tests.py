@@ -101,13 +101,20 @@ def add_to_git(gpu, directory_name):
 def main():
     p = argparse.ArgumentParser(description="Run Amber test suites")
     p.add_argument("suite", choices=SELECTION, help="which directory list to run")
+    p.add_argument("--dir", help="specific directory to run (overrides full suite)")
     p.add_argument("--android", action="store_true", help="Android tests")
     p.add_argument("--serial", help="serial number of device (if more than one attached with adb)")
     p.add_argument("--device", help="vulkan device id (if more than 1 vulkan device available)")
     p.add_argument("--gpu", help="name of the device to be used in results summary", default=None)
     args = p.parse_args()
 
-    for name in SELECTION[args.suite]:
+    if args.dir:
+        # If a specific directory is given, override the selection
+        dirs_to_run = [f"../all_tests_{args.suite}/{args.dir}"]
+    else:
+        dirs_to_run = SELECTION[args.suite]
+
+    for name in dirs_to_run:
         cmd = ["python3", "amber_test_driver.py", name, "1"]
         if args.android:
             cmd.append("--android")

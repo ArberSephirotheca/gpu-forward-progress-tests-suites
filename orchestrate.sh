@@ -18,14 +18,12 @@ _prepare_ref_mount() {
     base="references"
   fi
 
-  if [[ -n $test ]]; then                            # single sub-dir mount
+  if [[ -n $test ]]; then
     host_dir="$(pwd)/${base}/${test}"
-  else                                               # maybe flatten nested refs
-    if find "${base}" -mindepth 2 -type f \( -name '*.comp' -o -name '*.json' \) \
-           | read -r _; then
+  else
+    if find "${base}" -mindepth 2 -type f \( -name '*.comp' -o -name '*.json' \) | read -r _; then
       host_dir=$(mktemp -d)
-      find "${base}" -type f \( -name '*.comp' -o -name '*.json' \) \
-           -exec cp {} "${host_dir}/" \;
+      find "${base}" -type f \( -name '*.comp' -o -name '*.json' \) -exec cp {} "${host_dir}/" \;
     else
       host_dir="$(pwd)/${base}"
     fi
@@ -58,7 +56,7 @@ gen_core() {
 
 gen() {
   local test=${1:-}
-  echo "==> [Generate → core] dir='${test:-all}'"
+  echo "==> [Generate → generic] dir='${test:-all}'"
   mkdir -p all_tests
 
   DOCKER_BUILDKIT=1 docker buildx build \
@@ -69,13 +67,13 @@ gen() {
     -t glsl-generator:local .
 
   docker run --rm \
-    -v "$(_prepare_ref_mount "$test")" \
+    -v "$(_prepare_ref_mount generic "$test")" \
     -v "$(pwd)/donors:/opt/graphicsfuzz/temp/donors" \
     -v "$(pwd)/all_tests:/opt/graphicsfuzz/temp/output" \
     glsl-generator:local
 }
 
-gen_generic() { echo "==> [Generate → generic]"; gen "$1"; }
+gen_generic() { gen "$1"; }
 
 ##############################################################################
 #  Run helpers
@@ -88,14 +86,15 @@ _run_common() {
   $ANDROID            && args+=(-a "1")
   [[ -n $SERIAL ]]    && args+=(-s "$SERIAL")
   [[ -n $DEVICE ]]    && args+=(-d "$DEVICE")
+  [[ -n $DIR ]]       && args+=(--dir "$DIR")  # NEW: forward --dir to to_run.sh
   ( cd test_amber && ./to_run.sh "${args[@]}" )
 }
 
-run_core()       { _run_common core        ; }
-run_generic()    { _run_common generic     ; }
+run_core()       { _run_common core; }
+run_generic()    { _run_common generic; }
 
 ##############################################################################
-#  Usage (includes examples)
+#  Usage
 ##############################################################################
 
 usage() {
@@ -112,31 +111,34 @@ Usage: orchestrate.sh <action> <pipeline> [dir] [flags]
     core | generic
 
   dir (optional):
-    Sub-directory under references[_core] to limit generation. If omitted, all
-    reference shaders are used (nested sub-dirs are flattened automatically).
+    Sub-directory under references[_core] to limit generation and/or test run.
+    If omitted, the entire suite is processed.
 
   flags (valid for "run" or "both"):
-    -g, --gpu_name GPU_NAME name of the GPU to use in results table (optional for gen, required for run / both)
-    -a, --android           run on Android via adb
-    -s, --serial SERIAL     adb serial (use when multiple phones are plugged in)
-    -d, --device  ID        Vulkan device index on host or Android target
+    -g, --gpu_name GPU_NAME   name of the GPU to use in results table
+    -a, --android             run on Android via adb
+    -s, --serial SERIAL       adb serial (use when multiple phones are plugged in)
+    -d, --device ID           Vulkan device index on host or Android target
 
 Examples
 ========
-  # 1. Generate core shaders and run on host default GPU
-  ./orchestrate.sh both core
+# 1. Generate all core shaders and run them on the host's default GPU
+./orchestrate.sh both core -g RTX4070
 
-  # 2. Generate core shaders for sub-dir "my_case" only
-  ./orchestrate.sh generate core my_case
+# 2. Generate core shaders for a specific sub-dir "syn_lock_step_rw" only
+./orchestrate.sh generate core syn_lock_step_rw
 
-  # 3. Run existing generic tests on host GPU 1
-  ./orchestrate.sh run generic -d 1
+# 3. Run only "syn_lock_step_rw" in core suite on host GPU index 1
+./orchestrate.sh run core syn_lock_step_rw -g RTX4070 -d 1
 
-  # 4. Run core suite on first Android device adb sees
-  ./orchestrate.sh run core -a
+# 4. Run the entire generic suite on the first Android device ADB sees
+./orchestrate.sh run generic -g Pixel7 -a
 
-  # 5. Run core on a specific phone and force Vulkan device 0 inside it
-  ./orchestrate.sh run core -a -s 0123456789ABCDEF -d 0
+# 5. Run only "syn_branch_syn" from generic suite on a specific Android phone
+./orchestrate.sh run generic syn_branch_syn -g Pixel7 -a -s 0123456789ABCDEF -d 0
+
+# 6. Generate and run only "syn_subgroup_op_relax" from generic suite
+./orchestrate.sh both generic syn_subgroup_op_relax -g A100
 EOF
 }
 
@@ -148,7 +150,7 @@ EOF
 
 ACTION=$1
 PIPELINE=$2
-shift 2                    # leave the rest for [dir] and/or flags
+shift 2
 
 ##############################################################################
 #  Parse optional dir and flags
@@ -166,7 +168,7 @@ while [[ $# -gt 0 ]]; do
     -a|--android)  ANDROID=true ;;
     -s|--serial)   SERIAL=$2; shift ;;
     -d|--device)   DEVICE=$2; shift ;;
-    *)             DIR=$1 ;;
+    *)             DIR=$1 ;;  # positional dir
   esac
   shift
 done
@@ -178,20 +180,20 @@ done
 case $ACTION in
   generate)
     case $PIPELINE in
-      core)        gen_core "$DIR" ;;
-      generic)     gen_generic "$DIR" ;;
+      core)    gen_core "$DIR" ;;
+      generic) gen_generic "$DIR" ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;
   run)
     case $PIPELINE in
-      core)        run_core ;;
-      generic)     run_generic ;;
+      core)    run_core ;;
+      generic) run_generic ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;
   both)
     case $PIPELINE in
-      core)        gen_core "$DIR"       ; run_core ;;
-      generic)     gen_generic "$DIR"    ; run_generic ;;
+      core)    gen_core "$DIR"    ; run_core ;;
+      generic) gen_generic "$DIR" ; run_generic ;;
       *) echo "Unknown pipeline: $PIPELINE" ; usage ; exit 1 ;;
     esac ;;
   *)

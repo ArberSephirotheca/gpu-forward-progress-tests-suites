@@ -63,7 +63,10 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     # output.write("BUFFER pickthread DATA_TYPE uint32 SIZE 1 FILL 0\n")
     # fill the tester SSBO with 1 or 2 zeroes depending on the saturation level
     output.write("BUFFER tester DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
-    output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 2\n")
+    if checker_buf == 3:
+        output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 1\n")
+    else:
+        output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 2\n")
     output.write("BUFFER injection DATA_TYPE vec2<float> DATA\n 0.0 1.0\nEND\n")
     # 1 = read write
     if checker_buf == 1:
@@ -110,6 +113,8 @@ def generate_amber_test(inputted_file, output_file_name, config=default_config):
         checker_buf = 1
     elif input_file.parent.name.endswith("_wr"):
         checker_buf = 2
+    elif input_file.parent.name.__contains__("memory_converge"):
+        checker_buf = 3
     if output_file_name.endswith(".amber"):
         print("Script will include the .amber extension, please provide a different output file name", file=sys.stderr)
         exit(1)
