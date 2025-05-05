@@ -94,7 +94,7 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     
     if checker_buf == 0:
         output.write("EXPECT tester EQ_BUFFER expected\n")
-    elif checker_buf == 1 or checker_buf == 2:
+    elif checker_buf == 1 or checker_buf == 2 or checker_buf == 3:
         output.write("EXPECT checker EQ_BUFFER expected_checker\n")
     else:
         print("Invalid checker buffer value. Must be 0, 1, or 2.", file=sys.stderr)
