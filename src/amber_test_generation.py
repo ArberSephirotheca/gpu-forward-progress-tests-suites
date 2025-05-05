@@ -92,12 +92,12 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     output.write("\n")
     output.write("RUN test_pipe " + str(workgroups) + " 1 1\n")
     
-    if checker_buf == 0:
+    if checker_buf == 0 or checker_buf == 3:
         output.write("EXPECT tester EQ_BUFFER expected\n")
-    elif checker_buf == 1 or checker_buf == 2 or checker_buf == 3:
+    elif checker_buf == 1 or checker_buf == 2:
         output.write("EXPECT checker EQ_BUFFER expected_checker\n")
     else:
-        print("Invalid checker buffer value. Must be 0, 1, or 2.", file=sys.stderr)
+        print("Invalid checker buffer value. Must be 0, 1, 2, or 3", file=sys.stderr)
         exit(1)
 
 
