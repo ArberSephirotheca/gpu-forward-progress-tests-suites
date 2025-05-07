@@ -1,5 +1,8 @@
-|    | Device        | syn_branch_syn_rw   | syn_branch_syn_wr   | syn_branch_syn_ww   | syn_lock_step_rw   | syn_lock_step_wr   | syn_lock_step_ww   | syn_subgroup_op_rw   | syn_subgroup_op_wr   | syn_subgroup_op_ww   | syn_memory_converge_ww   |
-|---:|:--------------|:--------------------|:--------------------|:--------------------|:-------------------|:-------------------|:-------------------|:---------------------|:---------------------|:---------------------|:-------------------------|
-|  0 | pixel_7a_mali | fail                | fail                | fail                | fail               | fail               | fail               | fail                 | fail                 | fail                 | fail                     |
-|  1 | one_plus_11   | fail                | fail                | fail                | nan                | nan                | nan                | nan                  | nan                  | nan                  | nan                      |
-|  2 | rtx_4070      | pass                | pass                | pass                | pass               | pass               | pass               | pass                 | pass                 | pass                 | fail                     |
+#### RESULTS
+
+
+|    | Device        | syn_branch_syn_rw   | syn_branch_syn_wr   | syn_branch_syn_ww   | syn_lock_step_rw   | syn_lock_step_wr   | syn_lock_step_ww   | syn_subgroup_op_rw   | syn_subgroup_op_wr   | syn_subgroup_op_ww   | syn_memory_converge_ww   |   syn_memory_converge_ra |
+|---:|:--------------|:--------------------|:--------------------|:--------------------|:-------------------|:-------------------|:-------------------|:---------------------|:---------------------|:---------------------|:-------------------------|-------------------------:|
+|  0 | pixel_7a_mali | fail                | fail                | fail                | fail               | fail               | fail               | fail                 | fail                 | fail                 | fail                     |                      nan |
+|  1 | one_plus_11   | fail                | fail                | fail                | nan                | nan                | nan                | nan                  | nan                  | nan                  | nan                      |                      nan |
+|  2 | rtx_4070      | pass                | pass                | pass                | pass               | pass               | pass               | pass                 | pass                 | pass                 | fail                     |                      nan |
