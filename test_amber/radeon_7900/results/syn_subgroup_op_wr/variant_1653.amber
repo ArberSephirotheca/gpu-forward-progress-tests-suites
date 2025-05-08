@@ -1,0 +1,450 @@
+#!amber
+
+DEVICE_FEATURE SubgroupSizeControl.subgroupSizeControl
+
+SET ENGINE_DATA fence_timeout_ms 10000
+
+SHADER compute test GLSL
+#version 460
+
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
+
+
+layout(set = 0, binding = 1) uniform buf1 {
+ vec2 injectionSwitch;
+};
+#extension GL_KHR_shader_subgroup_vote : enable
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_memory_scope_semantics : enable
+#extension GL_EXT_maximal_reconvergence : enable
+layout(set = 0, binding = 0) buffer Buf {
+ uint buf[];
+};
+layout(set = 0, binding = 2) buffer Checker {
+ uint checker[];
+};
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+void main()
+{
+ uint subgroup_id = gl_SubgroupID;
+ uint subgroup_size = gl_SubgroupSize;
+ uint subgroup_local_id = gl_SubgroupInvocationID;
+ uint num_workgroup = gl_NumWorkGroups.x;
+ uint workgroup_size = _GLF_IDENTITY(gl_WorkGroupSize, (gl_WorkGroupSize) >> (uvec3(0u, 0u, 0u) << _GLF_IDENTITY(uvec3(3u), uvec3(3u)))).x;
+ uint workgroup_id = gl_WorkGroupID.x;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = _GLF_IDENTITY(subgroup_id, (_GLF_IDENTITY(subgroup_id, (true ? subgroup_id : _GLF_FUZZED((-- subgroup_id))))) ^ 0u) * subgroup_size;
+ uint virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_base, clamp(subgroup_base, subgroup_base, subgroup_base)) + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = 0;
+ atomicStore(buf[_GLF_IDENTITY(next_virtual_gid, 1u * (next_virtual_gid))], uint(1), 4, 64, 4);
+ do
+  {
+   if(_GLF_IDENTITY((subgroup_local_id % 2), _GLF_IDENTITY(((subgroup_local_id % 2)), min(((subgroup_local_id % 2)), ((subgroup_local_id % 2)))) - 0u) == 0)
+    {
+     switch(_GLF_SWITCH(0))
+      {
+       case 35:
+       for(       (workgroup_base > next_virtual_gid);
+ true; ivec2(54153, 42390))
+        {
+         (~ (ivec2(27952, 52678) % (ivec2(56636, 25430) % ivec2(62017, -70864))));
+         {
+          if(_GLF_WRAPPED_IF_TRUE(true))
+           {
+            if((mat2x4(2.8, 5.9, 97.34, 231.348, -4.3, 3.3, 2.3, 4.9) == mat2x4(-2.1, -46.40, -95.03, 4.4, -9.6, -1174.9059, -4.2, -4.3)))
+             {
+             }
+           }
+          else
+           {
+           }
+          for(          false;
+ false; bvec3(false, true, _GLF_IDENTITY(false, (false) && true)))
+           {
+            bvec4 _GLF_SWITCH_3_0v, _GLF_SWITCH_3_1v;
+            uint _GLF_SWITCH_3_2v, _GLF_SWITCH_3_3v;
+            true;
+            ivec4 _GLF_SWITCH_3_4v, _GLF_SWITCH_3_5v, _GLF_SWITCH_3_6v[65];
+            bool _GLF_SWITCH_3_7v;
+            bool _GLF_SWITCH_3_8v[11], _GLF_SWITCH_3_9v;
+           }
+          ;
+          {
+           ;
+           _GLF_IDENTITY((8.4 / mat3(-0.5, -1.8, 691.909, 926.939, -23.28, 29.36, 3.7, 842.526, -3217.1996)), ((8.4 / mat3(-0.5, -1.8, 691.909, 926.939, -23.28, 29.36, 3.7, 842.526, -3217.1996))) / mat3(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0));
+           mat3(-5.7, 3.0, 38.89, 4.4, 649.309, 9731.0735, -69.28, -816.331, _GLF_IDENTITY(5.5, min(5.5, 5.5)));
+           ;
+           vec4(-2.2, -4.4, -90.15, 7.8);
+           mat4x2 _GLF_SWITCH_3_10v;
+           mat2 _GLF_SWITCH_3_11v[77], _GLF_SWITCH_3_12v;
+           vec4 _GLF_SWITCH_3_13v, _GLF_SWITCH_3_14v[50];
+           ;
+          }
+          ivec4(-67118, -83255, -87172, -11486);
+          if(_GLF_WRAPPED_IF_TRUE(_GLF_IDENTITY(true, ! (! (true)))))
+           {
+            equal(bvec3(_GLF_IDENTITY(false, bool(bool(_GLF_IDENTITY(false, false || (false))))), true, false), bvec3(true, false, false));
+           }
+          else
+           {
+           }
+          bvec2(bvec4(true, false, false, false));
+         }
+        }
+       case 92:
+       ivec4 _GLF_SWITCH_3_15v, _GLF_SWITCH_3_16v;
+       case 0:
+       subgroupAll(false);
+       case 49:
+       case 15:
+       case 17:
+       _GLF_IDENTITY(read = atomicLoad(buf[_GLF_IDENTITY(virtual_gid, (virtual_gid) ^ 0u)], 4, 64, 2), 1u * (_GLF_IDENTITY(read = atomicLoad(_GLF_IDENTITY(buf[virtual_gid], uint(_GLF_IDENTITY(uvec3(buf[virtual_gid], uint(_GLF_ZERO(0.0, injectionSwitch.x)), 0u), uvec3(0u, 0u, 0u) | (_GLF_IDENTITY(uvec3(buf[virtual_gid], uint(_GLF_ZERO(0.0, injectionSwitch.x)), 0u), uvec3(uvec3(uvec3(buf[virtual_gid], uint(_GLF_ZERO(0.0, injectionSwitch.x)), 0u)))))))), 4, 64, 2), (false ? _GLF_FUZZED(virtual_gid) : read = atomicLoad(buf[virtual_gid], 4, 64, 2)))));
+       break;
+       default:
+       1;
+      }
+    }
+   else
+    {
+     switch(_GLF_IDENTITY(_GLF_SWITCH((0 << _GLF_IDENTITY(int(5), int(_GLF_IDENTITY(5, clamp(5, 5, 5)))))), int(ivec2(_GLF_SWITCH((0 << _GLF_IDENTITY(int(5), int(_GLF_IDENTITY(5, clamp(5, 5, 5)))))), (1 | 0)))))
+      {
+       case 26:
+       uvec3 _GLF_SWITCH_0_0v[87], _GLF_SWITCH_0_1v;
+       case 93:
+       if(true)
+        {
+         switch(_GLF_SWITCH((_GLF_IDENTITY(1 ^ 1, (_GLF_IDENTITY(1 ^ 1, clamp(1 ^ 1, _GLF_IDENTITY(1 ^ 1, min(1 ^ 1, 1 ^ 1)), 1 ^ 1))) | _GLF_IDENTITY((1 ^ 1), ((1 ^ 1)) << 0)))))
+          {
+           case 22:
+           {
+            mat4x2(308.621, 2824.2536, _GLF_IDENTITY(-702.556, clamp(-702.556, -702.556, -702.556)), -66.49, -544.698, 3820.7557, -578.511, -9.5);
+           }
+           case 96:
+           if(false)
+            {
+             mat2x3(mat4(mat4x2(44.61, 1708.9396, _GLF_IDENTITY(-3.8, min(-3.8, -3.8)), 1.0, -9925.4647, -8366.0014, -762.863, -155.137)));
+             ivec3 _GLF_SWITCH_2_0v, _GLF_SWITCH_2_1v[51];
+             bool _GLF_SWITCH_2_2v[62], _GLF_SWITCH_2_3v[87];
+             bitCount(workgroup_base);
+             transpose(mat3(-4.3, 78.94, 925.968, -6567.7564, 0.3, -3364.1810, 150.105, -8.1, 76.96));
+             uvec2 _GLF_SWITCH_2_4v, _GLF_SWITCH_2_5v, _GLF_SWITCH_2_6v;
+             (- 23266);
+            }
+           else
+            {
+             injectionSwitch;
+             bvec2(true, false);
+             mat3 _GLF_SWITCH_2_7v, _GLF_SWITCH_2_8v[58];
+            }
+           case 0:
+           ivec4(80952, _GLF_IDENTITY(39657, ~ (~ (_GLF_IDENTITY(39657, min(_GLF_IDENTITY(39657, 0 ^ (39657)), _GLF_IDENTITY(39657, clamp(39657, 39657, 39657))))))), 10435, 51595);
+           {
+            ;
+            if((uvec2(162374u, _GLF_IDENTITY(132193u, (false ? _GLF_FUZZED(subgroup_base) : _GLF_IDENTITY(132193u, clamp(132193u, 132193u, 132193u))))) == _GLF_IDENTITY(uvec2(79325u, 155104u), (_GLF_IDENTITY(uvec2(79325u, 155104u), max(uvec2(79325u, 155104u), uvec2(79325u, 155104u)))) >> (uvec2(0u, 0u) << _GLF_IDENTITY(uvec2(2u), uvec2(2u))))))
+             {
+             }
+            else
+             {
+              switch(_GLF_SWITCH(0))
+               {
+                case 96:
+                (mat3x4(mat2x4(-194.201, -57.65, 491.360, 325.608, 2.2, -54.13, 5.8, 35.72)));
+                case 0:
+                case 68:
+                uintBitsToFloat(num_workgroup);
+                case 17:
+                case 72:
+                uvec3 _GLF_SWITCH_0_2v, _GLF_SWITCH_0_3v[92], _GLF_SWITCH_0_4v;
+                case 46:
+                ;
+                uint _GLF_SWITCH_0_5v[1], _GLF_SWITCH_0_6v[69];
+                break;
+                case 74:
+                bvec4 _GLF_SWITCH_4_0v[4], _GLF_SWITCH_4_1v, _GLF_SWITCH_4_2v[93];
+                case 30:
+                mat4(-17.96, 478.588, 5.9, 5.7, -8848.0797, 327.574, 8235.9222, -5432.1877, 926.180, -10.39, 968.333, 564.126, 0.9, 870.546, -36.76, -7.6);
+                default:
+                1;
+               }
+             }
+            int _GLF_SWITCH_0_7v[87];
+            vec2 _GLF_SWITCH_0_8v;
+           }
+           do
+            {
+             switch(_GLF_SWITCH((0 << _GLF_IDENTITY(int(6), int(6)))))
+              {
+               case 0:
+               case 49:
+               ivec3 _GLF_SWITCH_0_9v, _GLF_SWITCH_0_10v[97];
+               if(_GLF_WRAPPED_IF_FALSE(false))
+                {
+                }
+               else
+                {
+                 num_workgroup;
+                }
+               case 2:
+               case 9:
+               bool _GLF_SWITCH_0_11v[97], _GLF_SWITCH_0_12v, _GLF_SWITCH_0_13v[56];
+               for(bvec2 _GLF_SWITCH_0_14v, _GLF_SWITCH_0_15v[46]; ((- mat4x3(_GLF_IDENTITY(-811.174, min(-811.174, -811.174)), 2914.9160, 1.6, 9.3, -581.406, -1347.3357, -206.489, -15.01, _GLF_IDENTITY(1.6, mix(float(_GLF_FUZZED(-1675.6588)), _GLF_IDENTITY(float(1.6), mix(float(float(1.6)), float(_GLF_IDENTITY(_GLF_FUZZED(-3450.7798), clamp(_GLF_FUZZED(-3450.7798), _GLF_FUZZED(-3450.7798), _GLF_FUZZED(-3450.7798)))), bool(false))), bool(true))), 5.4, 25.37, -7278.5761)) != mat4x3(-19.96, _GLF_IDENTITY(765.721, float(vec3(_GLF_IDENTITY(765.721, (765.721) / 1.0), 1.0, 0.0))), 7.2, 6.7, _GLF_IDENTITY(892.443, _GLF_IDENTITY(float(mat3x2(_GLF_IDENTITY(892.443, (false ? _GLF_FUZZED(2.1) : 892.443)), 1.0, 1.0, 0.0, 1.0, abs(0.0))), (false ? _GLF_FUZZED(-673.556) : float(mat3x2(_GLF_IDENTITY(892.443, (false ? _GLF_FUZZED(2.1) : 892.443)), 1.0, 1.0, 0.0, 1.0, abs(0.0)))))), -3060.1160, 1.4, 0.8, 932.460, 4277.0016, -5931.4619, 1.1)); _GLF_SWITCH_0_14v)
+                {
+                 int _GLF_SWITCH_0_16v;
+                 notEqual(mix(vec4(6.0, -278.822, 19.73, _GLF_IDENTITY(-805.674, clamp(-805.674, -805.674, -805.674))), _GLF_IDENTITY(_GLF_IDENTITY(vec4(3619.4271, _GLF_IDENTITY(_GLF_IDENTITY(-9.3, (true ? -9.3 : _GLF_FUZZED(9.4))), (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0), clamp(_GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, _GLF_IDENTITY(((-9.3) / 1.0) / 1.0, clamp(((-9.3) / 1.0) / 1.0, _GLF_IDENTITY(((-9.3) / 1.0) / 1.0, max(_GLF_IDENTITY(((-9.3) / 1.0) / 1.0, clamp(((-9.3) / 1.0) / 1.0, ((-9.3) / 1.0) / 1.0, ((-9.3) / 1.0) / 1.0)), ((-9.3) / 1.0) / 1.0)), ((-9.3) / 1.0) / 1.0))), _GLF_IDENTITY((true ? _GLF_IDENTITY((-9.3) / 1.0, _GLF_IDENTITY(((-9.3) / 1.0) / 1.0, (((-9.3) / 1.0) / 1.0) + 0.0)) : _GLF_FUZZED(6965.8975)), ((true ? _GLF_IDENTITY((-9.3) / 1.0, _GLF_IDENTITY(((-9.3) / 1.0) / 1.0, (((-9.3) / 1.0) / 1.0) + 0.0)) : _GLF_FUZZED(6965.8975))) / 1.0)), _GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0), _GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0), mix(float(_GLF_FUZZED(-53.04)), float(_GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, (_GLF_IDENTITY((-9.3), clamp(_GLF_IDENTITY((-9.3), clamp((-9.3), (-9.3), (-9.3))), (-9.3), _GLF_IDENTITY((-9.3), mix(float(_GLF_FUZZED(-1.7)), float((-9.3)), bool(true))))) / 1.0) / 1.0), clamp(_GLF_IDENTITY((-9.3) / 1.0, (_GLF_IDENTITY((-9.3), min((-9.3), _GLF_IDENTITY((-9.3), max((-9.3), (-9.3))))) / 1.0) / 1.0), _GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0), _GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)))), bool(true)))))), float(_GLF_FUZZED(_GLF_IDENTITY(2.2, clamp(2.2, _GLF_IDENTITY(_GLF_IDENTITY(2.2, max(2.2, 2.2)), min(2.2, _GLF_IDENTITY(_GLF_IDENTITY(2.2, 0.0 + (_GLF_IDENTITY(2.2, (2.2) / 1.0))), float(vec2(2.2, 0.0))))), 2.2)))), bool(false))))) * 1.0), -193.540, 788.687), min(_GLF_IDENTITY(_GLF_IDENTITY(vec4(3619.4271, _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY(_GLF_IDENTITY((-9.3), max(_GLF_IDENTITY((-9.3), ((-9.3)) + 0.0), (-9.3))) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, (_GLF_IDENTITY((-9.3), max((-9.3), _GLF_IDENTITY((-9.3), mix(float(_GLF_FUZZED(3.3)), float((-9.3)), bool(true))))) / _GLF_IDENTITY(_GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(6.5) : 1.0)), (_GLF_IDENTITY(_GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(6.5) : 1.0)), float(mat2x3(_GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(6.5) : 1.0)), 0.0, 0.0, 0.0, 1.0, 0.0)))) + 0.0)) / 1.0)), float(_GLF_FUZZED(2.2)), bool(_GLF_IDENTITY(false, true && (_GLF_IDENTITY(false, true && (false))))))))) * 1.0), -193.540, 788.687), vec4(1.0, 1.0, 1.0, 1.0) * (vec4(3619.4271, _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY(_GLF_IDENTITY((-9.3), max(_GLF_IDENTITY((-9.3), ((-9.3)) + 0.0), (_GLF_IDENTITY(-9.3, clamp(-9.3, -9.3, _GLF_IDENTITY(-9.3, clamp(-9.3, -9.3, _GLF_IDENTITY(-9.3, clamp(-9.3, -9.3, -9.3))))))))) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, (_GLF_IDENTITY((-9.3), max((-9.3), _GLF_IDENTITY((-9.3), mix(float(_GLF_FUZZED(3.3)), float((-9.3)), bool(true))))) / _GLF_IDENTITY(1.0, (false ? _GLF_FUZZED(6.5) : 1.0))) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0), -193.540, 788.687))), mix(vec4(_GLF_FUZZED(-9983.0933), _GLF_FUZZED(5.4), (vec4(3619.4271, _GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, clamp((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0))), -193.540, 788.687))[2], (vec4(3619.4271, _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, max((-9.3) / 1.0, (-9.3) / 1.0)), mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0), -193.540, 788.687))[3]), vec4((_GLF_IDENTITY(vec4(3619.4271, _GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, ((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0) - sqrt(abs(0.0)))), -193.540, 788.687), clamp(vec4(_GLF_IDENTITY(3619.4271, mix(float(3619.4271), float(_GLF_FUZZED(-4.0)), bool(false))), _GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, ((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(_GLF_IDENTITY(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), (float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0))) - 0.0), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0) - sqrt(abs(0.0)))), -193.540, 788.687), vec4(3619.4271, _GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, ((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(_GLF_IDENTITY(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), mix(float(_GLF_IDENTITY(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), clamp(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0))))), float(_GLF_FUZZED(float(23549u))), bool(false))), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0) - sqrt(abs(0.0)))), -193.540, 788.687), vec4(3619.4271, _GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0, ((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, mix(float(_GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0), (_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / _GLF_IDENTITY(1.0, min(_GLF_IDENTITY(1.0, min(1.0, 1.0)), 1.0))) / 1.0)) / exp(0.0))), float(_GLF_FUZZED(2.2)), bool(false))))) * _GLF_IDENTITY(1.0, (true ? 1.0 : _GLF_FUZZED(34.98)))) - sqrt(abs(0.0)))), _GLF_IDENTITY(-193.540, mix(float(-193.540), float(_GLF_FUZZED((+ -985.738))), bool(false))), 788.687))))[0], (vec4(3619.4271, _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / 1.0, _GLF_IDENTITY(mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false)), (mix(_GLF_IDENTITY(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / _GLF_IDENTITY(1.0, mix(float(_GLF_IDENTITY(1.0, float(mat4x2(1.0, 0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, cos(0.0))))), float(_GLF_FUZZED(8.0)), bool(false)))) / 1.0)), mix(float(float(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / _GLF_IDENTITY(1.0, mix(float(_GLF_IDENTITY(1.0, float(mat4x2(1.0, 0.0, sin(0.0), 0.0, 1.0, 0.0, 0.0, cos(0.0))))), float(_GLF_FUZZED(8.0)), bool(false)))) / 1.0))), float(_GLF_FUZZED(157.600)), bool(false))), float(_GLF_FUZZED(2.2)), bool(false))) / determinant(mat3(1.0, 0.0, length(vec3(0.0, 0.0, 0.0)), 1.0, 1.0, 0.0, 0.0, 1.0, 1.0)))))) * 1.0), _GLF_IDENTITY(-193.540, (_GLF_IDENTITY(-193.540, float(_GLF_IDENTITY(mat4(-193.540, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, abs(1.0), 0.0, 0.0, 1.0, abs(0.0), 0.0, 0.0, 1.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0))))), transpose(_GLF_IDENTITY(transpose(mat4(-193.540, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, abs(1.0), 0.0, 0.0, 1.0, abs(0.0), 0.0, 0.0, 1.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0)))))), (transpose(mat4(-193.540, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, abs(1.0), 0.0, 0.0, 1.0, abs(0.0), 0.0, 0.0, 1.0, round(length(normalize(vec4(1.0, 1.0, 1.0, 1.0))))))) + mat4(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))))))) - _GLF_IDENTITY(0.0, min(0.0, 0.0))), 788.687))[1], _GLF_FUZZED(4362.2125), _GLF_FUZZED(_GLF_IDENTITY(-6.2, 1.0 * (-6.2)))), bvec4(true, true, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), false))), _GLF_IDENTITY(vec4(_GLF_IDENTITY(3619.4271, max(_GLF_IDENTITY(3619.4271, (3619.4271) - 0.0), _GLF_IDENTITY(3619.4271, mix(float(_GLF_IDENTITY(3619.4271, clamp(3619.4271, 3619.4271, 3619.4271))), float(_GLF_FUZZED(-4.7)), bool(false))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / _GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((_GLF_IDENTITY(-9.3, _GLF_IDENTITY((_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))), min((_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))), _GLF_IDENTITY((_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))), float(mat4x3((_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))), 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0))))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(_GLF_IDENTITY(false, ! (! (false)))))))) * 1.0), -193.540, 788.687), mix(vec4((vec4(_GLF_IDENTITY(3619.4271, max(_GLF_IDENTITY(3619.4271, (3619.4271) - 0.0), _GLF_IDENTITY(3619.4271, mix(float(_GLF_IDENTITY(3619.4271, clamp(3619.4271, 3619.4271, 3619.4271))), float(_GLF_FUZZED(-4.7)), bool(false))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / _GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), _GLF_IDENTITY(mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false)), mix(float(_GLF_FUZZED(94.08)), float(mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))), bool(true)))))) * 1.0), -193.540, 788.687))[0], _GLF_FUZZED(_GLF_IDENTITY(-61.48, (-61.48) * _GLF_ONE(1.0, injectionSwitch.y))), _GLF_FUZZED(5370.0794), (vec4(_GLF_IDENTITY(3619.4271, max(_GLF_IDENTITY(3619.4271, (3619.4271) - 0.0), _GLF_IDENTITY(3619.4271, mix(float(_GLF_IDENTITY(3619.4271, clamp(3619.4271, 3619.4271, 3619.4271))), float(_GLF_FUZZED(-4.7)), bool(false))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / _GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), mix(float(_GLF_IDENTITY(_GLF_IDENTITY((-9.3) / 1.0, ((-9.3) / 1.0) + 0.0), ((_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), min((false ? _GLF_FUZZED(2.8) : -9.3), _GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), _GLF_IDENTITY(float(_GLF_IDENTITY(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), vec3(mat3x2(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), 1.0, 0.0, 0.0)))), min(float(_GLF_IDENTITY(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), vec3(mat3x2(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), 1.0, 0.0, 0.0)))), float(_GLF_IDENTITY(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), vec3(mat3x2(vec3(_GLF_IDENTITY((false ? _GLF_FUZZED(2.8) : -9.3), mix(float((false ? _GLF_FUZZED(2.8) : -9.3)), float(_GLF_FUZZED(1209.2653)), bool(false))), 1.0, 0.0), 1.0, 0.0, 0.0))))))))))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * _GLF_IDENTITY(1.0, min(1.0, 1.0))), -193.540, 788.687))[3]), vec4(_GLF_FUZZED(4.1), (vec4(_GLF_IDENTITY(3619.4271, max(_GLF_IDENTITY(3619.4271, (3619.4271) - 0.0), _GLF_IDENTITY(_GLF_IDENTITY(3619.4271, (3619.4271) / determinant(mat2(1.0, 0.0, 0.0, 1.0))), mix(float(_GLF_IDENTITY(3619.4271, _GLF_IDENTITY(clamp(3619.4271, 3619.4271, 3619.4271), (clamp(3619.4271, 3619.4271, 3619.4271)) - 0.0))), float(_GLF_FUZZED(-4.7)), bool(false))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / _GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(_GLF_IDENTITY(false, (false) || false)))))) * 1.0), -193.540, _GLF_IDENTITY(788.687, (false ? _GLF_FUZZED(-0.3) : 788.687))))[1], (vec4(_GLF_IDENTITY(3619.4271, max(_GLF_IDENTITY(3619.4271, (3619.4271) - 0.0), _GLF_IDENTITY(3619.4271, mix(float(_GLF_IDENTITY(3619.4271, clamp(3619.4271, 3619.4271, 3619.4271))), float(_GLF_FUZZED(-4.7)), bool(false))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3) / _GLF_IDENTITY(1.0, clamp(1.0, _GLF_IDENTITY(1.0, 1.0 * (1.0)), 1.0)), mix(float(_GLF_IDENTITY((-9.3) / 1.0, ((_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (false ? _GLF_FUZZED(2.8) : -9.3))) / 1.0)) / 1.0) / 1.0)), float(_GLF_FUZZED(2.2)), bool(false))))) * 1.0), -193.540, 788.687))[2], _GLF_FUZZED(0.5)), bvec4(false, true, true, _GLF_IDENTITY(false, ! (! (false)))))))), min(vec4(3619.4271, _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, _GLF_IDENTITY((-9.3), ((-9.3)) / 1.0) / 1.0)) * _GLF_IDENTITY(1.0, (_GLF_IDENTITY(1.0, mix(float(_GLF_FUZZED(7.0)), float(1.0), bool(true)))) / determinant(mat3(1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))), -193.540, _GLF_IDENTITY(788.687, (788.687) - 0.0)), vec4(_GLF_IDENTITY(_GLF_IDENTITY(3619.4271, float(vec2(3619.4271, 0.0))), _GLF_IDENTITY(float(mat3x2(3619.4271, 0.0, 0.0, sqrt(1.0), 1.0, 0.0)), clamp(float(mat3x2(3619.4271, 0.0, 0.0, sqrt(1.0), 1.0, 0.0)), _GLF_IDENTITY(float(mat3x2(3619.4271, 0.0, 0.0, sqrt(1.0), 1.0, 0.0)), mix(float(float(mat3x2(3619.4271, 0.0, 0.0, sqrt(1.0), 1.0, 0.0))), float(_GLF_FUZZED(924.310)), bool(false))), float(mat3x2(3619.4271, 0.0, 0.0, sqrt(1.0), 1.0, 0.0))))), _GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (_GLF_IDENTITY(-9.3, (true ? -9.3 : _GLF_FUZZED(670.940)))) / 1.0)) * 1.0), -193.540, _GLF_IDENTITY(788.687, mix(float(788.687), float(_GLF_FUZZED(-6001.1944)), bool(false)))))), _GLF_IDENTITY(vec4(-3.2, -5295.0973, 2.8, -2.8), clamp(vec4(-3.2, -5295.0973, 2.8, -2.8), vec4(-3.2, -5295.0973, 2.8, -2.8), vec4(-3.2, -5295.0973, 2.8, -2.8)))), vec4(-1.1, 8692.1500, -74.42, 6.8));
+                 uvec4(_GLF_IDENTITY(9299u, (_GLF_IDENTITY(9299u, _GLF_IDENTITY((9299u) ^ 0u, ((9299u) ^ 0u) ^ 0u))) - (0u | _GLF_IDENTITY(0u, (0u) | (0u)))), 179666u, 146696u, _GLF_IDENTITY(55687u, (55687u) / _GLF_IDENTITY(1u, (true ? 1u : _GLF_FUZZED(subgroup_base)))));
+                 ivec4 _GLF_SWITCH_0_17v, _GLF_SWITCH_0_18v;
+                 if(_GLF_WRAPPED_IF_FALSE(false))
+                  {
+                  }
+                 else
+                  {
+                   uvec4(137656u, 20330u, 18132u, 52900u);
+                  }
+                 ivec4(_GLF_IDENTITY(94499, (94499) | (94499)), -80244, 12126, _GLF_IDENTITY(-85371, max(_GLF_IDENTITY(-85371, _GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | _GLF_IDENTITY(_GLF_IDENTITY(0, ~ (_GLF_IDENTITY(~ (0), min(~ (0), _GLF_IDENTITY(~ (0), clamp(~ (0), ~ (0), ~ (0))))))), 0 + (0)), (_GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | _GLF_IDENTITY((_GLF_IDENTITY(-85371, int(_GLF_IDENTITY(ivec2(-85371, 0), (ivec2(-85371, 0)) | ivec2(0, 0))))), (_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? (_GLF_IDENTITY(-85371, int(_GLF_IDENTITY(ivec2(-85371, 0), (ivec2(-85371, 0)) | ivec2(0, 0))))) : _GLF_FUZZED(57230))))) | 0, min((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(_GLF_IDENTITY(-85371, (-85371) - 0), _GLF_IDENTITY(int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0))))), (_GLF_IDENTITY(int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0))))), (_GLF_IDENTITY(int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0))))), ~ (_GLF_IDENTITY(~ (int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0)))))), min(_GLF_IDENTITY(~ (int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0)))))), (true ? ~ (int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0)))))) : _GLF_FUZZED(_GLF_SWITCH_0_16v))), ~ (int(ivec2(-85371, _GLF_IDENTITY(0, int(ivec4(0, 0, int(_GLF_ZERO(0.0, injectionSwitch.x)), 0))))))))))) >> 0)) ^ _GLF_IDENTITY(0, (0) - 0)))))) | 0, _GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0, (_GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | _GLF_IDENTITY(0, 0 ^ (_GLF_IDENTITY(0, (false ? _GLF_FUZZED(-63399) : 0)))), (_GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(_GLF_IDENTITY(-85371, (_GLF_IDENTITY(-85371, min(-85371, -85371))) ^ (0 << _GLF_IDENTITY(int(5), int(5)))), int(ivec2(-85371, 0)))))) | 0, max((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0, (_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0))) | (_GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0, ((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0) * _GLF_IDENTITY(1, (_GLF_IDENTITY(1, (1) - 0)) | 0))))) * 1)))) | (_GLF_IDENTITY((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0, 1 * ((_GLF_IDENTITY(-85371, (-85371) | (_GLF_IDENTITY(-85371, int(ivec2(-85371, 0)))))) | 0))))), -85371)));
+                 ivec3 _GLF_SWITCH_0_19v, _GLF_SWITCH_0_20v[28];
+                 int _GLF_SWITCH_0_21v[74], _GLF_SWITCH_0_22v;
+                }
+               uvec4 _GLF_SWITCH_0_23v[57];
+               {
+                bvec3 _GLF_SWITCH_0_24v[46], _GLF_SWITCH_0_25v;
+                mat4x3 _GLF_SWITCH_0_26v, _GLF_SWITCH_0_27v;
+                mat4 _GLF_SWITCH_0_28v, _GLF_SWITCH_0_29v, _GLF_SWITCH_0_30v;
+                mat4x2 _GLF_SWITCH_0_31v, _GLF_SWITCH_0_32v, _GLF_SWITCH_0_33v[57];
+                uvec3(100858u, 188631u, 60099u)[0];
+               }
+               case 96:
+               mat3x4(5.9, -30.52, -886.149, 2.7, -5.0, -4.2, 124.935, 20.47, 7436.6879, -7.8, 16.02, _GLF_IDENTITY(1.1, (false ? _GLF_FUZZED(clamp(4127.8009, float(-4566), -7.6)) : _GLF_IDENTITY(1.1, min(_GLF_IDENTITY(1.1, clamp(1.1, 1.1, 1.1)), 1.1)))));
+               case 42:
+               case 47:
+               ;
+               break;
+               case 85:
+               ;
+               case 37:
+               vec3 _GLF_SWITCH_5_0v[14], _GLF_SWITCH_5_1v;
+               default:
+               1;
+              }
+            }
+           while(bool(_GLF_IDENTITY(11.67, float(_GLF_IDENTITY(mat2(11.67, 1.0, 0.0, determinant(mat4(1.0, 0.0, 0.0, _GLF_ZERO(0.0, injectionSwitch.x), 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, length(0.0), sqrt(1.0), 1.0, 1.0, cos(0.0)))), mat2(mat2x3(mat2(11.67, 1.0, 0.0, determinant(mat4(1.0, 0.0, 0.0, _GLF_ZERO(0.0, injectionSwitch.x), 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, length(0.0), sqrt(1.0), 1.0, 1.0, cos(0.0)))))))))));
+           case 60:
+           mat3(-6177.2787, -5.4, 395.957, -838.851, 489.093, 13.55, 545.680, -526.556, 489.631);
+           do
+            {
+             _GLF_IDENTITY(uvec2(_GLF_IDENTITY(137572u, min(_GLF_IDENTITY(_GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, _GLF_IDENTITY((137572u), (_GLF_IDENTITY((137572u), uint(uvec4(_GLF_IDENTITY((137572u), clamp((137572u), (137572u), (137572u))), 0u, 1u, 1u)))) | 0u) - 0u)) - 0u), clamp(_GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, ~ (~ (137572u)))) - 0u)) - 0u), _GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, (137572u) - 0u)) - 0u), _GLF_IDENTITY(_GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, _GLF_IDENTITY((137572u) - 0u, (true ? (137572u) - 0u : _GLF_FUZZED(132286u))))) - 0u), (_GLF_IDENTITY(137572u, (_GLF_IDENTITY(_GLF_IDENTITY(137572u, (true ? 137572u : _GLF_FUZZED(usubBorrow(read, workgroup_base, workgroup_base)))), (137572u) - 0u)) - 0u)) | 0u))), 137572u)), 89599u), (true ? _GLF_IDENTITY(uvec2(_GLF_IDENTITY(137572u, min(_GLF_IDENTITY(137572u, (_GLF_IDENTITY(137572u, (137572u) - 0u)) - 0u), 137572u)), 89599u), uvec2(uvec4(uvec2(_GLF_IDENTITY(137572u, min(_GLF_IDENTITY(_GLF_IDENTITY(137572u, (true ? 137572u : _GLF_FUZZED(subgroup_base))), (_GLF_IDENTITY(137572u, (137572u) - 0u)) - 0u), 137572u)), _GLF_IDENTITY(89599u, (_GLF_IDENTITY(89599u, ~ (~ _GLF_IDENTITY((89599u), uint(uvec4((89599u), 1u, 0u, 1u)))))) * ((1u << _GLF_IDENTITY(uint(0u), uint(0u))) >> _GLF_IDENTITY(uint(0u), uint(0u))))), 0u, _GLF_IDENTITY(1u, uint(_GLF_ONE(1.0, injectionSwitch.y)) * (1u))))) : _GLF_FUZZED(uvec2(_GLF_IDENTITY(153389u, _GLF_IDENTITY((153389u), max((153389u), (153389u))) ^ 0u), 111239u))));
+            }
+           while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (_GLF_IDENTITY(injectionSwitch.x, clamp(injectionSwitch.x, injectionSwitch.x, _GLF_IDENTITY(injectionSwitch.x, max(injectionSwitch.x, injectionSwitch.x)))) > injectionSwitch.y))));
+           if(_GLF_IDENTITY((96161 < -99845), true && (_GLF_IDENTITY((_GLF_IDENTITY(_GLF_IDENTITY(96161, (_GLF_IDENTITY(96161, ~ (~ (96161)))) * 1) < -99845, ! (! (_GLF_IDENTITY(96161, (_GLF_IDENTITY(96161, ~ (~ (96161)))) * 1) < -99845)))), false || (_GLF_IDENTITY((_GLF_IDENTITY(96161 < -99845, bool(bool(96161 < -99845)))), bool(bvec3((_GLF_IDENTITY(96161 < -99845, ! (_GLF_IDENTITY(_GLF_IDENTITY(! (96161 < -99845), (! (96161 < -99845)) && true), _GLF_IDENTITY(bool(bool(_GLF_IDENTITY(! (96161 < -99845), (! (96161 < -99845)) && true))), ! (_GLF_IDENTITY(! (bool(bool(_GLF_IDENTITY(! (96161 < -99845), (! (96161 < -99845)) && true)))), bool(bvec3(! (bool(bool(_GLF_IDENTITY(! (96161 < -99845), (! (96161 < -99845)) && true)))), true, false))))))))), _GLF_IDENTITY(true, _GLF_IDENTITY(bool(bool(true)), false || (bool(bool(true))))), true))))))))
+            {
+             switch(_GLF_SWITCH(0))
+              {
+               case 38:
+               mat4x2 _GLF_SWITCH_1_0v, _GLF_SWITCH_1_1v, _GLF_SWITCH_1_2v;
+               case 62:
+               ;
+               case 0:
+               if(bvec4(true, true, true, true)[0])
+                {
+                }
+               else
+                {
+                 if(_GLF_WRAPPED_IF_FALSE(false))
+                  {
+                  }
+                 else
+                  {
+                   mat4x2(-20.81, -1.7, _GLF_IDENTITY(-8.9, mix(float(_GLF_FUZZED((+ 2545.7364))), float(_GLF_IDENTITY(-8.9, clamp(-8.9, -8.9, -8.9))), bool(true))), -6.3, 967.397, -7.7, 84.59, 96.48);
+                  }
+                 float _GLF_SWITCH_0_34v[76];
+                 if(_GLF_IDENTITY(_GLF_WRAPPED_IF_FALSE(false), ! (_GLF_IDENTITY(! (_GLF_IDENTITY(_GLF_WRAPPED_IF_FALSE(false), (_GLF_WRAPPED_IF_FALSE(false)) && true)), ! (! (! (_GLF_IDENTITY(_GLF_WRAPPED_IF_FALSE(false), (_GLF_WRAPPED_IF_FALSE(false)) && true))))))))
+                  {
+                  }
+                 else
+                  {
+                   bvec4(true, _GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(true, false || (_GLF_IDENTITY(true, bool(bool(true))))), bool(bvec3(true, true, false))), ! _GLF_IDENTITY((_GLF_IDENTITY(! (true), true && (_GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(! (true), ! (! (_GLF_IDENTITY(! (true), false || (! (true)))))), ! (! (! (true)))), false || (_GLF_IDENTITY(_GLF_IDENTITY(! (true), ! (! (_GLF_IDENTITY(! (true), _GLF_IDENTITY(false || (! (true)), (false || (! (true))) && true))))), ! (! (! (true))))))))), bool(bool((_GLF_IDENTITY(! (true), true && (_GLF_IDENTITY(! (true), ! (! (! (true))))))))))), true, true);
+                  }
+                 mat2x4 _GLF_SWITCH_0_35v[33], _GLF_SWITCH_0_36v, _GLF_SWITCH_0_37v[93];
+                 vec3(_GLF_IDENTITY(47.95, _GLF_IDENTITY(max(47.95, 47.95), min(max(47.95, 47.95), max(47.95, _GLF_IDENTITY(47.95, clamp(47.95, 47.95, 47.95)))))), -8.2, -39.93);
+                 bvec2 _GLF_SWITCH_0_38v[45], _GLF_SWITCH_0_39v;
+                 do
+                  {
+                   _GLF_IDENTITY(cosh(clamp(injectionSwitch, _GLF_IDENTITY(vec2(-4199.7850, _GLF_IDENTITY(-470.383, clamp(_GLF_IDENTITY(-470.383, (-470.383) - 0.0), -470.383, -470.383))), (vec2(-4199.7850, _GLF_IDENTITY(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), min(_GLF_IDENTITY(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), clamp(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), _GLF_IDENTITY(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), (false ? _GLF_FUZZED(39.75) : _GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)))), _GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)))), _GLF_IDENTITY(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), clamp(_GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), _GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)), _GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383)))))))) * mat2(1.0)), vec2(266.706, _GLF_IDENTITY(-80.22, clamp(_GLF_IDENTITY(-80.22, mix(float(_GLF_FUZZED(-217.632)), float(-80.22), bool(true))), -80.22, -80.22))))), (true ? cosh(clamp(injectionSwitch, _GLF_IDENTITY(vec2(-4199.7850, _GLF_IDENTITY(-470.383, clamp(-470.383, -470.383, -470.383))), (vec2(-4199.7850, _GLF_IDENTITY(-470.383, _GLF_IDENTITY(clamp(-470.383, -470.383, -470.383), float(_GLF_IDENTITY(_GLF_IDENTITY(vec2(clamp(-470.383, -470.383, -470.383), 1.0), clamp(vec2(clamp(-470.383, -470.383, -470.383), 1.0), vec2(clamp(-470.383, -470.383, -470.383), 1.0), vec2(clamp(-470.383, -470.383, -470.383), 1.0))), (_GLF_IDENTITY(vec2(clamp(-470.383, -470.383, -470.383), 1.0), clamp(vec2(clamp(-470.383, -470.383, _GLF_IDENTITY(-470.383, clamp(_GLF_IDENTITY(-470.383, clamp(_GLF_IDENTITY(-470.383, mix(float(_GLF_FUZZED(862.580)), float(-470.383), bool(true))), -470.383, -470.383)), -470.383, _GLF_IDENTITY(-470.383, float(_GLF_IDENTITY(mat3x4(_GLF_IDENTITY(-470.383, max(-470.383, -470.383)), 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0), (false ? _GLF_FUZZED(mat3x4(-4074.0746, -2.7, -8078.8664, 189.121, 752.561, 2388.9685, 1.6, 971.095, -983.190, 63.77, -9.5, 124.711)) : mat3x4(_GLF_IDENTITY(-470.383, max(-470.383, -470.383)), 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0)))))))), 1.0), vec2(clamp(-470.383, -470.383, -470.383), 1.0), vec2(clamp(-470.383, -470.383, -470.383), 1.0)))) * mat2(1.0))))))) * mat2(1.0)), vec2(266.706, -80.22))) : _GLF_FUZZED(mat4x2(-7919.1473, 239.281, 7067.5911, -2.8, 31.91, -5555.3897, 5033.2937, 5286.6851)[0])));
+                  }
+                 while(_GLF_WRAPPED_LOOP(false));
+                 for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _GLF_IDENTITY(_injected_loop_counter ++, (_injected_loop_counter ++) >> 0))
+                  {
+                   if(_GLF_WRAPPED_IF_FALSE(false))
+                    {
+                    }
+                   else
+                    {
+                     min(_GLF_IDENTITY(_GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)), max(_GLF_IDENTITY(_GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)), clamp(_GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)), _GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)), _GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)))), _GLF_IDENTITY(63363, min(_GLF_IDENTITY(_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, 0 ^ (_GLF_IDENTITY(63363, (63363) | (63363)))))), 0 ^ (63363)), 63363)))), bitfieldReverse(48716));
+                    }
+                  }
+                }
+               case 2:
+               mat4(vec4(-4729.0858, -99.00, -982.247, 53.86), vec4(3.3, 4.9, -1906.4251, -45.68), vec4(-2.4, _GLF_IDENTITY(-1.6, _GLF_IDENTITY((_GLF_IDENTITY(-1.6, 0.0 + (-1.6))) - _GLF_IDENTITY(0.0, max(_GLF_IDENTITY(0.0, (0.0) / 1.0), 0.0)), float(_GLF_IDENTITY(_GLF_IDENTITY(vec2((_GLF_IDENTITY(_GLF_IDENTITY(-1.6, 0.0 + (-1.6)), _GLF_IDENTITY((_GLF_IDENTITY(-1.6, 0.0 + (-1.6))), (false ? _GLF_FUZZED(-3.0) : (_GLF_IDENTITY(-1.6, 0.0 + (-1.6))))) / 1.0)) - 0.0, _GLF_IDENTITY(0.0, (_GLF_IDENTITY(true ? 0.0 : _GLF_FUZZED(-3484.8523), (true ? 0.0 : _GLF_FUZZED(-3484.8523)) / 1.0)))), vec2(vec3(vec2((_GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(-1.6, 0.0 + (-1.6)), (_GLF_IDENTITY(_GLF_IDENTITY(-1.6, 0.0 + (-1.6)), clamp(_GLF_IDENTITY(-1.6, 0.0 + (-1.6)), _GLF_IDENTITY(-1.6, 0.0 + (-1.6)), _GLF_IDENTITY(-1.6, 0.0 + (-1.6))))) * 1.0), (_GLF_IDENTITY(-1.6, 0.0 + _GLF_IDENTITY((-1.6), float(_GLF_IDENTITY(mat3x2((-1.6), 1.0, 1.0, _GLF_ONE(1.0, injectionSwitch.y), 0.0, 0.0), transpose(transpose(mat3x2((-1.6), 1.0, 1.0, _GLF_ONE(1.0, _GLF_IDENTITY(injectionSwitch, vec2(injectionSwitch[0], injectionSwitch[1])).y), 0.0, 0.0)))))))) / 1.0)) - 0.0, _GLF_IDENTITY(0.0, (true ? 0.0 : _GLF_FUZZED(-3484.8523)))), _GLF_IDENTITY(dot(vec2(0.0, 1.0), vec2(0.0, 1.0)), dot(vec2(0.0, 1.0), vec2(0.0, 1.0)))))), _GLF_IDENTITY((false ? _GLF_FUZZED(vec2(-15.73, -8093.8884)) : vec2((_GLF_IDENTITY(-1.6, 0.0 + (-1.6))) - 0.0, _GLF_IDENTITY(0.0, min(0.0, 0.0)))), (true ? (false ? _GLF_FUZZED(vec2(-15.73, -8093.8884)) : vec2((_GLF_IDENTITY(-1.6, 0.0 + (-1.6))) - 0.0, _GLF_IDENTITY(0.0, min(0.0, 0.0)))) : _GLF_FUZZED(injectionSwitch))))))), -1005.0964, -5.1), injectionSwitch.tttt);
+               if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+                {
+                 do
+                  {
+                   false;
+                  }
+                 while(_GLF_WRAPPED_LOOP(false));
+                }
+               else
+                {
+                }
+               if(_GLF_WRAPPED_IF_TRUE(true))
+                {
+                 if(_GLF_WRAPPED_IF_FALSE(false))
+                  {
+                  }
+                 else
+                  {
+                   switch(_GLF_SWITCH(0))
+                    {
+                     case 20:
+                     ivec2 _GLF_SWITCH_5_0v[54];
+                     case 0:
+                     case 53:
+                     case 6:
+                     case 81:
+                     case 40:
+                     case 27:
+                     case 21:
+                     case 76:
+                     case 45:
+                     case 57:
+                     for(                     mat4x3(-73.26, -11.39, -1876.0987, -3719.3761, 3905.1292, -5.3, 111.082, 39.09, -9.7, _GLF_IDENTITY(2.7, clamp(2.7, 2.7, 2.7)), 258.521, 8.6);
+ _GLF_IDENTITY((true || true), ! (_GLF_IDENTITY(! ((_GLF_IDENTITY(true, (true) && true) || true)), _GLF_IDENTITY(bool(bvec4(! ((true || true)), _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), true, _GLF_IDENTITY(true, _GLF_IDENTITY(bool(bvec3(true, false, true)), bool(bvec2(bool(bvec3(true, false, true)), true)))))), bool(bool(bool(bvec4(! ((true || true)), _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), true, _GLF_IDENTITY(true, (_GLF_IDENTITY(true, false || (_GLF_IDENTITY(true, false || (true))))) && _GLF_IDENTITY(true, (true) && true)))))))))); (vec4(-12.73, -4.2, 0.4, _GLF_IDENTITY(5.3, _GLF_IDENTITY(max(5.3, 5.3), (max(5.3, 5.3)) - 0.0))) == _GLF_IDENTITY(vec4(-232.259, -816.616, -612.541, -2090.9693), (vec4(-232.259, -816.616, -612.541, -2090.9693)) * mat4(1.0))))
+                      {
+                       mat3x4(1.1, 4037.3468, _GLF_IDENTITY(3.4, clamp(_GLF_IDENTITY(3.4, min(3.4, _GLF_IDENTITY(3.4, max(3.4, 3.4)))), 3.4, 3.4)), -8.3, 7.4, 62.74, 67.14, 6.9, -74.24, -92.88, 75.10, 8.6);
+                       mat4 _GLF_SWITCH_0_40v;
+                       mat3x4 _GLF_SWITCH_0_41v[78];
+                       float _GLF_SWITCH_0_42v;
+                       for(int _injected_loop_counter = _GLF_IDENTITY(1, max(1, _GLF_IDENTITY(1, max(_GLF_IDENTITY(1, 0 | (1)), 1)))); _GLF_WRAPPED_LOOP(_injected_loop_counter != 0); _injected_loop_counter --)
+                        {
+                         _GLF_IDENTITY((91177u & uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u))), clamp(_GLF_IDENTITY((_GLF_IDENTITY(91177u, ~ (~ (_GLF_IDENTITY(91177u, (91177u) - (0u >> _GLF_IDENTITY(uint(1u), uint(1u))))))) & _GLF_IDENTITY(uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u)), max(uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u)), uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u))))), ((_GLF_IDENTITY(91177u & uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u)), (91177u & uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u))) << uvec4(0u, 0u, 0u, 0u)))) / uvec4(1u, _GLF_IDENTITY(1u, (_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)) ? _GLF_FUZZED(subgroup_local_id) : 1u)), 1u, 1u)), (91177u & uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, _GLF_IDENTITY(clamp(171575u, 171575u, 171575u), clamp(clamp(171575u, 171575u, 171575u), _GLF_IDENTITY(clamp(171575u, 171575u, 171575u), (clamp(171575u, 171575u, 171575u)) | 0u), clamp(171575u, 171575u, 171575u)))), min(_GLF_IDENTITY(171575u, max(171575u, 171575u)), 171575u))), uvec2(152933u, 106413u))), (91177u & uvec4(uvec2(138847u, _GLF_IDENTITY(_GLF_IDENTITY(171575u, clamp(171575u, 171575u, 171575u)), min(171575u, 171575u))), uvec2(152933u, 106413u)))));
+                        }
+                       bvec2 _GLF_SWITCH_0_43v, _GLF_SWITCH_0_44v;
+                      }
+                     break;
+                     case 12:
+                     bvec4 _GLF_SWITCH_5_1v, _GLF_SWITCH_5_2v, _GLF_SWITCH_5_3v;
+                     case 4:
+                     ;
+                     default:
+                     1;
+                    }
+                  }
+                }
+               else
+                {
+                }
+               if(_GLF_WRAPPED_IF_FALSE(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+                {
+                }
+               else
+                {
+                 for(mat3 _GLF_SWITCH_0_45v, _GLF_SWITCH_0_46v[89]; all(bvec4(false, false, true, false)); (_GLF_IDENTITY(ivec2(_GLF_IDENTITY(46210, (false ? _GLF_FUZZED((26831 + 41300)) : 46210)), -38670), min(ivec2(_GLF_IDENTITY(46210, (_GLF_IDENTITY(false ? _GLF_FUZZED((26831 + 41300)) : 46210, _GLF_IDENTITY(int(ivec2(false ? _GLF_FUZZED((26831 + 41300)) : 46210, 1)), min(int(ivec2(false ? _GLF_FUZZED((26831 + 41300)) : 46210, 1)), _GLF_IDENTITY(int(ivec2(false ? _GLF_FUZZED((26831 + 41300)) : 46210, 1)), int(ivec3(int(ivec2(false ? _GLF_FUZZED((26831 + 41300)) : 46210, 1)), 0, 0)))))))), -38670), _GLF_IDENTITY(ivec2(_GLF_IDENTITY(46210, _GLF_IDENTITY((false ? _GLF_FUZZED((26831 + 41300)) : 46210), clamp((false ? _GLF_FUZZED((26831 + 41300)) : 46210), (false ? _GLF_FUZZED((26831 + 41300)) : 46210), (false ? _GLF_FUZZED((26831 + 41300)) : 46210)))), -38670), (false ? _GLF_FUZZED(ivec2(-77709, -79705)) : ivec2(_GLF_IDENTITY(46210, (false ? _GLF_FUZZED((26831 + 41300)) : 46210)), -38670))))) / ivec2(-90521, 19583)))
+                  {
+                   bvec2(false, true);
+                   vec3 _GLF_SWITCH_0_47v;
+                   vec3 _GLF_SWITCH_0_48v[73], _GLF_SWITCH_0_49v, _GLF_SWITCH_0_50v[65];
+                  }
+                }
+               case 67:
+               while(_GLF_IDENTITY((mat3x2(_GLF_IDENTITY(3437.2166, max(3437.2166, 3437.2166)), -85.94, _GLF_IDENTITY(3986.8972, (_GLF_IDENTITY(3986.8972, min(_GLF_IDENTITY(3986.8972, clamp(3986.8972, _GLF_IDENTITY(3986.8972, (3986.8972) * 1.0), 3986.8972)), 3986.8972))) + _GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(-7.5)), float(_GLF_IDENTITY(0.0, mix(_GLF_IDENTITY(float(0.0), clamp(float(0.0), float(0.0), float(0.0))), float(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), _GLF_IDENTITY(float(_GLF_IDENTITY(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)), transpose(transpose(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)))))), min(float(_GLF_IDENTITY(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)), transpose(transpose(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)))))), float(_GLF_IDENTITY(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)), transpose(transpose(mat2x4(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))), 1.0 * (_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true))))), 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, cos(0.0)))))))))), bool(false)))), bool(true)))), _GLF_IDENTITY(_GLF_IDENTITY(-997.965, (true ? -997.965 : _GLF_FUZZED(-4.9))), (false ? _GLF_FUZZED(-56.54) : -997.965)), 658.249, 9.6) == mat3x2(-789.961, -6533.5167, _GLF_IDENTITY(-79.33, (_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? _GLF_IDENTITY(-79.33, mix(float(_GLF_FUZZED(4.4)), float(-79.33), bool(true))) : _GLF_FUZZED(-46.41))), -4332.1531, -275.699, 7688.8538)), false || ((mat3x2(3437.2166, -85.94, _GLF_IDENTITY(3986.8972, (_GLF_IDENTITY(3986.8972, min(_GLF_IDENTITY(3986.8972, clamp(3986.8972, _GLF_IDENTITY(3986.8972, (3986.8972) * 1.0), 3986.8972)), 3986.8972))) + _GLF_IDENTITY(0.0, mix(float(_GLF_FUZZED(-7.5)), float(_GLF_IDENTITY(0.0, mix(float(0.0), float(_GLF_IDENTITY(_GLF_FUZZED((false ? -730.824 : 23.29)), mix(float(_GLF_FUZZED(41.15)), float(_GLF_FUZZED((false ? -730.824 : 23.29))), bool(true)))), bool(false)))), bool(true)))), _GLF_IDENTITY(-997.965, (false ? _GLF_FUZZED(-56.54) : -997.965)), 658.249, 9.6) == mat3x2(-789.961, -6533.5167, -79.33, _GLF_IDENTITY(-4332.1531, (false ? _GLF_FUZZED(5.4) : -4332.1531)), -275.699, 7688.8538)))))
+                {
+                 bvec2 _GLF_SWITCH_0_51v, _GLF_SWITCH_0_52v[92];
+                 mat3x4(1.3, 82.25, _GLF_IDENTITY(-575.550, 0.0 + (-575.550)), _GLF_IDENTITY(-4578.3803, (_GLF_IDENTITY(true ? -4578.3803 : _GLF_IDENTITY(_GLF_FUZZED(7.3), min(_GLF_FUZZED(7.3), _GLF_IDENTITY(_GLF_FUZZED(7.3), (_GLF_IDENTITY(_GLF_FUZZED(7.3), _GLF_IDENTITY(mix(float(_GLF_FUZZED(-0.1)), float(_GLF_FUZZED(7.3)), bool(true)), (mix(float(_GLF_FUZZED(-0.1)), float(_GLF_FUZZED(7.3)), bool(true))) * 1.0))) - 0.0))), clamp(true ? -4578.3803 : _GLF_IDENTITY(_GLF_FUZZED(7.3), min(_GLF_FUZZED(7.3), _GLF_IDENTITY(_GLF_FUZZED(7.3), (_GLF_IDENTITY(_GLF_FUZZED(7.3), mix(float(_GLF_FUZZED(-0.1)), _GLF_IDENTITY(float(_GLF_FUZZED(7.3)), max(float(_GLF_FUZZED(7.3)), float(_GLF_FUZZED(7.3)))), _GLF_IDENTITY(bool(_GLF_IDENTITY(true, bool(bvec4(true, false, _GLF_TRUE(true, _GLF_IDENTITY((injectionSwitch.x < injectionSwitch.y), bool(_GLF_IDENTITY(bvec2((injectionSwitch.x < injectionSwitch.y), true), bvec2(bvec4(bvec2((injectionSwitch.x < injectionSwitch.y), true), false, _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)))))))), true)))), ! (! (bool(_GLF_IDENTITY(true, bool(bvec4(true, false, _GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)), true)))))))))) - 0.0))), true ? -4578.3803 : _GLF_IDENTITY(_GLF_FUZZED(7.3), min(_GLF_FUZZED(7.3), _GLF_IDENTITY(_GLF_FUZZED(7.3), (_GLF_IDENTITY(_GLF_FUZZED(7.3), mix(float(_GLF_FUZZED(-0.1)), float(_GLF_FUZZED(7.3)), bool(true)))) - 0.0))), true ? -4578.3803 : _GLF_IDENTITY(_GLF_FUZZED(7.3), min(_GLF_FUZZED(7.3), _GLF_IDENTITY(_GLF_FUZZED(7.3), (_GLF_IDENTITY(_GLF_FUZZED(7.3), mix(float(_GLF_FUZZED(-0.1)), float(_GLF_FUZZED(7.3)), _GLF_IDENTITY(bool(true), bool(bvec4(bool(true), _GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), true, true)))))) - 0.0))))))), 4448.4772, _GLF_IDENTITY(-44.86, min(-44.86, -44.86)), -7.0, 25.86, -694.937, _GLF_IDENTITY(-720.134, (_GLF_IDENTITY(-720.134, float(_GLF_IDENTITY(mat2x4(_GLF_IDENTITY(-720.134, max(-720.134, -720.134)), 1.0, 1.0, 1.0, abs(1.0), 0.0, 0.0, 1.0), (_GLF_IDENTITY(mat2x4(_GLF_IDENTITY(-720.134, max(-720.134, -720.134)), 1.0, 1.0, 1.0, abs(1.0), 0.0, 0.0, 1.0), (true ? mat2x4(_GLF_IDENTITY(-720.134, max(-720.134, -720.134)), 1.0, 1.0, 1.0, abs(1.0), 0.0, 0.0, 1.0) : _GLF_FUZZED(mat2x4(395.828, -72.21, -9773.4981, 413.562, 9.4, -2098.5888, -0.9, -6.8))))) + mat2x4(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))))) * 1.0), 43.67, -987.386);
+                 float _GLF_SWITCH_0_53v, _GLF_SWITCH_0_54v[72];
+                 ((_GLF_SWITCH_0_1v ++) , mat4x2(_GLF_IDENTITY(4.5, min(4.5, _GLF_IDENTITY(4.5, clamp(4.5, 4.5, 4.5)))), -1.2, _GLF_IDENTITY(-2.0, (true ? _GLF_IDENTITY(-2.0, mix(float(_GLF_FUZZED(5.1)), float(-2.0), bool(true))) : _GLF_FUZZED(1133.7679))), -658.763, 727.121, -6.4, 9.8, 6603.0571));
+                 isinf(vec3(-9.8, 76.21, _GLF_IDENTITY(_GLF_IDENTITY(116.995, mix(float(_GLF_FUZZED(9.0)), float(_GLF_IDENTITY(116.995, (116.995) - 0.0)), bool(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))), (true ? 116.995 : _GLF_FUZZED(-9.0)))));
+                 if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (_GLF_IDENTITY(injectionSwitch.x, max(injectionSwitch.x, injectionSwitch.x)) < _GLF_IDENTITY(injectionSwitch, max(injectionSwitch, _GLF_IDENTITY(injectionSwitch, clamp(injectionSwitch, injectionSwitch, injectionSwitch)))).y))))
+                  {
+                   abs(vec3(1.0, -597.370, -85.74));
+                  }
+                 else
+                  {
+                  }
+                }
+               break;
+               case 89:
+               ;
+               default:
+               1;
+              }
+            }
+           break;
+           case 57:
+           ;
+           case 31:
+           float _GLF_SWITCH_2_9v[90], _GLF_SWITCH_2_10v, _GLF_SWITCH_2_11v;
+           default:
+           if(_GLF_WRAPPED_IF_TRUE(true))
+            {
+             1;
+            }
+           else
+            {
+            }
+          }
+        }
+       case 0:
+       case 86:
+       subgroupAll(_GLF_IDENTITY(false, ! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, _GLF_IDENTITY(bool(bool(false)), ! (! (bool(bool(false))))))), ! _GLF_IDENTITY((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! (! (false)))), bool(bvec3(! (false), false, false))))), false || (_GLF_IDENTITY((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! _GLF_IDENTITY((! (_GLF_IDENTITY(false, (false) && true))), ((! (_GLF_IDENTITY(false, (false) && true)))) && true))), bool(bvec3(! (false), false, false))))), _GLF_IDENTITY(bool(_GLF_IDENTITY(bvec3((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! (! (false)))), bool(bvec3(! (false), false, false))))), true, false), bvec3(bvec3(bvec3((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! (! _GLF_IDENTITY((false), bool(bvec2((false), true)))))), bool(bvec3(! (false), false, false))))), true, false))))), (bool(_GLF_IDENTITY(bvec3((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! (! (false)))), bool(bvec3(! (false), false, false))))), _GLF_IDENTITY(true, (true) && true), false), bvec3(bvec3(bvec3((! (_GLF_IDENTITY(! (_GLF_IDENTITY(false, ! (! (false)))), bool(bvec3(! (false), false, false))))), true, false)))))) && true))))))));
+       case 99:
+       case 65:
+       case 34:
+       read = atomicLoad(_GLF_IDENTITY(_GLF_IDENTITY(buf[_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ _GLF_IDENTITY((virtual_gid), ((virtual_gid)) - 0u))), _GLF_IDENTITY(0u + (_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))) | 0u)), (true ? _GLF_IDENTITY(0u + (_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))) | 0u)), min(0u + (_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))) | 0u)), 0u + (_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))) | 0u)))) : _GLF_FUZZED(workgroup_base))))], 0u ^ (buf[_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_IDENTITY(_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid))), (_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y)) ? _GLF_IDENTITY(virtual_gid, _GLF_IDENTITY(~ (~ (virtual_gid)), (_GLF_IDENTITY(~ (~ (virtual_gid)), clamp(~ (~ (virtual_gid)), _GLF_IDENTITY(~ (~ (virtual_gid)), (true ? ~ (~ (virtual_gid)) : _GLF_FUZZED(subgroup_id))), ~ (~ (virtual_gid))))) | (~ (~ (virtual_gid))))) : _GLF_FUZZED(subgroup_base)))) + 0u)])), max(_GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])), min(_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])), _GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])))), _GLF_IDENTITY((_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), 0u | ((~ (virtual_gid)))))], _GLF_IDENTITY(0u, (0u) * 1u) ^ (buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), (_GLF_IDENTITY((~ (virtual_gid)), ((~ (virtual_gid))) >> 0u)) >> 0u))]))), ~ (_GLF_IDENTITY(~ (_GLF_IDENTITY((_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), 0u | ((~ (virtual_gid)))))], _GLF_IDENTITY(0u, (0u) * 1u) ^ (buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), (_GLF_IDENTITY((~ (virtual_gid)), ((~ (virtual_gid))) >> 0u)) >> 0u))]))), (false ? _GLF_FUZZED(read) : (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), 0u | ((~ (virtual_gid)))))], _GLF_IDENTITY(0u, (0u) * 1u) ^ (buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), (_GLF_IDENTITY((~ (virtual_gid)), ((~ (virtual_gid))) >> 0u)) >> 0u))])))))), 0u | (~ (_GLF_IDENTITY((_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), 0u | ((~ (virtual_gid)))))], _GLF_IDENTITY(0u, (0u) * 1u) ^ (buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), (_GLF_IDENTITY((~ (virtual_gid)), ((~ (virtual_gid))) >> 0u)) >> 0u))]))), (false ? _GLF_FUZZED(read) : (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), 0u | ((~ (virtual_gid)))))], _GLF_IDENTITY(0u, (0u) * 1u) ^ (buf[_GLF_IDENTITY(virtual_gid, ~ _GLF_IDENTITY((~ (virtual_gid)), (_GLF_IDENTITY((~ (virtual_gid)), ((~ (virtual_gid))) >> 0u)) >> 0u))])))))))))) | (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])))), _GLF_IDENTITY(_GLF_IDENTITY(_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])), ~ (~ (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))]))))), (_GLF_IDENTITY(_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])), ~ (~ (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])))))) | (_GLF_IDENTITY(_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))])), ~ (~ (_GLF_IDENTITY(buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))], 0u ^ (buf[_GLF_IDENTITY(virtual_gid, ~ (~ (virtual_gid)))]))))))))), 4, 64, 2);
+       break;
+       default:
+       1;
+      }
+    }
+  }
+ while(_GLF_WRAPPED_LOOP(false));
+ subgroupBarrier();
+ atomicStore(checker[virtual_gid], read, 4, 64, 4);
+}
+
+END
+
+BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 2
+BUFFER injection DATA_TYPE vec2<float> DATA
+ 0.0 1.0
+END
+BUFFER checker DATA_TYPE uint32 SIZE 8388096 FILL 0
+BUFFER expected_checker DATA_TYPE uint32 SIZE 8388096 FILL 1
+
+PIPELINE compute test_pipe
+  ATTACH test
+  BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
+  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 
+
+  SUBGROUP test
+	  VARYING_SIZE on
+  END
+END
+
+RUN test_pipe 65532 1 1
+EXPECT checker EQ_BUFFER expected_checker
