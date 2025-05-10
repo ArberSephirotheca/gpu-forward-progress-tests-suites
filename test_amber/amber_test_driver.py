@@ -82,29 +82,27 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 is_ignored_error = False
                 error_output = "\n".join(results)
 
-                # count the number of failures, if any, and update both simple and verbose results accordingly
                 for current_line in results:
-                    for pattern in IGNORED_ERROR_PATTERNS:
-                        if pattern in current_line:
-                            is_ignored_error = True
-                    if "1 fail" in current_line:
-                        failure_count = failure_count + 1
-                    elif "1 pass" in current_line:
-                        pass_count = pass_count + 1
+                    if 'Buffers have different values.' in results:
+                        failure_count += 1
+                    elif '1 pass' in results:
+                        pass_count += 1
+                
+                if failure_count == 0 and pass_count == 0:
+                    is_ignored_error = True
                     
-
                 # if there were no failures, indicate a "P" in both sets of tables
-                if failure_count == 0:
-                    log_print("P")
-                    simple_test_results.append([test_iteration, "P"])
-                    verbose_test_results.append([test_iteration, "P"])
-                elif is_ignored_error:
+                if is_ignored_error:
                     log_print("I (ignored error)")
                     simple_test_results.append([test_iteration, "I"])
                     verbose_test_results.append([test_iteration, "I"])
                     log_print("--- Ignored error output ---")
                     log_print(error_output)
                     log_print("----------------------------")
+                elif failure_count == 0:
+                    log_print("P")
+                    simple_test_results.append([test_iteration, "P"])
+                    verbose_test_results.append([test_iteration, "P"])
                 else:
                     log_print("F")
                     with open("temp_results.txt", "r") as f:
