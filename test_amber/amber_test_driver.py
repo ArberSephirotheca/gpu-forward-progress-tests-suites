@@ -83,9 +83,9 @@ def run_amber_test(input_dir, output_dir, each_cfg_option, amber_build_path, amb
                 error_output = "\n".join(results)
 
                 for current_line in results:
-                    if 'Buffers have different values.' in results:
+                    if 'Buffers have different values.' in current_line:
                         failure_count += 1
-                    elif '1 pass' in results:
+                    elif '1 pass' in current_line:
                         pass_count += 1
                 
                 if failure_count == 0 and pass_count == 0:
