@@ -83,7 +83,7 @@ _run_common() {
   local suite=$1         # core | generic
   local args=(-t "$suite")
   [[ -n $GPU_NAME ]]  && args+=(-g "$GPU_NAME")
-  $ANDROID            && args+=(-a "1")
+  $ANDROID            && args+=(-a )
   [[ -n $SERIAL ]]    && args+=(-s "$SERIAL")
   [[ -n $DEVICE ]]    && args+=(-d "$DEVICE")
   [[ -n $DIR ]]       && args+=(--dir "$DIR")  # NEW: forward --dir to to_run.sh
