@@ -44,11 +44,11 @@ for gpu in gpu_dirs:
 
                     for row in reader:
                         if row[0].startswith('variant_'):
-                            if all(r.strip() == 'P' for r in row[1:]):
-                                passes += 1
-                            else:
+                            if all(r.strip() == 'F' for r in row[1:]):
                                 fails += 1
                                 failed_tests.append(row[0])
+                            else:
+                                passes += 1
 
                 # Append a row with the new Reference Amber column
                 data.append([

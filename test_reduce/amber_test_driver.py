@@ -416,7 +416,7 @@ def main():
     output_dir_path = get_new_dir_name(os.path.basename(input_dir))
 
     # the user may change the flags used to build the amber tests with (include spaces before and after the flag(s))
-    amber_build_flags = " -d -t spv1.5 "
+    amber_build_flags = " -d -t spv1.5 -D 1 "
 
     os.makedirs(output_dir_path, exist_ok=True)
 
