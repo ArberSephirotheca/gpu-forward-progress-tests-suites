@@ -9,7 +9,7 @@ import shutil
 CSV_PATH = "gpu_test_summary.csv"
 
 # Root path where your test .amber files are
-TEST_SUITE_ROOT = "../all_tests"
+TEST_SUITE_ROOT = "../all_tests_core"
 
 # Output directory to collect failed variants
 OUTPUT_DIR = "../failed_variants"
