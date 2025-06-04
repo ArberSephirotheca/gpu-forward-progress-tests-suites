@@ -42,12 +42,9 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 0);
+ uint read_val = atomicLoad(write_val, 1, 64, 0);
+ buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ if(_GLF_DEAD(false))
   return;
- uint read_val = atomicLoad(write_val, 4, 64, 0);
- for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
-  {
-   buf[virtual_gid] = uint(subgroupAllEqual(read_val));
-  }
 }

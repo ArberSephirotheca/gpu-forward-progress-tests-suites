@@ -6,6 +6,7 @@
 #extension GL_EXT_maximal_reconvergence : enable
 
 #define scope_invocation 4
+#define scope_subgroup 3
 #define storage_sem_buffer 64
 #define sem_relaxed 0
 #define sem_release 4
@@ -32,9 +33,9 @@ void main() {
     uint subgroup_base = subgroup_id * subgroup_size;
     uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
     uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
-	atomicStore(buf[next_virtual_gid], uint(1), scope_invocation, storage_sem_buffer, sem_release); // write 
-    uint read = atomicLoad(buf[virtual_gid], scope_invocation, storage_sem_buffer, sem_acquire); // read
+	atomicStore(buf[next_virtual_gid], uint(1), scope_subgroup, storage_sem_buffer, sem_release); // write 
+    uint read = atomicLoad(buf[virtual_gid], scope_subgroup, storage_sem_buffer, sem_acquire); // read
     subgroupBarrier();
-    atomicStore(checker[virtual_gid], read, scope_invocation, storage_sem_buffer, sem_release); // write
+    atomicStore(checker[virtual_gid], read, scope_subgroup, storage_sem_buffer, sem_release); // write
     // should see all 2
 }

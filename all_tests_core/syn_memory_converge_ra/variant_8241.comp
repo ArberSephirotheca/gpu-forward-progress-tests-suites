@@ -1,13 +1,27 @@
 #version 460
-struct _GLF_struct_0 {
- mat2x3 _f0;
+struct _GLF_struct_1 {
+ uvec4 _f0;
 } ;
 
-struct _GLF_struct_1 {
- _GLF_struct_0 _f0;
- mat4 _f1;
- uvec2 _f2;
+struct _GLF_struct_0 {
+ mat3x2 _f0;
+ vec3 _f1;
+ vec3 _f2;
+} ;
+
+struct _GLF_struct_2 {
+ bvec3 _f0;
+ _GLF_struct_0 _f1;
+ bvec2 _f2;
+ mat3x2 _f3;
+ _GLF_struct_1 _f4;
+} ;
+
+struct _GLF_struct_3 {
  uint subgroup_base;
+ ivec3 _f0;
+ vec3 _f1;
+ _GLF_struct_2 _f2;
 } ;
 
 layout(set = 0, binding = 1) uniform buf1 {
@@ -33,9 +47,9 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- _GLF_struct_1 _GLF_struct_replacement_1 = _GLF_struct_1(_GLF_struct_0(mat2x3(1.0)), mat4(1.0), uvec2(1u), subgroup_id * subgroup_size);
- uint virtual_gid = workgroup_base + _GLF_struct_replacement_1.subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 4);
- uint read_val = atomicLoad(write_val, 4, 64, 2);
+ _GLF_struct_3 _GLF_struct_replacement_3 = _GLF_struct_3(subgroup_id * subgroup_size, ivec3(1), vec3(1.0), _GLF_struct_2(bvec3(true), _GLF_struct_0(mat3x2(1.0), vec3(1.0), vec3(1.0)), bvec2(true), mat3x2(1.0), _GLF_struct_1(uvec4(1u))));
+ uint virtual_gid = workgroup_base + _GLF_struct_replacement_3.subgroup_base + subgroup_local_id;
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 4);
+ uint read_val = atomicLoad(write_val, 1, 64, 2);
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }

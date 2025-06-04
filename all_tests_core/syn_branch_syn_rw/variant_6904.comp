@@ -43,10 +43,10 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ uint read = atomicLoad(buf[virtual_gid], 3, 64, 2);
  if((subgroup_local_id % 2) == 0)
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
   }
  else
   {
@@ -55,12 +55,12 @@ void main()
      case 71:
      clamp(vec2(174.035, -756.305), vec2(229.261, 44.47)[1], -46.62);
      case 0:
-     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+     atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
      break;
      default:
      1;
     }
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
 }

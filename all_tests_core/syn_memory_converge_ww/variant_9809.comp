@@ -1,4 +1,11 @@
 #version 460
+struct _GLF_struct_0 {
+ uint virtual_gid;
+ float _f0;
+ mat3 _f1;
+ mat2x3 _f2;
+} ;
+
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -23,8 +30,8 @@ void main()
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
- uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- uint read_val = atomicLoad(write_val, 4, 64, 0);
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(workgroup_base + subgroup_base + subgroup_local_id, 1.0, mat3(1.0), mat2x3(1.0));
+ atomicStore(write_val, uint(_GLF_struct_replacement_0.virtual_gid), 1, 64, 0);
+ uint read_val = atomicLoad(write_val, 1, 64, 0);
+ buf[_GLF_struct_replacement_0.virtual_gid] = uint(subgroupAllEqual(read_val));
 }

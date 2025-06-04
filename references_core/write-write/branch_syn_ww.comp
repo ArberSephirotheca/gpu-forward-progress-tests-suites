@@ -6,6 +6,7 @@
 #extension GL_EXT_maximal_reconvergence : enable
 
 #define scope_invocation 4
+#define scope_subgroup 3
 #define storage_sem_buffer 64
 #define sem_relaxed 0
 #define sem_release 4
@@ -28,12 +29,12 @@ void main() {
     uint subgroup_base = subgroup_id * subgroup_size;
     uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
     uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
-    atomicStore(buf[virtual_gid], uint(1), scope_invocation, storage_sem_buffer, sem_release);
+    atomicStore(buf[virtual_gid], uint(1), scope_subgroup, storage_sem_buffer, sem_release);
     if ((subgroup_local_id % 2) == 0) {
         // scope: invocation, storage: buffer, memory semantics: release
         // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-
-        atomicStore(buf[next_virtual_gid], uint(2), scope_invocation, storage_sem_buffer, sem_release);
+        atomicStore(buf[next_virtual_gid], uint(2), scope_subgroup, storage_sem_buffer, sem_release);
     } else{
-        atomicStore(buf[next_virtual_gid], uint(2), scope_invocation, storage_sem_buffer, sem_release);
+        atomicStore(buf[next_virtual_gid], uint(2), scope_subgroup, storage_sem_buffer, sem_release);
     }
 }

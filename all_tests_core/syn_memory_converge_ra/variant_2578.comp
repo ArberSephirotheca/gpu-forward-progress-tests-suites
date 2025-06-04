@@ -33,24 +33,26 @@ layout(set = 0, binding = 2) buffer WriteVal {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
+ uvec4 GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base;
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ uvec2 GLF_merged2_0_1_8_1_1_14read_valworkgroup_base;
  uint subgroup_id = gl_SubgroupID;
+ GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.y = subgroup_id;
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
+ GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.z = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint subgroup_base = subgroup_id * subgroup_size;
- uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
-  return;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 4);
- uint read_val = atomicLoad(write_val, 4, 64, 2);
- if(_GLF_DEAD(false))
-  return;
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
- if(_GLF_DEAD(false))
-  return;
+ GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.w = workgroup_base;
+ GLF_merged2_0_1_8_1_1_14read_valworkgroup_base.y = GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.w;
+ uint subgroup_base = GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.y * subgroup_size;
+ uint virtual_gid = GLF_merged2_0_1_8_1_1_14read_valworkgroup_base.y + subgroup_base + GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.z;
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 4);
+ uint read_val = atomicLoad(write_val, 1, 64, 2);
+ GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.x = read_val;
+ GLF_merged2_0_1_8_1_1_14read_valworkgroup_base.x = GLF_merged4_0_1_8_1_1_11_2_1_17_3_1_14read_valsubgroup_idsubgroup_local_idworkgroup_base.x;
+ buf[virtual_gid] = uint(subgroupAllEqual(GLF_merged2_0_1_8_1_1_14read_valworkgroup_base.x));
 }

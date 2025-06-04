@@ -34,15 +34,21 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
  uint subgroup_id = gl_SubgroupID;
+ if(_GLF_DEAD(false))
+  barrier();
  uint subgroup_size = gl_SubgroupSize;
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
+ if(_GLF_DEAD(false))
+  barrier();
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
- uint virtual_gid = _GLF_IDENTITY(workgroup_base, 1u * (workgroup_base)) + subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- uint read_val = atomicLoad(write_val, 4, 64, 0);
+ uint virtual_gid = workgroup_base + _GLF_IDENTITY(subgroup_base, (subgroup_base) / 1u) + subgroup_local_id;
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 0);
+ uint read_val = atomicLoad(write_val, 1, _GLF_IDENTITY(64, min(64, _GLF_IDENTITY(64, int(ivec3(64, 1, 0))))), 0);
  buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ if(_GLF_DEAD(false))
+  barrier();
 }

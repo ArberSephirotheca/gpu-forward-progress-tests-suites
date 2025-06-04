@@ -6,6 +6,8 @@
 #extension GL_EXT_maximal_reconvergence : enable
 
 #define scope_invocation 4
+#define scope_subgroup 3
+#define scope_device 1
 #define storage_sem_buffer 64
 #define sem_relaxed 0
 #define sem_release 4
@@ -31,7 +33,7 @@ void main() {
     uint workgroup_base = workgroup_size * workgroup_id;
     uint subgroup_base = subgroup_id * subgroup_size;
     uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
-    atomicStore(write_val, uint(virtual_gid), scope_invocation, storage_sem_buffer, sem_relaxed);
-    uint read_val = atomicLoad(write_val, scope_invocation, storage_sem_buffer, sem_relaxed);
+    atomicStore(write_val, uint(virtual_gid), scope_device, storage_sem_buffer, sem_relaxed);
+    uint read_val = atomicLoad(write_val, scope_device, storage_sem_buffer, sem_relaxed);
     buf[virtual_gid] = uint(subgroupAllEqual(read_val));
 }

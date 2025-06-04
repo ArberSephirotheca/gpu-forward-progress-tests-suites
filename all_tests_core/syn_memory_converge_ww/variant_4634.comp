@@ -42,11 +42,7 @@ void main()
  uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- if(_GLF_DEAD(_GLF_IDENTITY(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), bool(bvec3(_GLF_IDENTITY(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), (_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))) && true), false, true)))))
-  return;
- uint read_val = atomicLoad(write_val, 4, 64, 0);
- if(_GLF_DEAD(false))
-  return;
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 0);
+ uint read_val = atomicLoad(write_val, 1, 64, 0);
+ buf[virtual_gid] = uint(subgroupAllEqual(_GLF_IDENTITY(read_val, (0u ^ 0u) + (read_val))));
 }
