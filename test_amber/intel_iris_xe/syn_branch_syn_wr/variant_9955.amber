@@ -51,20 +51,20 @@ void main()
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  uint read = 0;
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
  if((subgroup_local_id % 2) == 0)
   {
-   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+   read = atomicLoad(buf[virtual_gid], 3, 64, 2);
   }
  else
   {
    for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter > 0); _injected_loop_counter --)
     {
-     read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+     read = atomicLoad(buf[virtual_gid], 3, 64, 2);
     }
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
 }
 
 END
