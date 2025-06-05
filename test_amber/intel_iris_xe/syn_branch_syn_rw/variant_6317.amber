@@ -50,7 +50,7 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+ uint read = atomicLoad(buf[virtual_gid], 3, 64, 2);
  if((subgroup_local_id % 2) == 0)
   {
    switch(_GLF_SWITCH(0))
@@ -65,7 +65,7 @@ void main()
      case 93:
      case 23:
      case 66:
-     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+     atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
      break;
      case 2:
      mat4x3 _GLF_SWITCH_0_0v;
@@ -86,14 +86,14 @@ void main()
      case 0:
      case 92:
      case 26:
-     atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+     atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
      break;
      default:
      1;
     }
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, _GLF_IDENTITY(64, min(64, 64)), 4);
+ atomicStore(checker[virtual_gid], read, 3, _GLF_IDENTITY(64, min(64, 64)), 4);
 }
 
 END

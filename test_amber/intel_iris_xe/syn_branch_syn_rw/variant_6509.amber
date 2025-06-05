@@ -52,19 +52,19 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = _GLF_IDENTITY(workgroup_base, ~ (_GLF_IDENTITY(~ (workgroup_base), (~ (workgroup_base)) ^ 0u))) + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- uint read = _GLF_IDENTITY(atomicLoad(buf[_GLF_IDENTITY(virtual_gid, (true ? virtual_gid : _GLF_FUZZED(workgroup_base)))], 4, 64, 2), (atomicLoad(buf[_GLF_IDENTITY(virtual_gid, (true ? virtual_gid : _GLF_FUZZED(workgroup_base)))], 4, 64, _GLF_IDENTITY(2, (_GLF_IDENTITY(2, (_GLF_IDENTITY(2, int(ivec3(2, 0, 0)))) / 1)) << 0))) >> (0u >> _GLF_IDENTITY(uint(1u), uint(1u))));
+ uint read = _GLF_IDENTITY(atomicLoad(buf[_GLF_IDENTITY(virtual_gid, (true ? virtual_gid : _GLF_FUZZED(workgroup_base)))], 3, 64, 2), (atomicLoad(buf[_GLF_IDENTITY(virtual_gid, (true ? virtual_gid : _GLF_FUZZED(workgroup_base)))], 3, 64, _GLF_IDENTITY(2, (_GLF_IDENTITY(2, (_GLF_IDENTITY(2, int(ivec3(2, 0, 0)))) / 1)) << 0))) >> (0u >> _GLF_IDENTITY(uint(1u), uint(1u))));
  if((subgroup_local_id % 2) == 0)
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
   }
  else
   {
    if(_GLF_DEAD(false))
     return;
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
  if(_GLF_DEAD(false))
   return;
 }

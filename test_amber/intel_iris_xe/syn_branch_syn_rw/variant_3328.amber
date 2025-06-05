@@ -50,17 +50,17 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = _GLF_IDENTITY(workgroup_base, (false ? _GLF_FUZZED(atomicOr(num_workgroup, workgroup_size)) : workgroup_base)) + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- uint read = atomicLoad(_GLF_IDENTITY(buf[virtual_gid], uint(uint(buf[virtual_gid]))), 4, 64, 2);
+ uint read = atomicLoad(_GLF_IDENTITY(buf[virtual_gid], uint(uint(buf[virtual_gid]))), 3, 64, 2);
  if((subgroup_local_id % 2) == _GLF_IDENTITY(0, (0) | 0))
   {
-   atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(1), 0u | (_GLF_IDENTITY(uint(1), (uint(1)) + 0u))), 4, _GLF_IDENTITY(64, (true ? 64 : _GLF_FUZZED(-71631))), 4);
+   atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(1), 0u | (_GLF_IDENTITY(uint(1), (uint(1)) + 0u))), 3, _GLF_IDENTITY(64, (true ? 64 : _GLF_FUZZED(-71631))), 4);
   }
  else
   {
-   atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
 }
 
 END
