@@ -50,10 +50,10 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = _GLF_IDENTITY(_GLF_IDENTITY(workgroup_base, (workgroup_base) * 1u) + subgroup_base, _GLF_IDENTITY((workgroup_base + subgroup_base) >> 0u, max((workgroup_base + subgroup_base) >> 0u, (workgroup_base + subgroup_base) >> 0u))) + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((_GLF_IDENTITY(subgroup_local_id, 0u | (_GLF_IDENTITY(subgroup_local_id, ~ (~ (subgroup_local_id))))) + _GLF_IDENTITY(1, max(_GLF_IDENTITY(1, 0 ^ (1)), 1))) % _GLF_IDENTITY(subgroup_size, clamp(subgroup_size, subgroup_size, _GLF_IDENTITY(subgroup_size, max(subgroup_size, subgroup_size)))));
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ uint read = atomicLoad(buf[virtual_gid], 3, 64, 2);
+ atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
 }
 
 END
