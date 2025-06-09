@@ -6,46 +6,38 @@ SET ENGINE_DATA fence_timeout_ms 10000
 
 SHADER compute test GLSL
 #version 460
-struct _GLF_struct_3 {
- bool _f0;
- bool _f1;
-} ;
 
-struct _GLF_struct_4 {
- uint subgroup_base;
- _GLF_struct_3 _f0;
-} ;
+#ifndef REDUCER
+#define _GLF_ZERO(X, Y)                   (Y)
+#define _GLF_ONE(X, Y)                    (Y)
+#define _GLF_FALSE(X, Y)                  (Y)
+#define _GLF_TRUE(X, Y)                   (Y)
+#define _GLF_IDENTITY(X, Y)               (Y)
+#define _GLF_DEAD(X)                      (X)
+#define _GLF_FUZZED(X)                    (X)
+#define _GLF_WRAPPED_LOOP(X)              X
+#define _GLF_WRAPPED_IF_TRUE(X)           X
+#define _GLF_WRAPPED_IF_FALSE(X)          X
+#define _GLF_SWITCH(X)                    X
+#define _GLF_MAKE_IN_BOUNDS_INT(IDX, SZ)  clamp(IDX, 0, SZ - 1)
+#define _GLF_MAKE_IN_BOUNDS_UINT(IDX, SZ) clamp(IDX, 0u, SZ - 1u)
+#endif
 
-struct _GLF_struct_2 {
- int _f0;
- bvec4 _f1;
- ivec4 _f2;
- uvec3 _f3;
- mat2x4 _f4;
-} ;
 
 struct _GLF_struct_0 {
- uint _f0;
- vec3 _f1;
- float _f2;
- int _f3;
- mat3x2 _f4;
- uint _f5;
+ int _f0;
+ ivec2 _f1;
 } ;
 
 struct _GLF_struct_1 {
- bvec2 _f0;
- _GLF_struct_0 _f1;
+ uint subgroup_id;
+ _GLF_struct_0 _f0;
+ bool _f1;
+ bvec3 _f2;
 } ;
 
-struct _GLF_struct_5 {
- bvec3 _f0;
- _GLF_struct_1 _f1;
- mat2 _f2;
- bvec3 _f3;
- _GLF_struct_2 _f4;
- mat3x2 _f5;
- _GLF_struct_4 _f6;
+struct _GLF_struct_2 {
+ _GLF_struct_1 _f0;
 } ;
 
 layout(set = 0, binding = 1) uniform buf1 {
@@ -64,42 +56,48 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- uvec2 GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size;
- uvec2 GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id;
- uvec4 GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id;
- uvec2 GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_id;
- GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy = GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_id;
- uint subgroup_id = gl_SubgroupID;
- GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.w = subgroup_id;
+ _GLF_struct_2 _GLF_struct_replacement_2 = _GLF_struct_2(_GLF_struct_1(gl_SubgroupID, _GLF_struct_0(1, ivec2(1)), true, bvec3(true)));
  uint subgroup_size = gl_SubgroupSize;
- GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size.x = subgroup_size;
  uint subgroup_local_id = gl_SubgroupInvocationID;
- GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x = subgroup_local_id;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
- GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size.y = workgroup_size;
  uint workgroup_id = gl_WorkGroupID.x;
- GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.y = workgroup_id;
- GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy.y = GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.y;
- uint workgroup_base = GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size.y * GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy.y;
- GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy.x = workgroup_base;
- _GLF_struct_5 _GLF_struct_replacement_5 = _GLF_struct_5(bvec3(true), _GLF_struct_1(bvec2(true), _GLF_struct_0(1u, vec3(1.0), 1.0, 1, mat3x2(1.0), 1u)), mat2(1.0), bvec3(true), _GLF_struct_2(1, bvec4(true), ivec4(1), uvec3(1u), mat2x4(1.0)), mat3x2(1.0), _GLF_struct_4(GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.w * GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size.x, _GLF_struct_3(true, true)));
- uint virtual_gid = GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy.x + _GLF_struct_replacement_5._f6.subgroup_base + GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x;
- uint next_virtual_gid = GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.xy.x + _GLF_struct_replacement_5._f6.subgroup_base + ((GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x + 1) % GLF_merged2_0_1_13_1_1_14subgroup_sizeworkgroup_size.x);
- GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.z = next_virtual_gid;
- uint read = atomicLoad(buf[virtual_gid], 4, 64, 2);
- if((GLF_merged2_0_1_17_1_1_12subgroup_local_idworkgroup_id.x % 2) == 0)
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = _GLF_struct_replacement_2._f0.subgroup_id * subgroup_size;
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
+ uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ uint read = atomicLoad(buf[virtual_gid], 3, 64, 2);
+ if((subgroup_local_id % 2) == 0)
   {
    subgroupAll(false);
-   atomicStore(buf[GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.z], uint(1), 4, 64, 4);
+   if(_GLF_WRAPPED_IF_FALSE(false))
+    {
+    }
+   else
+    {
+     do
+      {
+       for(int _injected_loop_counter = (0 << _GLF_IDENTITY(int(1), _GLF_IDENTITY(int(1), max(int(1), int(1))))); _GLF_WRAPPED_LOOP(_injected_loop_counter < 1); _injected_loop_counter ++)
+        {
+         atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
+        }
+      }
+     while(_GLF_WRAPPED_LOOP(false));
+    }
   }
  else
   {
    subgroupAll(false);
-   atomicStore(buf[GLF_merged3_0_2_51_2_1_16_3_1_11GLF_merged2_0_1_14_1_1_12workgroup_baseworkgroup_idnext_virtual_gidsubgroup_id.z], uint(1), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
   }
- subgroupBarrier();
- atomicStore(buf[virtual_gid], read, 4, 64, 4);
+ if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+  {
+   subgroupBarrier();
+  }
+ else
+  {
+  }
+ atomicStore(buf[virtual_gid], read, 3, 64, 4);
 }
 
 END
