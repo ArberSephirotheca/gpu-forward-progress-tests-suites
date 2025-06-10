@@ -65,6 +65,7 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     output.write("BUFFER tester DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 0\n")
     if checker_buf == 3:
         output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 1\n")
+        output.write("BUFFER write DATA_TYPE uint32 SIZE 1 FILL 0\n")
     else:
         output.write("BUFFER expected DATA_TYPE uint32 SIZE " + str(total_threads) + " FILL 2\n")
     output.write("BUFFER injection DATA_TYPE vec2<float> DATA\n 0.0 1.0\nEND\n")
@@ -84,6 +85,8 @@ def write_amber_epilogue(output, workgroups, threads_per_workgroup, checker_buf=
     output.write("  BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 \n")
     if checker_buf == 1 or checker_buf == 2:
         output.write("  BIND BUFFER checker AS storage DESCRIPTOR_SET 0 BINDING 2 \n")
+    if checker_buf == 3:
+        output.write("  BIND BUFFER write AS storage DESCRIPTOR_SET 0 BINDING 2 \n")
 
 
     output.write("\n")
