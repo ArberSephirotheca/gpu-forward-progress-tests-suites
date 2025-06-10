@@ -44,40 +44,25 @@ void main()
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    barrier();
+   barrier();
+  }
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- if(_GLF_WRAPPED_IF_TRUE(_GLF_TRUE(true, (injectionSwitch.x < injectionSwitch.y))))
+ atomicStore(buf[virtual_gid], uint(1), 3, 64, 4);
+ if((subgroup_local_id % 2) == 0)
   {
-   atomicStore(buf[virtual_gid], uint(1), 4, 64, 4);
+   subgroupAll(true);
+   atomicStore(buf[next_virtual_gid], uint(2), 3, 64, 4);
   }
  else
   {
-  }
- if(_GLF_WRAPPED_IF_TRUE(true))
-  {
-   if((subgroup_local_id % 2) == 0)
-    {
-     if(_GLF_WRAPPED_IF_TRUE(true))
-      {
-       subgroupAll(true);
-      }
-     else
-      {
-      }
-     atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-    }
-   else
-    {
-     for(int _injected_loop_counter = (int(_GLF_ZERO(0.0, injectionSwitch.x)) >> _GLF_IDENTITY(int(2), int(2))); _GLF_WRAPPED_LOOP(_injected_loop_counter != ((1 << _GLF_IDENTITY(int(2), _GLF_IDENTITY(int(2), ~ (~ (int(2)))))) >> _GLF_IDENTITY(int(2), int(2)))); _injected_loop_counter ++)
-      {
-       subgroupAll(false);
-      }
-     atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
-    }
-  }
- else
-  {
+   subgroupAll(false);
+   atomicStore(buf[next_virtual_gid], uint(2), 3, 64, 4);
   }
 }
 

@@ -6,12 +6,6 @@ SET ENGINE_DATA fence_timeout_ms 10000
 
 SHADER compute test GLSL
 #version 460
-struct _GLF_struct_0 {
- uint virtual_gid;
- mat4x2 _f0;
- bvec3 _f1;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -33,18 +27,18 @@ void main()
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(workgroup_base + subgroup_base + subgroup_local_id, mat4x2(1.0), bvec3(true));
+ uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- atomicStore(buf[_GLF_struct_replacement_0.virtual_gid], uint(1), 4, 64, 4);
+ atomicStore(buf[virtual_gid], uint(1), 3, 64, 4);
  if((subgroup_local_id % 2) == 0)
   {
    subgroupAll(true);
-   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(2), 3, 64, 4);
   }
  else
   {
    subgroupAll(false);
-   atomicStore(buf[next_virtual_gid], uint(2), 4, 64, 4);
+   atomicStore(buf[next_virtual_gid], uint(2), 3, 64, 4);
   }
 }
 
