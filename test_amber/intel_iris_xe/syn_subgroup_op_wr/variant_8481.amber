@@ -24,11 +24,6 @@ SHADER compute test GLSL
 #endif
 
 
-struct _GLF_struct_0 {
- uint subgroup_id;
- mat4 _f0;
-} ;
-
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
@@ -45,32 +40,42 @@ layout(set = 0, binding = 2) buffer Checker {
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main()
 {
- _GLF_struct_0 _GLF_struct_replacement_0 = _GLF_struct_0(gl_SubgroupID, mat4(1.0));
+ uint subgroup_id = gl_SubgroupID;
  uint subgroup_size = gl_SubgroupSize;
+ if(_GLF_DEAD(false))
+  {
+   if(_GLF_DEAD(false))
+    return;
+   return;
+  }
  uint subgroup_local_id = gl_SubgroupInvocationID;
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
  uint workgroup_base = workgroup_size * workgroup_id;
- uint subgroup_base = _GLF_struct_replacement_0.subgroup_id * subgroup_size;
+ uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- if(_GLF_DEAD(false))
-  return;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  uint read = 0;
- atomicStore(buf[next_virtual_gid], uint(1), 4, 64, 4);
+ atomicStore(buf[next_virtual_gid], uint(1), 3, 64, 4);
  if((subgroup_local_id % 2) == 0)
   {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
    subgroupAll(false);
-   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+   read = atomicLoad(buf[virtual_gid], 3, 64, 2);
   }
  else
   {
+   if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+    return;
    subgroupAll(false);
-   read = atomicLoad(buf[virtual_gid], 4, 64, 2);
+   read = atomicLoad(buf[virtual_gid], 3, 64, 2);
   }
  subgroupBarrier();
- atomicStore(checker[virtual_gid], read, 4, 64, 4);
+ if(_GLF_DEAD(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))))
+  return;
+ atomicStore(checker[virtual_gid], read, 3, 64, 4);
 }
 
 END
