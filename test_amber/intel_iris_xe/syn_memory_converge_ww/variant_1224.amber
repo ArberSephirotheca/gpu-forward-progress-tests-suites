@@ -46,18 +46,22 @@ void main()
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = _GLF_IDENTITY(workgroup_size * workgroup_id, (workgroup_size * workgroup_id) << 0u);
- uint subgroup_base = _GLF_IDENTITY(subgroup_id, (false ? _GLF_FUZZED(subgroup_id) : subgroup_id)) * subgroup_size;
+ uint workgroup_base = workgroup_size * workgroup_id;
+ uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
- atomicStore(write_val, uint(virtual_gid), 4, 64, 0);
- uint read_val = _GLF_IDENTITY(atomicLoad(write_val, 4, 64, 0), max(atomicLoad(write_val, 4, 64, 0), atomicLoad(_GLF_IDENTITY(write_val, (write_val) - (1u ^ 1u)), 4, 64, 0)));
- buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+ atomicStore(write_val, uint(virtual_gid), 1, 64, 0);
+ uint read_val = atomicLoad(write_val, 1, 64, 0);
+ for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter != (0 ^ 1)); _injected_loop_counter ++)
+  {
+   buf[virtual_gid] = uint(subgroupAllEqual(read_val));
+  }
 }
 
 END
 
 BUFFER tester DATA_TYPE uint32 SIZE 8388096 FILL 0
 BUFFER expected DATA_TYPE uint32 SIZE 8388096 FILL 1
+BUFFER write DATA_TYPE uint32 SIZE 1 FILL 0
 BUFFER injection DATA_TYPE vec2<float> DATA
  0.0 1.0
 END
@@ -66,6 +70,7 @@ PIPELINE compute test_pipe
   ATTACH test
   BIND BUFFER tester AS storage DESCRIPTOR_SET 0 BINDING 0 
   BIND BUFFER injection AS uniform DESCRIPTOR_SET 0 BINDING 1 
+  BIND BUFFER write AS storage DESCRIPTOR_SET 0 BINDING 2 
 
   SUBGROUP test
 	  VARYING_SIZE on
