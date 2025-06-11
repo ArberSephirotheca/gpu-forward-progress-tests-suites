@@ -421,7 +421,7 @@ def main():
     output_dir_path = get_new_dir_name(os.path.basename(input_dir))
 
     # the user may change the flags used to build the amber tests with (include spaces before and after the flag(s))
-    amber_build_flags = "  -t spv1.4 "
+    amber_build_flags = " -d -t spv1.4 "
     if args.device:
         amber_build_flags += f"-D {args.device} "
 
