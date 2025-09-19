@@ -32,9 +32,9 @@ void main()
     uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
     uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
     atomicStore(buf[virtual_gid], uint(1), scope_subgroup, 0, sem_relaxed);
-    memoryBarrier(); // this is a subgroup memory barrier, not a workgroup memory barrier
+    memoryBarrierBuffer(); // this is a subgroup memory barrier, not a workgroup memory barrier
     subgroupAll(true); // this really does nothing but acts like a subgroup synch
-    memoryBarrier(); // this is a subgroup memory barrier, not a workgroup memory barrier
+    memoryBarrierBuffer(); // this is a subgroup memory barrier, not a workgroup memory barrier
     if ((subgroup_local_id % 2) == 0) {
         // scope: invocation, storage: buffer, memory semantics: relax
 	    // for memory semantics spec, see: https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Memory_Semantics_-id-

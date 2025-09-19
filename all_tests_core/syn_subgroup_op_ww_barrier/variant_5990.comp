@@ -41,26 +41,14 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
+ atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
  do
   {
-   if(_GLF_WRAPPED_IF_TRUE(true))
-    {
-     atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
-    }
-   else
-    {
-    }
+   memoryBarrierBuffer();
   }
- while(_GLF_WRAPPED_LOOP(_GLF_IDENTITY(false, bool(_GLF_IDENTITY(bvec2(false, true), bvec2(bvec2(bvec2(false, true))))))));
- memoryBarrier();
- if(_GLF_WRAPPED_IF_TRUE(true))
-  {
-   subgroupAll(true);
-  }
- else
-  {
-  }
- memoryBarrier();
+ while(_GLF_WRAPPED_LOOP(false));
+ subgroupAll(true);
+ memoryBarrierBuffer();
  if((subgroup_local_id % 2) == 0)
   {
    atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);

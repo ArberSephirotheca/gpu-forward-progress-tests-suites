@@ -25,6 +25,7 @@ struct _GLF_struct_0 {
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
+#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
@@ -48,9 +49,9 @@ void main()
   barrier();
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
- memoryBarrier();
+ memoryBarrierBuffer();
  subgroupAll(true);
- memoryBarrier();
+ memoryBarrierBuffer();
  if(_GLF_WRAPPED_IF_TRUE(_GLF_IDENTITY(true, (true) || false)))
   {
    if((subgroup_local_id % 2) == 0)

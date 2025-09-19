@@ -20,6 +20,7 @@
 layout(set = 0, binding = 1) uniform buf1 {
  vec2 injectionSwitch;
 };
+#extension GL_KHR_shader_subgroup_ballot : enable
 #extension GL_KHR_shader_subgroup_vote : enable
 #extension GL_KHR_shader_subgroup_basic : enable
 #extension GL_KHR_memory_scope_semantics : enable
@@ -48,11 +49,11 @@ void main()
   {
    for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter > (0 >> _GLF_IDENTITY(int(3), int(3)))); _injected_loop_counter --)
     {
-     memoryBarrier();
+     memoryBarrierBuffer();
     }
   }
  subgroupAll(true);
- memoryBarrier();
+ memoryBarrierBuffer();
  if((subgroup_local_id % 2) == 0)
   {
    atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);

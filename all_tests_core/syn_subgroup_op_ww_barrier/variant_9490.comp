@@ -37,26 +37,20 @@ void main()
  uint num_workgroup = gl_NumWorkGroups.x;
  uint workgroup_size = gl_WorkGroupSize.x;
  uint workgroup_id = gl_WorkGroupID.x;
- uint workgroup_base = _GLF_IDENTITY(workgroup_size * workgroup_id, min(_GLF_IDENTITY(workgroup_size * workgroup_id, clamp(workgroup_size * workgroup_id, workgroup_size * workgroup_id, workgroup_size * workgroup_id)), workgroup_size * workgroup_id));
+ uint workgroup_base = workgroup_size * workgroup_id;
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
  atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
- memoryBarrier();
+ memoryBarrierBuffer();
  subgroupAll(true);
- for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter < (1 | ((1 << _GLF_IDENTITY(int(4), int(4))) >> _GLF_IDENTITY(int(4), _GLF_IDENTITY(int(4), (int(4)) >> int(_GLF_ZERO(0.0, injectionSwitch.x))))))); _injected_loop_counter ++)
+ memoryBarrierBuffer();
+ if((subgroup_local_id % 2) == 0)
   {
-   memoryBarrier();
+   atomicStore(buf[next_virtual_gid], _GLF_IDENTITY(uint(2), (uint(2)) >> 0u), 3, 0, 0);
   }
- for(int _injected_loop_counter = int(_GLF_ZERO(0.0, injectionSwitch.x)); _GLF_WRAPPED_LOOP(_injected_loop_counter != 1); _injected_loop_counter ++)
+ else
   {
-   if((subgroup_local_id % 2) == 0)
-    {
-     atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);
-    }
-   else
-    {
-     atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);
-    }
+   atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);
   }
 }

@@ -41,28 +41,11 @@ void main()
  uint subgroup_base = subgroup_id * subgroup_size;
  uint virtual_gid = workgroup_base + subgroup_base + subgroup_local_id;
  uint next_virtual_gid = workgroup_base + subgroup_base + ((subgroup_local_id + 1) % subgroup_size);
- for(int _injected_loop_counter = 1; _GLF_WRAPPED_LOOP(_injected_loop_counter != int(_GLF_ZERO(0.0, injectionSwitch.x))); _injected_loop_counter --)
-  {
-   atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
-  }
- do
-  {
-   memoryBarrier();
-  }
- while(_GLF_WRAPPED_LOOP(_GLF_IDENTITY(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y)), (_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))) && true)));
- if(_GLF_WRAPPED_IF_TRUE(true))
-  {
-   subgroupAll(true);
-  }
- else
-  {
-  }
- do
-  {
-   memoryBarrier();
-  }
- while(_GLF_WRAPPED_LOOP(false));
- do
+ atomicStore(buf[virtual_gid], uint(1), 3, 0, 0);
+ memoryBarrierBuffer();
+ subgroupAll(true);
+ memoryBarrierBuffer();
+ for(int _injected_loop_counter = 0; _GLF_WRAPPED_LOOP(_injected_loop_counter < ((1 << _GLF_IDENTITY(int(4), int(4))) >> _GLF_IDENTITY(int(4), int(4)))); _injected_loop_counter ++)
   {
    if((subgroup_local_id % 2) == 0)
     {
@@ -70,12 +53,7 @@ void main()
     }
    else
     {
-     do
-      {
-       atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);
-      }
-     while(_GLF_WRAPPED_LOOP(false));
+     atomicStore(buf[next_virtual_gid], uint(2), 3, 0, 0);
     }
   }
- while(_GLF_WRAPPED_LOOP(_GLF_FALSE(false, (injectionSwitch.x > injectionSwitch.y))));
 }
