@@ -32,7 +32,8 @@ LOG_FILE = None
 def log_print(s):
     global LOG_FILE
     LOG_FILE.write(s + "\n")
-    print(s)
+    LOG_FILE.flush()
+    print(s, flush=True)
 
 
 # create amber tests with provided input directory and specified configuration object and path/build details
@@ -364,7 +365,7 @@ def get_new_dir_name(original_dir):
         if not os.path.exists(check_name):
             print("writing results to:")
             print(check_name)
-            print("")
+            print("", flush=True)
             return check_name
         label += 1
 

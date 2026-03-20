@@ -51,15 +51,15 @@ def check_fails(directory):
     try:
         f = [f for f in os.listdir('results/' + directory) if re.match('simple_final_results.*csv', f)][0]
     except:
-        print(f'no results csv found, skipping {"results/" + directory}')
+        print(f'no results csv found, skipping {"results/" + directory}', flush=True)
         return True
     results = pd.read_csv(os.path.join('results', directory, f)).reset_index(drop=True)
-    print(results['All Passed'].values[-1])
+    print(results['All Passed'].values[-1], flush=True)
     failure = int(results['All Passed'].values[-1]) > 0
     return failure
 
 def update_table(gpu, directory_name, failure, suite):
-    print(f"Updating results for {'results/' + directory_name}")
+    print(f"Updating results for {'results/' + directory_name}", flush=True)
     try:
         results = pd.read_csv(RESULTS_SUMMARY_PATH).reset_index(drop=True)
     except:
@@ -68,7 +68,7 @@ def update_table(gpu, directory_name, failure, suite):
         results.loc[len(results)] = {'Device': gpu, directory_name: ('fail' if failure else 'pass')}
     else:
         results.loc[results['Device'] == gpu, directory_name] = 'fail' if failure else 'pass'
-    print(results)
+    print(results, flush=True)
     results.to_csv(RESULTS_SUMMARY_PATH, index=False)
     marker = '#### RESULTS'
     with open(README_PATH, 'r') as old_readme, open('README.tmp', 'w') as temp_readme:
@@ -96,7 +96,7 @@ def add_to_git(gpu, directory_name):
         os.system('git push')
 
     except Exception as e:
-        print(f"Error updating {directory_name} to git: {e}")
+        print(f"Error updating {directory_name} to git: {e}", flush=True)
 
 # run the amber_test_driver.py script with all input directories available in Input_Files
 def main():
@@ -129,7 +129,7 @@ def main():
             cmd += ["--serial", args.serial]
         if args.device:
             cmd += ["--device", args.device]
-        print("Running:", " ".join(cmd))
+        print("Running:", " ".join(cmd), flush=True)
         subprocess.run(cmd, check=True)
         if not args.gpu:
             args.gpu = "unknown"
@@ -137,7 +137,7 @@ def main():
             update_table(args.gpu, name.split('/')[-1], check_fails(name.split('/')[-1]), args.suite)
             add_to_git(args.gpu, name.split('/')[-1])
         except Exception as e:
-            print(f"Error updating results for {name}: {e}")
+            print(f"Error updating results for {name}: {e}", flush=True)
             continue
 
 
