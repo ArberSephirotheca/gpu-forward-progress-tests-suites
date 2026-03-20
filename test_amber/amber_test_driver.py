@@ -387,7 +387,8 @@ def android_sanity_check(serial):
             subprocess.run(["adb", "shell", "test -f /data/local/tmp/amber_ndk"], timeout=5, check=True)
     except:
         print(
-            "Error: on Android device, /data/local/tmp/amber_ndk was not found. Please install Amber at this precise location.")
+            "Error: on Android device, /data/local/tmp/amber_ndk was not found. "
+            "Push an Android arm64 amber_ndk binary there and chmod it executable.")
         exit(1)
 
 
@@ -402,6 +403,12 @@ def main():
     parser.add_argument('--serial', help='Serial number of adb device (required if multiple adb devices attached)')
     parser.add_argument('--device', help='Vulkan device ID of gpu (for selecting from multiple available gpus)')
     args = parser.parse_args()
+
+    if args.device is not None:
+        try:
+            int(args.device)
+        except ValueError:
+            parser.error("--device must be a numeric Vulkan device index; use --serial for an adb device serial")
 
     if args.android:
         android_sanity_check(args.serial)

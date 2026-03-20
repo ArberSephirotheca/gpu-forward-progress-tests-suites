@@ -109,6 +109,12 @@ def main():
     p.add_argument("--gpu", help="name of the device to be used in results summary", default=None)
     args = p.parse_args()
 
+    if args.device is not None:
+        try:
+            int(args.device)
+        except ValueError:
+            p.error("--device must be a numeric Vulkan device index; use --serial for an adb device serial")
+
     if args.dir:
         # If a specific directory is given, override the selection
         dirs_to_run = [f"../all_tests_{args.suite}/{args.dir}"]
